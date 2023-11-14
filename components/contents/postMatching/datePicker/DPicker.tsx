@@ -1,20 +1,19 @@
 import { useEffect, useState, Dispatch, SetStateAction } from 'react';
 import styled from 'styled-components';
 import { rem } from 'polished';
+import { ImageBox } from '../../../../styles/ts/components/box';
+import { FontFamilyRegular, FontSizeSpSm } from '../../../../styles/ts/common';
 import DatePicker from 'react-mobile-datepicker';
-
-import { ImageBox } from '../../styles/ts/components/box';
-import { FontFamilyRegular, FontSizeSpSm } from '../../styles/ts/common';
-import { prefix } from '../../constants/prefix';
-// import { dateFomatter } from '../../utils/fomatter';
+// import { dateFomatter } from 'utils/fomatter';
 
 interface IPickerProps {
 	readonly id?: string;
+	readonly setState: Dispatch<SetStateAction<Date>>;
 }
 
 const options = {
-	headerFormat: 'YYYY/MM/DD h시 mm분',
-	dateFormat: ['YYYY', 'M', 'D', 'h', 'mm'],
+	headerFormat: 'YYYY/MM/DD',
+	dateFormat: ['YYYY', 'M', 'D'],
 	locale: 'ko',
 	confirmText: '확인',
 	cancelText: '취소',
@@ -36,51 +35,26 @@ const dateConfig = {
 		caption: '일',
 		step: 1,
 	},
-	hour: {
-		format: 'hh',
-		caption: '시',
-		step: 1,
-	},
-	minute: {
-		format: 'mm',
-		caption: '분',
-		step: 5,
-	},
 };
 
 export default function DPicker(props: IPickerProps) {
-	const [dateState, setDateState] = useState(new Date(2024, 0, 0, 0));
-	const [dateString, setDateString] = useState('');
-
-	const dateToString = (dateState) => {
-		const options = {
-			weekday: 'short',
-			year: 'numeric',
-			month: 'long',
-			day: 'numeric',
-			hour: 'numeric',
-			minute: 'numeric',
-		};
-		setDateString(dateState.toLocaleString('ko-KR', options));
-	};
-
+	const [dateState, setDateState] = useState(new Date());
 	const [isOpen, setIsOpen] = useState(false);
 
 	const handleSelect = (selectedDate: Date) => {
 		setDateState(selectedDate);
-		dateToString(dateState);
+		props.setState(selectedDate);
 		setIsOpen(false);
 	};
 
 	return (
 		<>
 			<CustomDatePickerBox onClick={() => setIsOpen(true)}>
-				{/* <p>
-					{dateState.getFullYear()}년 {dateState.getMonth()}월 {dateState.getDate()}일
-				</p> */}
-				<p>{dateString}</p>
+				<p>
+					{dateState.getFullYear()}년 {dateState.getMonth() + 1}월 {dateState.getDate()}일
+				</p>
 				<ImageBox width={'24px'} height={'24px'}>
-					<img src={`${prefix}/images/calendar.png`} alt='calendar' />
+					<img src='/images/calendar.png' alt='calendar' />
 				</ImageBox>
 			</CustomDatePickerBox>
 
