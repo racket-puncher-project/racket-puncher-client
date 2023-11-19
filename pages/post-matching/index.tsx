@@ -1,6 +1,5 @@
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
-// import { apiRoot } from 'utils/apiRoot';
-import axios from 'axios';
+import MatchesService from 'service/matches/service';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
@@ -23,17 +22,6 @@ export default function PostMatching() {
 	// To-do
 	// 프론트에서 모집 마감일 받을 때 등록일 이후~경기시작 시간 이전으로 모집 마감일 선택하도록 설정
 
-	// const { warning } = useToast;
-	// 서버테스트용;
-	useEffect(() => {
-		axios
-			.get('http://3.38.50.101:8080/api/matches/1')
-			.then((res) => {
-				console.log(res.data);
-			})
-			.catch((e) => console.log(e));
-	}, []);
-
 	const schema = yup.object().shape({
 		postTitle: yup.string().required('제목을 입력해주세요.'),
 		matchType: yup.string().required('경기 유형을 선택해주세요.'),
@@ -45,14 +33,13 @@ export default function PostMatching() {
 		matchEndTime: yup.string().required('경기 종료 시간을 선택해주세요.'),
 		deadlineDate: yup.string().required('모집 마감일을 선택해주세요.'),
 		deadlineTime: yup.string().required('모집 마감 시간을 선택해주세요.'),
-		// courtAddress: yup.string().required('경기장 주소를 입력해주세요.'),
-		courtAddress: yup.string(),
+		courtAddress: yup.string().required('경기장 주소를 입력해주세요.'),
 		isCourtBooked: yup.boolean().required('경기장 예약 여부를 선택해주세요.'),
 		courtFee: yup
 			.number()
 			.required('경기장 대여료를 입력해주세요. (무료일 경우 0을 입력해주세요.)')
 			.min(0),
-		courtPhoto: yup.object(),
+		locationImg: yup.string(),
 		mainText: yup.string().required('본문 내용을 입력해주세요.'),
 	});
 	const {
@@ -71,7 +58,7 @@ export default function PostMatching() {
 		{ value: null, label: '경기 유형을 먼저 선택해주세요.' },
 	]);
 	const selectHandler = (option: string) => {
-		option.includes('단식')
+		option.includes('SINGLE')
 			? setOptionsForNOR([{ value: 1, label: '1 명' }])
 			: setOptionsForNOR([
 					{ value: 1, label: '1 명' },
@@ -85,8 +72,7 @@ export default function PostMatching() {
 	const [matchEndTime, setMatchEndTime] = useState('');
 	const [deadlineDate, setDeadlineDate] = useState('');
 	const [deadlineTime, setDeadlineTime] = useState('');
-	const [courtAddress, setCourtAddress] = useState('');
-	const [coordinates, setCoordinates] = useState({ lat: '', len: '' });
+	const [courtInfos, setCourtInfos] = useState({ address: '', name: '', lat: '', len: '' });
 	const [numOfAllPlayers, setNumOfAllPlayers] = useState(1);
 	const [feeForEach, setFeeForEach] = useState(0);
 	const [selectedImage, setSelectedImage] = useState(null);
@@ -108,6 +94,7 @@ export default function PostMatching() {
 				setSelectedImage(fileReader.result);
 			};
 			console.log(fileReader);
+			postMatchingSetValue('locationImg', `${fileReader.result}`);
 		}
 	};
 
@@ -117,30 +104,29 @@ export default function PostMatching() {
 	const onSubmit = (e: any) => {
 		e.preventDefault();
 		const postedData = {
-			title: `${postMatchingGetValues('postTitle')}`,
-			matchType: `${postMatchingGetValues('matchType')}`,
-			recruitNum: `${postMatchingGetValues('numOfRecruited')}`,
-			ageGroup: `${postMatchingGetValues('selectedAge')}`,
-			ntrp: `${postMatchingGetValues('selectedNTRP')}`,
-			matchingDate: `${postMatchingGetValues('matchDate')}`,
-			matchingStartTime: `${postMatchingGetValues('matchStartTime')}`,
-			matchingEndTime: `${postMatchingGetValues('matchEndTime')}`,
-			recruitDueDate: `${postMatchingGetValues('deadlineDate')}`,
-			recruitDueTime: `${postMatchingGetValues('deadlineTime')}`,
-			location: `${postMatchingGetValues('courtAddress')}`,
-			lat: '위도',
-			len: '경도',
-			isReserved: `${postMatchingGetValues('isCourtBooked')}`,
-			cost: `${postMatchingGetValues('courtFee')}`,
-			// locationImg: `${postMatchingGetValues('selectedImage')}`,
-			content: `${postMatchingGetValues('mainText')}`,
+			title: postMatchingGetValues('postTitle'),
+			matchingType: postMatchingGetValues('matchType'),
+			recruitNum: postMatchingGetValues('numOfRecruited'),
+			ageGroup: postMatchingGetValues('selectedAge'),
+			ntrp: postMatchingGetValues('selectedNTRP'),
+			matchingDate: postMatchingGetValues('matchDate'),
+			matchingStartTime: postMatchingGetValues('matchStartTime'),
+			matchingEndTime: postMatchingGetValues('matchEndTime'),
+			recruitDueDate: postMatchingGetValues('deadlineDate'),
+			recruitDueTime: postMatchingGetValues('deadlineTime'),
+			location: postMatchingGetValues('courtAddress'),
+			lat: `${courtInfos.lat}`,
+			len: `${courtInfos.len}`,
+			isReserved: postMatchingGetValues('isCourtBooked'),
+			cost: postMatchingGetValues('courtFee'),
+			locationImg: postMatchingGetValues('locationImg'),
+			content: postMatchingGetValues('mainText'),
 		};
 		console.log(e);
 		console.log(postedData);
-		// axios
-		// 	.post('http://3.38.50.101:8080/api/matches', JSON.stringify(data))
-		// 	.then(() => console.log('포스트됨'))
-		// 	.catch((e) => console.log(e));
+		MatchesService.regMatchingData(postedData)
+			.then(() => console.log('포스트됨'))
+			.catch((e) => console.log(e));
 	};
 
 	const checkValidation = () => {
@@ -155,7 +141,7 @@ export default function PostMatching() {
 			!postMatchingWatch('matchEndTime') ||
 			!postMatchingWatch('deadlineDate') ||
 			!postMatchingWatch('deadlineTime') ||
-			// !postMatchingWatch('courtAddress') ||
+			!postMatchingWatch('courtAddress') ||
 			!postMatchingWatch('isCourtBooked') ||
 			!postMatchingWatch('courtFee') ||
 			// !postMatchingWatch('courtPhoto') ||
@@ -172,7 +158,8 @@ export default function PostMatching() {
 			<SearchCourtDrawer
 				isOpen={isSearchDrawerOpen}
 				toggleDrawer={toggleSearchDrawer}
-				setState={setCourtAddress}
+				setCourtInfos={setCourtInfos}
+				setAddress={postMatchingSetValue}
 			/>
 			<PageTitleArea>
 				<PageMainTitle>매칭 글 등록</PageMainTitle>
@@ -191,19 +178,18 @@ export default function PostMatching() {
 					<InputBox>
 						<label htmlFor='matchType'>경기 유형</label>
 						<CustomSelect
-							// ref={matchTypeREF}
 							id='matchType'
 							options={[
-								{ value: '단식', label: '단식' },
-								{ value: '혼성 단식', label: '혼성 단식' },
-								{ value: '복식', label: '복식' },
-								{ value: '혼성 복식', label: '혼성 복식' },
+								{ value: 'SINGLE', label: '단식' },
+								{ value: 'MIXED SINGLE', label: '혼성 단식' },
+								{ value: 'DOUBLE', label: '복식' },
+								{ value: 'MIXED DOUBLE', label: '혼성 복식' },
 							]}
 							{...postMatchingResister('matchType')}
 							onChange={(e: ChangeEvent<HTMLInputElement>) => {
 								const selected = e + '';
 								postMatchingSetValue('matchType', selected);
-								setNumOfAllPlayers(selected.includes('단') ? 2 : 4);
+								setNumOfAllPlayers(selected.includes('SINGLE') ? 2 : 4);
 								selectHandler(selected);
 							}}
 						/>
@@ -224,12 +210,12 @@ export default function PostMatching() {
 						<CustomSelect
 							id='selectedAge'
 							options={[
-								{ value: '10대', label: '10대' },
-								{ value: '20대', label: '20대' },
-								{ value: '30대', label: '30대' },
-								{ value: '40대', label: '40대' },
-								{ value: '50대', label: '50대' },
-								{ value: '60대', label: '60대' },
+								{ value: 'TEENAGER', label: '10대' },
+								{ value: 'TWENTIES', label: '20대' },
+								{ value: 'THIRTIES', label: '30대' },
+								{ value: 'FORTIES', label: '40대' },
+								{ value: 'FIFTIES', label: '50대' },
+								{ value: 'SIXTIES', label: '60대' },
 							]}
 							onChange={(e: string) => postMatchingSetValue('selectedAge', e)}
 						/>
@@ -239,60 +225,51 @@ export default function PostMatching() {
 						<CustomSelect
 							id='selectedNTRP'
 							options={[
-								{ value: 'NewBie', label: 'NewBie (1.0 ~ 2.0)' },
-								{ value: 'Beginner', label: 'Beginner (2.5 ~ 3.5)' },
-								{ value: 'Intermediate', label: 'Intermediate (4.0 ~ 4.5)' },
-								{ value: 'Intermediate', label: 'Advanced (5.0 ~ 5.5)' },
-								{ value: 'Pro', label: 'Pro (6.0 ~ 7.0)' },
+								{ value: 'DEVELOPMENT', label: 'NewBie (1.0 ~ 2.0)' },
+								{ value: 'BEGINNER', label: 'Beginner (2.5 ~ 3.5)' },
+								{ value: 'INTERMEDIATE', label: 'Intermediate (4.0 ~ 4.5)' },
+								{ value: 'ADVANCED', label: 'Advanced (5.0 ~ 5.5)' },
+								{ value: 'PRO', label: 'Pro (6.0 ~ 7.0)' },
 							]}
 							{...postMatchingResister('selectedNTRP')}
-							onChange={(e: string) => postMatchingSetValue('selectedNTRP', e)}
+							onChange={(e: string) => {
+								postMatchingSetValue('selectedNTRP', e);
+							}}
 						/>
 					</InputBox>
 				</HalfContainer>
 
 				<InputBox>
 					<label htmlFor='matchDate'>경기일</label>
-					<DPicker setState={setMatchDate} />
+					<DPicker name='matchDate' setState={postMatchingSetValue} />
 					<HiddenInput
 						type='text'
 						id='matchDate'
 						value={`${matchDate}`}
 						{...postMatchingResister('matchDate')}
 						readOnly
-						onChange={(e: ChangeEvent<HTMLInputElement>) =>
-							postMatchingSetValue('matchDate', e.target.value)
-						}
 					/>
 				</InputBox>
 
 				<HalfContainer>
 					<InputBox>
 						<label htmlFor='matchStartTime'>시작 시간</label>
-						<TPicker setState={setMatchStartTime} type={[true, true]} />
+						<TPicker name='matchStartTime' setState={postMatchingSetValue} type={[true, true]} />
 						<HiddenInput
 							type='text'
 							id='matchStartTime'
-							value={`${matchStartTime}`}
 							{...postMatchingResister('matchStartTime')}
 							readOnly
-							onChange={(e: ChangeEvent<HTMLInputElement>) =>
-								postMatchingSetValue('matchStartTime', e.target.value)
-							}
 						/>
 					</InputBox>
 					<InputBox>
 						<label htmlFor='matchEndTime'>종료 시간</label>
-						<TPicker setState={setMatchEndTime} type={[true, true]} />
+						<TPicker name='matchEndTime' setState={postMatchingSetValue} type={[true, true]} />
 						<HiddenInput
 							type='text'
 							id='matchEndTime'
-							value={`${matchEndTime}`}
 							{...postMatchingResister('matchEndTime')}
 							readOnly
-							onChange={(e: ChangeEvent<HTMLInputElement>) =>
-								postMatchingSetValue('matchEndTime', e.target.value)
-							}
 						/>
 					</InputBox>
 				</HalfContainer>
@@ -301,31 +278,27 @@ export default function PostMatching() {
 					<label htmlFor='deadlineDnT'>모집 마감 기한</label>
 					<HalfContainer>
 						<DPicker
-							id='deadlineDate'
-							setState={setDeadlineDate}
+							name='deadlineDate'
+							setState={postMatchingSetValue}
 							matchDate={`${deadlineDate}`}
 							type={[true, true, true]}
 						/>
 						<HiddenInput
 							type='text'
 							id='deadlineDate'
-							value={`${deadlineDate}`}
 							{...postMatchingResister('deadlineDate')}
 							readOnly
-							onChange={(e: ChangeEvent<HTMLInputElement>) =>
-								postMatchingSetValue('deadlineDate', e.target.value)
-							}
+							onChange={(e: ChangeEvent<HTMLInputElement>) => {
+								postMatchingSetValue('deadlineDate', e.target.value);
+								console.log(postMatchingGetValues('deadlineDate'));
+							}}
 						/>
-						<TPicker setState={setDeadlineTime} type={[true, false]} />
+						<TPicker name='deadlineTime' setState={postMatchingSetValue} type={[true, false]} />
 						<HiddenInput
 							type='text'
 							id='deadlineTime'
-							value={`${deadlineTime}`}
 							{...postMatchingResister('deadlineTime')}
 							readOnly
-							onChange={(e: ChangeEvent<HTMLInputElement>) =>
-								postMatchingSetValue('deadlineTime', e.target.value)
-							}
 						/>
 					</HalfContainer>
 				</InputBox>
@@ -335,7 +308,8 @@ export default function PostMatching() {
 					<input
 						type='text'
 						id='courtAddress'
-						value={courtAddress}
+						defaultValue={''}
+						value={`${courtInfos.address}` + `${courtInfos.name}`}
 						{...postMatchingResister('courtAddress')}
 						onClick={(e) => {
 							e.preventDefault();
@@ -373,7 +347,7 @@ export default function PostMatching() {
 								setFeeForEach(fee);
 							}}
 							// onClick={() => {
-							// if (numOfAllPlayers * 2) warning('경기 유형을 먼저 선택해주세요!');
+							// 	if (numOfAllPlayers * 2) useToast.warning('경기 유형을 먼저 선택해주세요!');
 							// }}
 							// 포커스 옮기기
 							// matchTypeREF.current.focus();
@@ -384,7 +358,7 @@ export default function PostMatching() {
 				<InputBox>
 					<label htmlFor='courtPhoto'>경기장 이미지</label>
 					<ImageSection onClick={clickImgFile}>
-						<ImageBox width={'580px'} height={'380px'}>
+						<ImageBox width={'620px'} height={'380px'}>
 							<img
 								src={selectedImage || '/images/add-image-rectangle-00.png'}
 								alt='경기장 이미지'
@@ -411,16 +385,13 @@ export default function PostMatching() {
 					/>
 				</InputBox>
 
-				<SubmitBtn colorstyle={'is-black'} type='submit'>
-					{/* disabled={checkValidation()} */}
+				<SubmitBtn colorstyle={'is-black'} type='submit' disabled={checkValidation()}>
 					등록하기
 				</SubmitBtn>
 			</PostMatchingForm>
 		</>
 	);
 }
-
-// const PostMatchingContainer = styled.div``;
 
 const PageTitleArea = styled.div`
 	margin: ${rem('50px')} auto;
@@ -484,11 +455,14 @@ const ImageSection = styled.div`
 	justify-content: center;
 	cursor: pointer;
 	width: 100%;
-	height: 100%;
-	max-width: ${rem('580px')};
-	max-height: ${rem('380px')};
+	min-height: fit-content;
+	max-width: ${rem('620px')};
+	max-height: ${rem('400px')};
 	border: none;
+	margin-bottom: ${rem('30px')};
+
 	img {
+		width: 100%;
 		border-radius: 5px;
 		border: 1px solid ${InputBorderColor};
 
@@ -498,8 +472,8 @@ const ImageSection = styled.div`
 `;
 
 const MainTextArea = styled(TextArea)`
-	max-width: ${rem('580px')};
-	height: ${rem('380px')};
+	max-width: ${rem('620px')};
+	height: ${rem('400px')};
 `;
 
 const HiddenInput = styled.input`
