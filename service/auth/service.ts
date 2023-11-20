@@ -72,6 +72,7 @@ const findId = (data: reqFindIdApiData) => {
 
 // 비밀번호 찾기 (초기화)
 const findPwd = (data: reqFindPwdApiData) => {
+	console.log('test');
 	return http.post('/api/auth/password-reset', data);
 };
 
