@@ -10,6 +10,14 @@ import 'slick-carousel/slick/slick-theme.css';
 
 function MyApp({ Component, pageProps }: any) {
 	const router = useRouter();
+
+	const checkViewPortWidth = () => {
+		if (window.innerWidth <= 640) {
+			document.documentElement.style.fontSize = '5vw';
+		} else {
+			document.documentElement.style.fontSize = '';
+		}
+	};
 	useEffect(() => {
 		const originalError = console.error;
 		// ...args : 함수에 전달되는 모든 인자들
@@ -23,6 +31,10 @@ function MyApp({ Component, pageProps }: any) {
 			// 기본 동작 실행
 			originalError(...args);
 		};
+	}, []);
+
+	useEffect(() => {
+		window.addEventListener('resize', checkViewPortWidth);
 	}, []);
 
 	useEffect(() => {
