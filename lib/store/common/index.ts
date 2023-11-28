@@ -13,3 +13,8 @@ export const messageValueState = atom({
 		message: '테스트',
 	},
 });
+
+export const responsiveState = atom({
+	key: 'responsiveState',
+	default: false,
+});
