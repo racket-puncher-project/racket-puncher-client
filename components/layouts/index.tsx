@@ -6,7 +6,6 @@ import { useRouter } from 'next/router';
 import Header from './Header';
 import LoadingSpin from '../common/loading/spin';
 import MessageBox from '../common/message';
-import useResponsive from '../../utils/useResponsive';
 
 interface ILayoutProps {
 	readonly children: ReactNode;
@@ -19,24 +18,6 @@ interface ILayoutAlignProps {
 export default function LayoutContainer(props: ILayoutProps) {
 	const router = useRouter();
 	const [isPadding, setIsPadding] = useState(true);
-
-	const { setResponsive } = useResponsive();
-
-	// viewportWidth check
-	const checkViewPortWidth = () => {
-		if (window.innerWidth <= 640) {
-			document.documentElement.style.fontSize = '5vw';
-			setResponsive(true);
-		} else {
-			document.documentElement.style.fontSize = '';
-			setResponsive(false);
-		}
-	};
-
-	// resize check
-	useEffect(() => {
-		window.addEventListener('resize', checkViewPortWidth);
-	}, []);
 
 	useEffect(() => {
 		if (router.pathname === '/') {

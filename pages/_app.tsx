@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
-import { RecoilRoot, useSetRecoilState } from 'recoil';
+import React, { useEffect, useState } from 'react';
+import { RecoilRoot } from 'recoil';
 import { useRouter } from 'next/router';
+import { ThemeProvider } from 'styled-components';
 
 import LayoutContainer from '../components/layouts';
 import '../styles/css/reset.css';
@@ -10,6 +11,25 @@ import 'slick-carousel/slick/slick-theme.css';
 
 function MyApp({ Component, pageProps }: any) {
 	const router = useRouter();
+	const [isResponsive, setIsResponsive] = useState(false);
+
+	const theme = { isResponsive };
+
+	// viewportWidth check
+	const checkViewPortWidth = () => {
+		if (window.innerWidth <= 640) {
+			document.documentElement.style.fontSize = '5vw';
+			setIsResponsive(true);
+		} else {
+			document.documentElement.style.fontSize = '';
+			setIsResponsive(false);
+		}
+	};
+
+	// resize check
+	useEffect(() => {
+		window.addEventListener('resize', checkViewPortWidth);
+	}, []);
 
 	// error debug
 	useEffect(() => {
@@ -36,9 +56,11 @@ function MyApp({ Component, pageProps }: any) {
 
 	return (
 		<RecoilRoot>
-			<LayoutContainer>
-				<Component {...pageProps} />
-			</LayoutContainer>
+			<ThemeProvider theme={theme}>
+				<LayoutContainer>
+					<Component {...pageProps} />
+				</LayoutContainer>
+			</ThemeProvider>
 		</RecoilRoot>
 	);
 }
