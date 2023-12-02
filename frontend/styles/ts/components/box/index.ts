@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { rem } from 'polished';
 import { InputBorderColor } from '../../common';
+import { pxToRem } from 'utils/formatter';
 
 interface IImageProps {
 	readonly width?: string;
@@ -11,8 +12,8 @@ interface IImageProps {
 export const ImageBox = styled.div.withConfig({
 	shouldForwardProp: (props) => props !== 'heightInit',
 })<IImageProps>`
-	width: ${(props) => rem(props.width || '30px')};
-	height: ${(props) => (props.heightInit ? '' : rem(props.height || '30px'))};
+	width: ${(props) => (props.theme.isResponsive ? pxToRem(props.width || '30px') : rem(props.width || '30px'))};
+	height: ${(props) => (props.heightInit ? '' : props.theme.isResponsive ? pxToRem(props.height || '30px') : rem(props.height || '30px'))};
 	img {
 		max-width: 100%;
 		display: block;

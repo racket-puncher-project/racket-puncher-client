@@ -9,6 +9,7 @@ import { WhiteColor, HeaderBtnColor } from '../../styles/ts/common';
 import useRouterHook from '../../utils/useRouterHook';
 import MenuDrawer from './MenuDrawer';
 import { prefix } from '../../constants/prefix';
+import { pxToRem } from 'utils/formatter';
 
 export default function Header() {
 	const router = useRouter();
@@ -72,9 +73,9 @@ const HeaderContainer = styled.div`
 	align-items: center;
 	justify-content: space-between;
 
-	height: ${rem('80px')};
-	padding: 0px ${rem('30px')};
-	max-width: ${rem('640px')};
+	height: ${(props) => (props.theme.isResponsive ? pxToRem('80px') : rem('80px'))};
+	padding: ${(props) => (props.theme.isResponsive ? `0 ${pxToRem('30px')}` : `0 ${rem('30px')}`)};
+	max-width: ${(props) => (props.theme.isResponsive ? pxToRem('640px') : rem('640px'))};
 	border-bottom: solid 1px ${HeaderBtnColor};
 	background-color: ${WhiteColor};
 `;

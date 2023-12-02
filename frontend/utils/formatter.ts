@@ -53,3 +53,9 @@ export const formatDateTime = (inputDateStr) => {
 		);
 	}
 };
+
+// px / rem 컨버터
+export const pxToRem = (pxValue) => {
+	const numericValue = parseFloat(pxValue);
+	return numericValue / 32 + 'rem';
+}
