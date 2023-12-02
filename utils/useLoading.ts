@@ -1,5 +1,6 @@
-import { loadingState } from '../lib/store/common';
 import { useSetRecoilState, useRecoilValue } from 'recoil';
+
+import { loadingState } from '../lib/store/common';
 
 const useLoading = () => {
 	const setLoading = useSetRecoilState(loadingState);
