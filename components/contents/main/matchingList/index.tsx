@@ -189,7 +189,7 @@ const ControlBox = styled.div`
 	align-items: center;
 	margin: 25px 0;
 
-	.buttons__RoundButton-sc-1c0defk-0 {
+	.buttons__RoundButton-sc-1doc049-0 {
 		display: flex;
 		justify-content: center;
 		align-items: center;

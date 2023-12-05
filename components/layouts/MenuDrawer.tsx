@@ -1,11 +1,13 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { rem } from 'polished';
+import Link from 'next/link';
+
 import useRouterHook from '../../utils/useRouterHook';
 import { RoundButton } from '../../styles/ts/components/buttons';
 import DrawerBox from '../common/drawer';
 import useCookies from '../../utils/useCookies';
-import Link from 'next/link';
+import { pxToRem } from '../../utils/formatter';
 
 interface MenuDrawerProps {
 	readonly isOpen: boolean;
@@ -15,7 +17,7 @@ interface MenuDrawerProps {
 export default function MenuDrawer(props: MenuDrawerProps) {
 	const { checkLogin, removeCookie } = useCookies();
 	const { isOpen, toggleDrawer } = props;
-	const { movePage, reload } = useRouterHook();
+	const { reload } = useRouterHook();
 
 	return (
 		<DrawerBox
@@ -135,8 +137,11 @@ const MenuArea = styled.div`
 
 	button {
 		text-align: right;
-		margin-bottom: ${rem('20px')};
-		padding: ${rem('20px')} ${rem('30px')};
+		margin-bottom: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
+		padding: ${(props) =>
+			props.theme.isResponsive
+				? `${pxToRem('20px')} ${pxToRem('30px')}`
+				: `${rem('20px')} ${rem('30px')}`};
 	}
 `;
 

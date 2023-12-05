@@ -482,7 +482,7 @@ const SelectBox = styled.div`
 	display: flex;
 	justify-content: space-between;
 
-	div.input__InputBox-sc-14crfe-0 {
+	div.input__InputBox-sc-7b0p27-0 {
 		flex-basis: 280px;
 
 		&:first-child {
@@ -495,11 +495,11 @@ const InputButtonBox = styled.div`
 	display: flex;
 	justify-content: space-between;
 
-	.input__InputBox-sc-14crfe-0 {
+	.input__InputBox-sc-7b0p27-0 {
 		flex-basis: 380px;
 	}
 
-	.buttons__SquareButton-sc-1c0defk-1 {
+	.buttons__SquareButton-sc-1doc049-1 {
 		flex-basis: 180px;
 		margin-top: 24px;
 		margin-bottom: 20px;
@@ -570,11 +570,11 @@ const InputNoTitleButtonBox = styled.div`
 	display: flex;
 	justify-content: space-between;
 
-	.input__InputBox-sc-14crfe-0 {
+	.input__InputBox-sc-7b0p27-0 {
 		flex-basis: 380px;
 	}
 
-	.buttons__SquareButton-sc-1c0defk-1 {
+	.buttons__SquareButton-sc-1doc049-1 {
 		flex-basis: 180px;
 		margin-bottom: 20px;
 		margin-left: ${rem('20px')};
