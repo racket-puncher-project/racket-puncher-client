@@ -78,10 +78,25 @@ div.align-box {
 }
 `;
 export const SquareButton = styled.button<IButtonProps>`
-	width:  ${(props) => (props.width ? rem(props.width) : '100%')};
-	height: ${(props) => rem(props.height || '60px')};
+	width: ${(props) =>
+		props.theme.isResponsive
+			? props.width
+				? pxToRem(props.width)
+				: '100%'
+			: props.width
+			  ? rem(props.width)
+			  : '100%'};
+	height: ${(props) =>
+		props.theme.isResponsive
+			? props.height
+				? pxToRem(props.height)
+				: pxToRem('60px')
+			: props.height
+			  ? rem(props.height)
+			  : rem('60px')};
 	font-family: Pretendard-Medium;
-	font-size: ${rem(`${common.FontSizeSm}`)};
+	font-size: ${(props) =>
+		props.theme.isResponsive ? pxToRem(common.FontSizeSm) : rem(common.FontSizeSm)};
 	color: ${(props) => {
 		switch (props.colorstyle) {
 			case 'is-black':
