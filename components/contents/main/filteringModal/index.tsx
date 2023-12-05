@@ -414,12 +414,10 @@ const FilteringOptionContainer = styled.div`
 	margin: 20px 0;
 `;
 
-const DatePickerBox = styled.div``;
-
 const OptionWrap = styled.div`
 	margin-bottom: 20px;
 
-	div.datePicker__CustomDatePickerBox-sc-1gktdcy-0 {
+	div.datePicker__CustomDatePickerBox-sc-1gqe8q-0 {
 		height: 50px;
 		padding: 0% ${rem('14px')};
 	}

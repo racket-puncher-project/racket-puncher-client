@@ -89,7 +89,7 @@ const CustomHeaderBox = styled.div`
 			text-align: center;
 		}
 
-		div.box__ImageBox-sc-e7xchd-0 {
+		div.box__ImageBox-sc-yvkicy-0 {
 			position: absolute;
 			top: 50%;
 			transform: translateY(-50%);

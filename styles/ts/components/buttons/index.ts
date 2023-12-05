@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { rem } from 'polished';
 
 import * as common from '../../common';
+import { pxToRem } from '../../../../utils/formatter';
 
 interface IButtonProps {
 	readonly colorstyle?: string;
@@ -12,13 +13,27 @@ interface IButtonProps {
 	readonly fontfamily?: boolean;
 	readonly bordercolor?: string;
 }
-
 export const RoundButton = styled.button<IButtonProps>`
-  width: ${(props) => (props.width ? rem(props.width) : '100%')};
-  height: ${(props) => (props.height ? rem(props.height) : rem('60px'))};
-  font-family: Pretendard-Medium;
-  font-size: ${rem(`${common.FontSizeSm}`)};
-  color: ${(props) => {
+	width: ${(props) =>
+		props.theme.isResponsive
+			? props.width
+				? pxToRem(props.width)
+				: '100%'
+			: props.width
+			  ? rem(props.width)
+			  : '100%'};
+	height: ${(props) =>
+		props.theme.isResponsive
+			? props.height
+				? pxToRem(props.height)
+				: pxToRem('60px')
+			: props.height
+			  ? rem(props.height)
+			  : rem('60px')};
+	font-family: Pretendard-Medium;
+	font-size: ${(props) =>
+		props.theme.isResponsive ? pxToRem(common.FontSizeSm) : rem(common.FontSizeSm)};
+	color: ${(props) => {
 		switch (props.colorstyle) {
 			case 'is-yellow':
 				return common.KakaoFontColor;
@@ -28,11 +43,11 @@ export const RoundButton = styled.button<IButtonProps>`
 				return common.WhiteColor;
 		}
 	}};
-  border: none;
-  border-radius: 20px;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent !important;
-  background-color: ${(props) => {
+	border: none;
+	border-radius: 20px;
+	cursor: pointer;
+	-webkit-tap-highlight-color: transparent !important;
+	background-color: ${(props) => {
 		switch (props.colorstyle) {
 			case 'is-black':
 				return common.BlackColor;
@@ -49,17 +64,17 @@ export const RoundButton = styled.button<IButtonProps>`
 		}
 	}};
 
-  &:disabled {
-    background-color: ${(props) => props.disabled && common.DisabledColor}
-  }
+	&:disabled {
+		background-color: ${(props) => props.disabled && common.DisabledColor}
+	}
 ;
 }
 
 div.align-box {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
 }
 `;
 export const SquareButton = styled.button<IButtonProps>`
@@ -100,7 +115,7 @@ export const SquareButton = styled.button<IButtonProps>`
 	}};
 	&:disabled {
 		background-color: ${(props) => props.disabled && common.DisabledColor}};
-	}
+}
 `;
 
 export const ImgButton = styled.button`
