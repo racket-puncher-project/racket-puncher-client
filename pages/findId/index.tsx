@@ -7,9 +7,10 @@ import { useForm } from 'react-hook-form';
 import { PageMainTitle } from '../../styles/ts/components/titles';
 import { InputBox } from '../../styles/ts/components/input';
 import { RoundButton, SquareButton } from '../../styles/ts/components/buttons';
-import { onlyNumber } from '../../utils/formatter';
+import { onlyNumber, pxToRem } from '../../utils/formatter';
 import { InputErrorText } from '../../styles/ts/components/text';
 import useRouterHook from '../../utils/useRouterHook';
+import { rem } from 'polished';
 
 const schema = yup.object().shape({
 	phoneNumber: yup.string().required('휴대폰 번호는 필수입니다.'),
@@ -164,13 +165,13 @@ const InputButtonBox = styled.div`
 	align-items: flex-end;
 
 	.input__InputBox-sc-7b0p27-0 {
-		flex-basis: 380px;
+		flex-basis: ${(props) => (props.theme.isResponsive ? pxToRem('380px') : rem('380px'))};
 	}
 
 	.buttons__SquareButton-sc-1doc049-1 {
-		flex-basis: 180px;
+		flex-basis: ${(props) => (props.theme.isResponsive ? pxToRem('180px') : rem('180px'))};
 		margin-bottom: 20px;
-		margin-left: 20px;
+		margin-left: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
 	}
 `;
 
