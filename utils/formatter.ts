@@ -57,5 +57,7 @@ export const formatDateTime = (inputDateStr) => {
 // px / rem 컨버터
 export const pxToRem = (pxValue) => {
 	const numericValue = parseFloat(pxValue);
+
+	// 브라우저 넓이가 640px 이하일때, 5vw의 640px 변환 값 = 32px
 	return numericValue / 32 + 'rem';
-}
+};
