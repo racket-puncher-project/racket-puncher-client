@@ -179,11 +179,11 @@ const InputButtonBox = styled.div`
 	justify-content: space-between;
 	align-items: flex-end;
 
-	.input__InputBox-sc-w6l3ed-0 {
+	.input__InputBox-sc-7b0p27-0 {
 		flex-basis: 380px;
 	}
 
-	.buttons__SquareButton-sc-xhpq7c-1 {
+	.buttons__SquareButton-sc-1doc049-1 {
 		flex-basis: 180px;
 		margin-bottom: 20px;
 		margin-left: 20px;

@@ -5,6 +5,7 @@ import { Modal as AntdModal } from 'antd';
 import { ImageBox } from '../../../styles/ts/components/box';
 import { BlackColor, FontSizeSpLg } from '../../../styles/ts/common';
 import { prefix } from '../../../constants/prefix';
+import { pxToRem } from '../../../utils/formatter';
 
 interface IModalProps {
 	readonly title?: string;
@@ -88,7 +89,8 @@ const CustomHeaderBox = styled.div`
 		position: relative;
 
 		p {
-			font-size: ${FontSizeSpLg};
+			font-size: ${(props) =>
+				props.theme.isResponsive ? pxToRem('28px') : rem(`${FontSizeSpLg}`)};
 			font-family: Pretendard-Medium;
 			color: ${BlackColor};
 			text-align: center;

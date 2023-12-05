@@ -9,6 +9,7 @@ import {
 	PrimaryColor,
 	InputErrorColor,
 } from '../../common';
+import { pxToRem } from '../../../../utils/formatter';
 
 interface IInputBox {
 	readonly certify?: string;
@@ -29,11 +30,11 @@ export const InputBox = styled.div<IInputBox>`
 	}
 
 	input {
-		height: ${rem('50px')};
+		height: ${(props) => (props.theme.isResponsive ? pxToRem('50px') : rem('50px'))};
 		border: 1px solid ${InputBorderColor};
 		background: ${InputBoxColor};
 		border-radius: 5px;
-		padding: 0 15px;
+		padding: ${(props) => (props.theme.isResponsive ? `0 ${pxToRem('15px')}` : `0 ${rem('15px')}`)};
 
 		&:focus {
 			border: 1px solid ${PrimaryColor};
@@ -49,7 +50,7 @@ export const InputBox = styled.div<IInputBox>`
 		position: absolute;
 		bottom: ${rem('25px')};
 		transform: translateY(50%);
-		right: ${rem('10px')};
+		right: ${(props) => (props.theme.isResponsive ? pxToRem('10px') : rem('10px'))};
 		color: ${InputErrorColor};
 	}
 `;
