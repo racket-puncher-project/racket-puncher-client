@@ -18,6 +18,8 @@ import NoResultBox from '../../../common/noResult';
 import useCookies from '../../../../utils/useCookies';
 import useToast from '../../../../utils/useToast';
 import { useRouter } from 'next/router';
+import { pxToRem } from '../../../../utils/formatter';
+
 
 export default function MatchingList() {
 	const { movePage } = useRouterHook();
@@ -193,13 +195,13 @@ const ControlBox = styled.div`
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		padding: 10px ${rem('30px')};
+		padding: ${(props) => (props.theme.isResponsive ? `10px ${pxToRem('30px')}` : `10px ${rem('30px')}`)};
 		border-radius: 10px;
 
 		p {
 			font-family: Pretendard-Medium;
-			font-size: ${rem(FontSizeSm)};
-			margin-left: ${rem('6px')};
+			font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeSm) : rem(FontSizeSm))};
+			margin-left: ${(props) => (props.theme.isResponsive ? pxToRem('6px') : rem('6px'))};
 		}
 	}
 `;

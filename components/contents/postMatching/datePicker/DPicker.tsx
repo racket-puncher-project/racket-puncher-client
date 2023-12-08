@@ -4,7 +4,11 @@ import { rem } from 'polished';
 import { ImageBox } from '../../../../styles/ts/components/box';
 import { FontFamilyRegular, FontSizeSpSm } from '../../../../styles/ts/common';
 import DatePicker from 'react-mobile-datepicker';
-import { dateFormatter, stringToDateFormatter } from '../../../../utils/formatter';
+import {
+	dateFormatter,
+	pxToRem,
+	stringToDateFormatter
+} from '../../../../utils/formatter';
 
 interface IPickerProps {
 	readonly name: string;
@@ -93,10 +97,10 @@ export default function DPicker(props: IPickerProps) {
 	);
 }
 
-const CustomDatePickerBox = styled.div`
+const CustomDatePickerBox = styled.div`	
 	width: 100%;
-	height: ${rem('50px')};
-	padding: 17px ${rem('14px')};
+	height: ${(props) => props.theme.isResponsive ? pxToRem('50px') : rem('50px')};
+	padding:  ${(props) => props.theme.isResponsive ? `17px ${pxToRem('14px')}` :`17px ${rem('14px')}`};
 	border-radius: 10px;
 	border: 1px solid #dcdcdc;
 	background: #f9f9f9;
@@ -106,7 +110,7 @@ const CustomDatePickerBox = styled.div`
 	cursor: pointer;
 	p {
 		flex: 1;
-		font-size: ${rem(`${FontSizeSpSm}`)};
+		font-size: ${(props) => props.theme.isResponsive ? pxToRem(FontSizeSpSm) : rem(FontSizeSpSm)};
 		font-family: ${FontFamilyRegular};
 	}
 `;
