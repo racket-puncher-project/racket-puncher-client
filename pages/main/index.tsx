@@ -10,6 +10,7 @@ import MyAroundMatching from '../../components/contents/main/myAroundMatching';
 import { CustomTab } from '../../styles/ts/components/tab';
 import useRouterHook from '../../utils/useRouterHook';
 import { prefix } from '../../constants/prefix';
+import { pxToRem } from '../../utils/formatter';
 
 const settings = {
 	arrows: false,
@@ -63,11 +64,11 @@ const MainViewContainer = styled.div``;
 
 const SliderContainer = styled.div`
 	div.slick-slide {
-		width: ${rem('640px')};
+		width: ${(props) => (props.theme.isResponsive ? pxToRem('640px') : rem('640px'))};
 	}
 `;
 
 const MainContainer = styled.div`
 	margin-top: 30px;
-	padding: 0 ${rem('30px')};
+	padding: ${(props) => (props.theme.isResponsive ? `0 ${pxToRem('30px')}` : `0 ${rem('30px')}`)};
 `;

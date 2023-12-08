@@ -6,6 +6,7 @@ import { rem } from 'polished';
 import { BlackColor, FontSizeSpLg } from '../../../../styles/ts/common';
 import { ImageBox } from '../../../../styles/ts/components/box';
 import { prefix } from '../../../../constants/prefix';
+import { pxToRem } from '../../../../utils/formatter';
 
 interface IHalfDrawerProps {
 	readonly title?: string;
@@ -53,8 +54,11 @@ export default function HalfDrawerBox(props: IHalfDrawerProps) {
 	);
 }
 
+// ${(props) => (props.theme.isResponsive ? pxToRem('640px') : rem('640px'))};
+// ${(props) => (props.theme.isResponsive ? `0 ${pxToRem('30px')}` : `0 ${rem('30px')}`)};
+
 const CustomHalfDrawer = styled(AntdDrawer)`
-	max-width: ${rem('640px')};
+	max-width: ${(props) => (props.theme.isResponsive ? pxToRem('640px') : rem('640px'))};
 	position: absolute;
 	left: 50%;
 	transform: translateX(-50%);
@@ -66,15 +70,15 @@ const CustomHalfDrawer = styled(AntdDrawer)`
 	}
 	div.ant-drawer-header {
 		flex: none;
-		height: ${rem('80px')};
-		padding: 0 ${rem('30px')};
+		height: ${(props) => (props.theme.isResponsive ? pxToRem('80px') : rem('80px'))};
+		padding: ${(props) => (props.theme.isResponsive ? `0 ${pxToRem('30px')}` : `0 ${rem('30px')}`)};
 		border-bottom: 0;
 	}
 	div.ant-drawer-content-wrapper {
 		border-radius: 30px;
 	}
 	div.ant-drawer-body {
-		padding: 0 ${rem('30px')};
+		padding: ${(props) => (props.theme.isResponsive ? `0 ${pxToRem('30px')}` : `0 ${rem('30px')}`)};
 	}
 `;
 
@@ -89,7 +93,7 @@ const CustomHeaderBox = styled.div`
 			text-align: center;
 		}
 
-		div.box__ImageBox-sc-yvkicy-0 {
+		div.box__ImageBox-sc-1o0dgyy-0 {
 			position: absolute;
 			top: 50%;
 			transform: translateY(-50%);

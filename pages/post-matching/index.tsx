@@ -23,6 +23,7 @@ import TPicker from '../../components/contents/postMatching/timePicker/TPicker';
 import ButtonStyleRadio from '../../components/common/buttonRadio';
 import SearchCourtDrawer from '../../components/contents/postMatching/searchCourtDrawer';
 import useToast from '../../utils/useToast';
+import {pxToRem} from "../../utils/formatter";
 
 const schema = yup.object().shape({
 	postTitle: yup.string().required('제목을 입력해주세요.'),
@@ -409,12 +410,12 @@ const PostMatchingForm = styled.form`
 	display: flex;
 	flex-direction: column;
 
-	.input__InputBox-sc-w6l3ed-0 {
+	.input__InputBox-sc-7b0p27-0 {
 		.text-align-right {
 			text-align: right;
 		}
 
-		.select__CustomSelect-sc-10zdv74-0 {
+		.select__CustomSelect-sc-1q63q92-0 {
 			margin-bottom: 0px;
 		}
 	}
@@ -425,14 +426,14 @@ const HalfContainer = styled.div`
 	flex-direction: row;
 	gap: ${rem('20px')};
 
-	.input__InputBox-sc-w6l3ed-0 {
+	.input__InputBox-sc-7b0p27-0 {
 		width: 100%;
 
 		.text-align-right {
 			text-align: right;
 		}
 
-		.select__CustomSelect-sc-10zdv74-0 {
+		.select__CustomSelect-sc-1q63q92-0 {
 			margin-bottom: 0px;
 		}
 	}
@@ -445,8 +446,8 @@ const CourtFeeArea = styled.div`
 const FeeForEachSpan = styled.span`
 	position: absolute;
 	top: ${rem('3px')};
-	right: ${rem('5px')};
-	max-width: ${rem('150px')};
+	right:${(props) => props.theme.isResponsive ? pxToRem('5px') : rem('5px')};
+	max-width: ${(props) => props.theme.isResponsive ? pxToRem('150px') : rem('150px')};
 	white-space: nowrap;
 	overflow: hidden;
 
@@ -464,8 +465,8 @@ const ImageSection = styled.div`
 	cursor: pointer;
 	width: 100%;
 	min-height: fit-content;
-	max-width: ${rem('620px')};
-	max-height: ${rem('400px')};
+	max-width: ${(props) => props.theme.isResponsive ? pxToRem('620px') : rem('620px')};
+	max-height: ${(props) => props.theme.isResponsive ? pxToRem('400px') : rem('400px')};
 	border: none;
 	margin-bottom: ${rem('30px')};
 
@@ -480,8 +481,8 @@ const ImageSection = styled.div`
 `;
 
 const MainTextArea = styled(TextArea)`
-	max-width: ${rem('620px')};
-	height: ${rem('400px')};
+	max-width: ${(props) => props.theme.isResponsive ? pxToRem('620px') : rem('620px')};
+	height: ${(props) => props.theme.isResponsive ? pxToRem('400px') : rem('400px')};
 `;
 
 const HiddenInput = styled.input`

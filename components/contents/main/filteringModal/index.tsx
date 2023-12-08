@@ -19,6 +19,7 @@ import CustomDatePicker from '../../../common/datePicker';
 import ModalBox from '../../../common/modal';
 import { RegionBasic, RegionGyeonggi, RegionSeoul } from '../../../../constants/region';
 import { ageOptions, matchingTypesOptions, NTRPOptions } from '../../../../constants/filterOption';
+import { pxToRem } from '../../../../utils/formatter';
 
 const options: SelectProps['options'] = [];
 
@@ -390,11 +391,11 @@ const FilteringModalContainer = styled.div`
 			width: 100%;
 			text-align: center;
 			padding-inline: initial;
-			font-size: ${rem(FontSizeSpSm)};
+			font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeSpSm) : rem(FontSizeSpSm))};
 			font-family: Pretendard-Regular;
 			line-height: 1;
 			height: inherit;
-			padding: 10px ${rem('10px')};
+			padding: ${(props) => (props.theme.isResponsive ? `10px ${pxToRem('10px')}` : `10px ${rem('0px')}`)};
 			color: ${ReportColor};
 			-webkit-tap-highlight-color: transparent !important;
 
@@ -418,12 +419,12 @@ const OptionWrap = styled.div`
 	margin-bottom: 20px;
 
 	div.datePicker__CustomDatePickerBox-sc-1gqe8q-0 {
-		height: 50px;
-		padding: 0% ${rem('14px')};
+		height: ${(props) => (props.theme.isResponsive ? pxToRem('50px') : rem('50px'))};
+		padding: ${(props) => (props.theme.isResponsive ? `0 ${pxToRem('14px')}` : `0 ${rem('14px')}`)};
 	}
 
 	div.ant-select-selector {
-		padding: 10px 14px;
+		padding: ${(props) => (props.theme.isResponsive ? `10px ${pxToRem('14px')}` : `10px ${rem('14px')}`)};
 		border-radius: 10px;
 		border: 1px solid #dcdcdc !important;
 		background-color: #f9f9f9 !important;
@@ -431,20 +432,20 @@ const OptionWrap = styled.div`
 		span.ant-select-selection-item {
 			border-radius: 10px;
 			background: #84a840;
-			height: 30px;
+			height: ${(props) => (props.theme.isResponsive ? pxToRem('30px') : rem('30px'))};
 			display: flex;
 			justify-content: center;
 			align-items: center;
 
 			span.ant-select-selection-item-content {
 				color: #fff;
-				font-size: 13px;
+				font-size: ${(props) => (props.theme.isResponsive ? pxToRem('13px') : rem('13px'))};
 				font-family: Pretendard-Regular;
-				margin-right: 5px;
+				margin-right: ${(props) => (props.theme.isResponsive ? pxToRem('5px') : rem('5px'))};
 			}
 
 			span.ant-select-selection-item-remove {
-				font-size: 13px;
+				font-size: ${(props) => (props.theme.isResponsive ? pxToRem('13px') : rem('13px'))};
 				color: #fff;
 			}
 		}
@@ -454,7 +455,7 @@ const OptionWrap = styled.div`
 const SelectTitle = styled.p`
 	color: ${BlackColor};
 	font-family: Pretendard-Regular;
-	font-size: ${FontSizeSpSm};
+	font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeSpSm) : rem(FontSizeSpSm))};
 `;
 
 const LabelBox = styled.div`
@@ -469,13 +470,13 @@ const RegionBtnBox = styled.div`
 `;
 
 const SelectRegionBtn = styled.button`
-	font-size: ${rem(FontSizeMc)};
+	font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeMc) : rem(FontSizeMc))};
 	font-family: Pretendard-Regular;
 	border: 1px solid ${LightBlackColor};
 	background-color: ${WhiteColor};
-	padding: 8px ${rem('15px')};
+	padding: ${(props) => (props.theme.isResponsive ? `8px ${pxToRem('15px')}` : `8px ${rem('15px')}`)};
 	border-radius: 10px;
 	color: ${LightBlackColor};
-	margin-left: ${rem('10px')};
+	margin-left: ${(props) => (props.theme.isResponsive ? pxToRem('10px') : rem('10px'))};
 	cursor: pointer;
 `;

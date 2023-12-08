@@ -24,7 +24,7 @@ export const InputBox = styled.div<IInputBox>`
 	label {
 		display: block;
 		font-family: Pretendard-Regular;
-		font-size: ${(props) => (props.theme.isResponsive ? '0.5rem' : FontSizeSpSm)};
+		font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeSpSm) : rem(FontSizeSpSm))};
 		margin-bottom: 10px;
 		color: ${InputLabelColor};
 	}
