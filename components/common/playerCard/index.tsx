@@ -12,6 +12,7 @@ import {
 } from '../../../styles/ts/common';
 import UserInfoModal from './userInfoModal';
 import ReportUserModal from './reportUserModal';
+import { pxToRem } from '../../../utils/formatter';
 
 interface IPlayerCardProps {
 	userNickName: string;
@@ -83,24 +84,24 @@ const PlayerCardContainer = styled.div`
 	align-items: center;
 	justify-content: space-between;
 
-	height: ${rem('100px')};
-	padding: ${rem('10px')};
+	height: ${(props) => (props.theme.isResponsive ? pxToRem('100px') : rem('100px'))};
+	padding: ${(props) => (props.theme.isResponsive ? pxToRem('10px') : rem('10px'))};
 	background-color: ${WhiteColor};
 	border: solid 1px ${LightGrayColor};
-	border-radius: ${rem('10px')};
+	border-radius: 10px;
 `;
 
 const PlayerPicture = styled.div`
 	display: inline-block;
-	border-radius: ${rem('10px')};
+	border-radius: 10px;
 	overflow: hidden;
 `;
 
 const PlayerName = styled.span`
 	flex: 1;
-	margin: 0px ${rem('20px')};
+	margin: ${(props) => (props.theme.isResponsive ? `0 ${pxToRem('20px')}` : `0 ${rem('20px')}`)};
 	font-family: ${FontFamilySemiBold};
-	font-size: ${FontSizeLg};
+	font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeLg) : rem(FontSizeLg))};
 	color: ${BlackColor};
 `;
 
@@ -108,5 +109,5 @@ const ButtonArea = styled.div`
 	display: flex;
 	flex-direction: row;
 	align-items: center;
-	gap: ${rem('10px')};
+	gap: ${(props) => (props.theme.isResponsive ? pxToRem('10px') : rem('10px'))};
 `;

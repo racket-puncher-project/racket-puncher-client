@@ -12,6 +12,8 @@ import {
 	WhiteColor,
 } from '../../../../styles/ts/common';
 
+import { pxToRem } from '../../../../utils/formatter';
+
 interface IProfileProps {
 	userInfos: {
 		readonly userNickName: string;
@@ -110,8 +112,8 @@ const MyProfileContainer = styled.div`
 const ProfileImage = styled(ImageBox)`
 	border-radius: ${rem('20px')};
 	background-color: lightblue;
-	max-width: ${rem('150px')};
-	max-height: ${rem('150px')};
+	max-width: ${(props) => (props.theme.isResponsive ? pxToRem('150px') : rem('150px'))};
+	max-height: ${(props) => (props.theme.isResponsive ? pxToRem('150px') : rem('150px'))};
 `;
 const ProfileInfoArea = styled.div`
 	display: grid;
@@ -126,13 +128,13 @@ const ProfileInfoArea = styled.div`
 const ProfileInfoList = styled.ul`
 	display: flex;
 	flex-direction: column;
-	justify-content: left top;
-	max-width: calc(100vw - ${rem('60px')});
+	justify-content: left;
+	max-width: ${(props) => (props.theme.isResponsive ? `calc(100vw - ${pxToRem('60px')})` : `calc(100vw - ${rem('60px')})`)};
 
 	& #info01 {
 		margin-right: ${rem('20px')};
-	}s
-`;
+	}
+`
 
 const ProfileInfoItem = styled.li`
 	display: flex;
@@ -146,26 +148,26 @@ const ProfileInfoItem = styled.li`
 const ItemName = styled.span`
 	min-width: fit-content;
 	font-family: ${FontFamilySemiBold};
-	font-size: ${rem(`${FontSizeSpSm}`)};
+	font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeSpSm) : rem(FontSizeSpSm))};
 	color: ${PrimaryColor};
 `;
 const ItemContent = styled.span`
 	min-width: fit-content;
 	font-family: ${FontFamilyRegular};
-	font-size: ${rem(`${FontSizeSpSm}`)};
+	font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeSpSm) : rem(FontSizeSpSm))};
 	color: ${BlackColor};
 `;
 
 const Badge = styled.div`
 	display: inline-block;
-	width: ${rem('41px')};
-	height: ${rem('20px')};
+	width: ${(props) => (props.theme.isResponsive ? pxToRem('41px') : rem('41px'))};
+	height: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
 	background-color: ${PrimaryColor};
 	border-radius: ${rem('10px')};
 
 	text-align: center;
 	color: ${WhiteColor};
-	font-size: ${rem(`${FontSizeMc}`)};
-	line-height: ${rem('18px')};
-	font-familiy ${FontFamilySemiBold};
+	font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeMc) : rem(FontSizeMc))};
+	line-height: ${(props) => (props.theme.isResponsive ? pxToRem('18px') : rem('18px'))};
+	font-family: ${FontFamilySemiBold};
 `;
