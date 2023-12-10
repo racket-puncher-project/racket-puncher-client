@@ -35,7 +35,7 @@ export const InputBox = styled.div<IInputBox>`
 		background: ${InputBoxColor};
 		border-radius: 5px;
 		padding: ${(props) => (props.theme.isResponsive ? `0 ${pxToRem('15px')}` : `0 ${rem('15px')}`)};
-
+		font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeSpSm) : rem(FontSizeSpSm))};
 		&:focus {
 			border: 1px solid ${PrimaryColor};
 			outline: none;
