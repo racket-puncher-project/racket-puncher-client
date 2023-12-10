@@ -12,7 +12,7 @@ import { CustomSelect } from '../../styles/ts/components/select';
 import { PageMainTitle } from '../../styles/ts/components/titles';
 import { GrayLine, ImageBox } from '../../styles/ts/components/box';
 import DrawerBox from '../../components/common/drawer';
-import { onlyNumber } from '../../utils/formatter';
+import { onlyNumber, pxToRem } from '../../utils/formatter';
 import { InputErrorText } from '../../styles/ts/components/text';
 import {
 	BlackColor,
@@ -228,7 +228,10 @@ export default function register() {
 			const formData = new FormData();
 			formData.append('imageFile', fileData);
 			const fileUrl = await AuthService.uploadImgSignup(formData);
-			const res = await AuthService.signup({ ...params, profileImg: fileUrl.data.response });
+			const res = await AuthService.signup({
+				...params,
+				profileImg: fileUrl.data.response,
+			});
 			movePage('/login');
 		} catch (e) {
 			console.log(e);
@@ -486,7 +489,7 @@ const SelectBox = styled.div`
 		flex-basis: 280px;
 
 		&:first-child {
-			margin-right: ${rem('20px')};
+			margin-right: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
 		}
 	}
 `;
@@ -494,6 +497,7 @@ const SelectBox = styled.div`
 const InputButtonBox = styled.div`
 	display: flex;
 	justify-content: space-between;
+	align-items: center;
 
 	.input__InputBox-sc-7b0p27-0 {
 		flex-basis: 380px;
@@ -501,9 +505,8 @@ const InputButtonBox = styled.div`
 
 	.buttons__SquareButton-sc-1doc049-1 {
 		flex-basis: 180px;
-		margin-top: 24px;
-		margin-bottom: 20px;
-		margin-left: ${rem('20px')};
+		margin-top: 6px;
+		margin-left: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
 	}
 `;
 
@@ -516,7 +519,7 @@ const DescTextBox = styled.div`
 	margin-bottom: 20px;
 
 	p {
-		font-size: ${rem(FontSizeSpSm)};
+		font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeSpSm) : rem(FontSizeSpSm))};
 		color: ${LightBlackColor};
 		font-family: Pretendard-Regular;
 		line-height: ${rem(FontSizeMdLg)};
@@ -533,12 +536,12 @@ const AddressBoxWrap = styled.div`
 	background-color: ${InputBoxColor};
 	border: 1px solid ${InputBorderColor};
 	border-radius: 5px;
-	padding: ${rem('15px')};
+	padding: ${(props) => (props.theme.isResponsive ? pxToRem('15px') : rem('15px'))};
 	margin-bottom: 10px;
 `;
 
 const AddLeftWrap = styled.div`
-	margin-right: ${rem('20px')};
+	margin-right: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
 `;
 
 const AddressBox = styled.div`
@@ -551,7 +554,7 @@ const AddressBox = styled.div`
 
 	p {
 		margin-left: ${rem('10px')};
-		font-size: ${rem(FontSizeSpSm)};
+		font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeSpSm) : rem(FontSizeSpSm))};
 		font-family: Pretendard-Regular;
 		line-height: ${rem(FontSizeMd)};
 	}
@@ -561,7 +564,7 @@ const AddRightWrap = styled.div`
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	font-size: ${rem(FontSizeMd)};
+	font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeMd) : rem(FontSizeMd))};
 	font-family: Pretendard-Regular;
 	color: ${BlackColor};
 `;
@@ -569,6 +572,7 @@ const AddRightWrap = styled.div`
 const InputNoTitleButtonBox = styled.div`
 	display: flex;
 	justify-content: space-between;
+	align-items: center;
 
 	.input__InputBox-sc-7b0p27-0 {
 		flex-basis: 380px;
@@ -576,7 +580,7 @@ const InputNoTitleButtonBox = styled.div`
 
 	.buttons__SquareButton-sc-1doc049-1 {
 		flex-basis: 180px;
-		margin-bottom: 20px;
-		margin-left: ${rem('20px')};
+		margin-top: 6px;
+		margin-left: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
 	}
 `;

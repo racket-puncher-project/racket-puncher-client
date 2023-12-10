@@ -7,7 +7,7 @@ import { rem } from 'polished';
 
 import MatchesService from '../../service/matches/service';
 import {
-	FontFamilyRegular,
+	FontFamilyRegular, FontSizeSm,
 	InputBorderColor,
 	InputBoxColor,
 	ReportColor,
@@ -452,6 +452,7 @@ const FeeForEachSpan = styled.span`
 	overflow: hidden;
 
 	font-family: ${FontFamilyRegular};
+	font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeSm) : rem(FontSizeSm))};
 	color: ${ReportColor};
 `;
 

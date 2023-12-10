@@ -2,6 +2,8 @@ import styled from 'styled-components';
 import { rem } from 'polished';
 import { Radio as AntdRadio, ConfigProvider } from 'antd';
 import {
+	FontSizeSm,
+	FontSizeSpSm,
 	InputBorderColor,
 	InputBoxColor,
 	InputLabelColor,
@@ -60,12 +62,12 @@ const RadioButton = styled(AntdRadio.Button)`
 	min-height:${(props) => props.theme.isResponsive ? pxToRem('50px') : rem('50px')};
 	border: 1px solid ${InputBorderColor};
 	border-radius: 5px;
+	font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeSm) : rem(FontSizeSm))} !important;
 	text-align: center;
-
+	
 	& :last-child {
 		position: absolute;
 		left: 0;
 		right: 0;
-		top: ${rem('4px')};
 	}
 `;
