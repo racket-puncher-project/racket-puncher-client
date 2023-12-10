@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { rem } from 'polished';
 import { Collapse as AntdCollapse, ConfigProvider } from 'antd';
 import type { CollapseProps as IAntdCollapseProps } from 'antd';
+import { pxToRem } from '../../../../utils/formatter';
 
 import {
 	PrimaryColor,
@@ -96,18 +97,18 @@ const MyListItemContainer = styled(AntdCollapse)`
 
 	.ant-collapse-content-box {
 		background-color: ${PlayerListBGColor};
-		border-radius: 0px 0px ${rem('20px')} ${rem('20px')};
+		border-radius: 0px 0px ${rem('10px')} ${rem('10px')};
 	}
 `;
 
 const Header = styled.div`
 	display: grid;
-	grid-template-columns: ${rem('75px')} auto ${rem('25px')};
+	grid-template-columns: ${(props) => (props.theme.isResponsive ? `${pxToRem('75px')} auto ${pxToRem('25px')}` : `${rem('75px')} auto ${rem('25px')}`)};
 	grid-template-areas: 'dateNDay title collapseIcon';
-	gap: ${rem('15px')};
+	gap: ${(props) => (props.theme.isResponsive ? pxToRem('15px') : rem('15px'))};
 
-	height: ${rem('30px')};
-	font-size: ${rem(`${FontSizeSm}`)};
+	height: ${(props) => (props.theme.isResponsive ? pxToRem('30px') : rem('30px'))};
+	font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeSm) : rem(FontSizeSm))};
 `;
 
 const DateNDay = styled.span`
@@ -133,8 +134,8 @@ const IconImageBox = styled(ImageBox)`
 `;
 
 const PlayerCardContainer = styled.div`
-	padding: 16px 4px 4px 4px;
+	padding: ${(props) => (props.theme.isResponsive ? `16px ${pxToRem('4px')} 4px ${pxToRem('4px')}` : `16px ${rem('4px')} 4px ${rem('4px')}`)};
 	display: flex;
 	flex-direction: column;
-	gap: 10px;
+	gap: ${(props) => (props.theme.isResponsive ? pxToRem('10px') : rem('10px'))};
 `;
