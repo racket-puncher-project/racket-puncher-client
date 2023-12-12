@@ -8,6 +8,7 @@ import { ImageBox } from '../../../styles/ts/components/box';
 import {
 	BlackColor,
 	FontSizeLg,
+	FontSizeSm,
 	FontSizeSpSm,
 	InputBorderColor,
 	InputBoxColor,
@@ -18,6 +19,7 @@ import {
 import { RoundButton } from '../../../styles/ts/components/buttons';
 import ModalBox from '../../../components/common/modal';
 import { prefix } from '../../../constants/prefix';
+import { pxToRem } from '../../../utils/formatter';
 
 const testItems = [
 	{ id: '0', title: '타이틀 1', index: 1 },
@@ -229,8 +231,8 @@ const ProfileContainer = styled.div`
 	margin-bottom: 30px;
 `;
 const ProfileBox = styled.div`
-	height: 347px;
-	padding: 40px ${rem('40px')};
+	height: ${(props) => (props.theme.isResponsive ? pxToRem('347px') : rem('347px'))};
+	padding: ${(props) => (props.theme.isResponsive ? `${pxToRem('40px')} ${pxToRem('40px')}` : `${rem('40px')} ${rem('40px')}`)};
 	background-color: ${PlayerListBGColor};
 	border-radius: 20px;
 	box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.15);
@@ -247,7 +249,7 @@ const ImageWrap = styled.div`
 
 	p {
 		font-family: Pretendard-Medium;
-		font-size: ${FontSizeLg};
+		font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeLg) : rem(FontSizeLg))};
 		color: ${BlackColor};
 	}
 `;
@@ -260,9 +262,10 @@ const ProgressBarContainer = styled.div`
 	p {
 		font-family: Pretendard-Medium;
 		color: ${InputLabelColor};
-		font-size: ${FontSizeLg};
+		font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeLg) : rem(FontSizeLg))};
 		text-align: center;
 		margin-bottom: 20px;
+
 		span {
 			color: ${PrimaryColor};
 		}
@@ -276,16 +279,24 @@ const DetailMatchItemBox = styled.div`
 	display: flex;
 	flex-direction: column;
 	padding-bottom: 20px;
+
 	label {
 		display: block;
 		font-family: Pretendard-Regular;
-		font-size: ${FontSizeSpSm};
+		font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeSpSm) : rem(FontSizeSpSm))};
 		margin-bottom: 10px;
 		color: ${InputLabelColor};
 	}
 `;
 const DetailMatchContent = styled.div<DetailMatchContentProps>`
-	height: ${(props) => (props.height ? props.height : '50px')};
+	height: ${(props) =>
+		props.theme.isResponsive
+			? props.height
+				? pxToRem(props.height)
+				: pxToRem('50px')
+			: props.height
+			  ? rem(props.height)
+			  : rem('50px')};
 	border: 1px solid ${InputBorderColor};
 	background: ${InputBoxColor};
 	border-radius: 5px;
@@ -299,17 +310,19 @@ const DetailMatchContent = styled.div<DetailMatchContentProps>`
 const FlexBox = styled.div`
 	display: flex;
 	justify-content: space-between;
-	div.detailMatch__DetailMatchItemBox-sc-iu375m-8 {
+
+	div.id__DetailMatchItemBox-sc-11oq75o-8 {
 		flex-basis: 280px;
+
 		&:first-child {
-			margin-right: ${rem('20px')};
+			margin-right: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
 		}
 	}
 `;
 const ButtonBox = styled.div``;
 
 const FloatBox = styled.div`
-	max-width: ${rem('640px')};
+	max-width: ${(props) => (props.theme.isResponsive ? pxToRem('640px') : rem('640px'))};
 	width: 100%;
 	padding: 0 30px;
 	position: fixed;
@@ -319,41 +332,53 @@ const FloatBox = styled.div`
 	z-index: 1000;
 `;
 
-// 모집현황 모달
+// 모집현황 모달 --------------------------------------------------------------------
 
 const ModalWrapBox = styled.div`
-	position: relative;
-	width: 100%;
-	height: ${rem('410px')};
-	border-radius: 20px;
-	background: #f9f9f9;
-	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
-	overflow-y: scroll;
-	margin-bottom: 20px;
-	&::-webkit-scrollbar {
-		display: none;
-	}
-	-ms-overflow-style: none;
-	scrollbar-width: none;
-	div.is-modal-wrap-header {
-		position: sticky;
-		top: 0px;
-		max-width: ${rem('540px')};
-		width: 100%;
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		background: #84a840;
-		border-radius: 20px 20px 0 0;
-		padding: ${rem('16px')} ${rem('20px')};
-		p {
-			color: #fff;
-			font-size: ${rem('17px')};
-		}
-	}
-	div.is-modal-wrap-body {
-		padding: 20px ${rem('20px')} 0;
-	}
+  position: relative;
+  width: 100%;
+  height: ${(props) => (props.theme.isResponsive ? pxToRem('410px') : rem('410px'))};
+  border-radius: 20px;
+  background: #f9f9f9;
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
+  overflow-y: scroll;
+  margin-bottom: 20px;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  div.is-modal-wrap-header {
+    position: sticky;
+    top: 0px;
+    max-width: ${(props) => (props.theme.isResponsive ? pxToRem('540px') : rem('540px'))};
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #84a840;
+    border-radius: 20px 20px 0 0;
+    padding: ${rem('16px')} ${rem('20px')};
+    padding: ${(props) =>
+            props.theme.isResponsive
+                    ? `${pxToRem('16px')} ${pxToRem('20px')}`
+                    : `${rem('16px')} ${rem('20px')}`};
+
+    p {
+      color: #fff;
+      font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeSm) : rem(FontSizeSm))};
+    }
+  }
+
+  div.is-modal-wrap-body {
+    padding: ${(props) =>
+            props.theme.isResponsive
+                    ? `${pxToRem('20px')} ${pxToRem('20px')}`
+                    : `${rem('20px')} ${rem('20px')}`};
+  }
 `;
 
 const ModalWrapItem = styled.div`
@@ -361,32 +386,39 @@ const ModalWrapItem = styled.div`
 	border-radius: 10px;
 	border: 1px solid #dcdcdc;
 	background: #fff;
-	padding: ${rem('10px')};
+	padding: ${(props) => (props.theme.isResponsive ? pxToRem('10px') : rem('10px'))};
 	margin-bottom: 20px;
 	cursor: pointer;
+
 	div.box-top {
 		display: flex;
 		align-items: center;
+
 		p {
-			margin-left: ${rem('20px')};
+			margin-left: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
 			font-family: Pretendard-Medium;
-			font-size: ${rem('20px')};
+			font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeLg) : rem(FontSizeLg))};
 		}
 	}
+
 	div.box-footer {
 		display: flex;
 		align-items: center;
 		margin-top: 10px;
+
 		div.is-btn {
 			width: 100%;
 			text-align: center;
 			border-radius: 5px;
-			padding: 10px 0;
+			padding: ${(props) =>
+				props.theme.isResponsive ? `${pxToRem('10px')} 0` : `${rem('10px')} 0`};
+
 			&.black {
 				background-color: black;
 				color: #fff;
-				margin-right: ${rem('10px')};
+				margin-right: ${(props) => (props.theme.isResponsive ? pxToRem('10px') : rem('10px'))};
 			}
+
 			&.gray {
 				border: 1px solid #dcdcdc;
 				color: #999;
