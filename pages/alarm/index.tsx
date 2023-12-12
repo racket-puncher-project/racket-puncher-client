@@ -66,7 +66,7 @@ const AlarmListItem = styled.li`
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	padding: ${(props) => (props.theme.isResponsive ? `20px ${pxToRem('20px')}` : `20px ${rem('20px')}`)};
+	padding: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
 	border-radius: 20px;
 	border: 1px solid #DCDCDC;
 	background: #F9F9F9;
