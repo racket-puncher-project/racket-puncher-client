@@ -376,39 +376,39 @@ export default function FilteringModal(props: IFilteringProps) {
 }
 
 const FilteringModalContainer = styled.div`
-	height: 100%;
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-	padding-bottom: 20px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding-bottom: 20px;
 
-	div.ant-radio-group {
-		width: 100% !important;
-		display: flex !important;
+  div.ant-radio-group {
+    width: 100% !important;
+    display: flex !important;
 
-		label {
-			display: block;
-			width: 100%;
-			text-align: center;
-			padding-inline: initial;
-			font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeSpSm) : rem(FontSizeSpSm))};
-			font-family: Pretendard-Regular;
-			line-height: 1;
-			height: inherit;
-			padding: ${(props) => (props.theme.isResponsive ? `10px ${pxToRem('10px')}` : `10px ${rem('0px')}`)};
-			color: ${ReportColor};
-			-webkit-tap-highlight-color: transparent !important;
+    label {
+      display: block;
+      width: 100%;
+      text-align: center;
+      padding-inline: initial;
+      font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeSpSm) : rem(FontSizeSpSm))};
+      font-family: Pretendard-Regular;
+      line-height: 1;
+      height: inherit;
+      padding: ${(props) => (props.theme.isResponsive ? `${pxToRem('10px')} ${pxToRem('10px')}` : `${rem('10px')} ${rem('10px')}`)};
+      color: ${ReportColor};
+      -webkit-tap-highlight-color: transparent !important;
 
-			&.ant-radio-button-wrapper-checked {
-				border-color: ${PrimaryColor};
-				color: ${PrimaryColor};
+      &.ant-radio-button-wrapper-checked {
+        border-color: ${PrimaryColor};
+        color: ${PrimaryColor};
 
-				&::before {
-					background-color: ${PrimaryColor};
-				}
-			}
-		}
-	}
+        &::before {
+          background-color: ${PrimaryColor};
+        }
+      }
+    }
+  }
 `;
 
 const FilteringOptionContainer = styled.div`
@@ -424,7 +424,7 @@ const OptionWrap = styled.div`
 	}
 
 	div.ant-select-selector {
-		padding: ${(props) => (props.theme.isResponsive ? `10px ${pxToRem('14px')}` : `10px ${rem('14px')}`)};
+		padding: ${(props) => (props.theme.isResponsive ? `${pxToRem('10px')} ${pxToRem('14px')}` : `${rem('10px')} ${rem('14px')}`)};
 		border-radius: 10px;
 		border: 1px solid #dcdcdc !important;
 		background-color: #f9f9f9 !important;
@@ -439,13 +439,13 @@ const OptionWrap = styled.div`
 
 			span.ant-select-selection-item-content {
 				color: #fff;
-				font-size: ${(props) => (props.theme.isResponsive ? pxToRem('13px') : rem('13px'))};
+				font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeMc) : rem(FontSizeMc))};
 				font-family: Pretendard-Regular;
 				margin-right: ${(props) => (props.theme.isResponsive ? pxToRem('5px') : rem('5px'))};
 			}
 
 			span.ant-select-selection-item-remove {
-				font-size: ${(props) => (props.theme.isResponsive ? pxToRem('13px') : rem('13px'))};
+				font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeMc) : rem(FontSizeMc))};
 				color: #fff;
 			}
 		}
@@ -474,7 +474,7 @@ const SelectRegionBtn = styled.button`
 	font-family: Pretendard-Regular;
 	border: 1px solid ${LightBlackColor};
 	background-color: ${WhiteColor};
-	padding: ${(props) => (props.theme.isResponsive ? `8px ${pxToRem('15px')}` : `8px ${rem('15px')}`)};
+	padding: ${(props) => (props.theme.isResponsive ? `${pxToRem('8px')} ${pxToRem('15px')}` : `${rem('8px')} ${rem('15px')}`)};
 	border-radius: 10px;
 	color: ${LightBlackColor};
 	margin-left: ${(props) => (props.theme.isResponsive ? pxToRem('10px') : rem('10px'))};
