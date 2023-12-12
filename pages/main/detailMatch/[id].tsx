@@ -410,6 +410,9 @@ const ModalWrapItem = styled.div`
 			width: 100%;
 			text-align: center;
 			border-radius: 5px;
+			font-family: Pretendard-Medium;
+			font-size: ${(props) =>
+				props.theme.isResponsive ? pxToRem(FontSizeSm) : rem(FontSizeSm)};
 			padding: ${(props) =>
 				props.theme.isResponsive ? `${pxToRem('10px')} 0` : `${rem('10px')} 0`};
 
