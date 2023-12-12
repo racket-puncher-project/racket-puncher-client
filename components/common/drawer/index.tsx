@@ -77,7 +77,7 @@ const CustomHeaderBox = styled.div`
 		position: relative;
 
 		p {
-			${(props) => (props.theme.isResponsive ? pxToRem(FontSizeSpLg) : rem(FontSizeSpLg))}
+			font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeSpLg) : rem(FontSizeSpLg))};
 			font-family: Pretendard-Medium;
 			color: ${BlackColor};
 			text-align: center;
