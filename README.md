@@ -7,7 +7,7 @@
 - [팀원 소개](#1)
 - [프로젝트 기간](#2)
 - [라켓 펀처(Racket Puncher)의 차별화된 기능](#3)
-- [서비스 아키텍처](#4)
+- [Service Architecture](#4)
 - [Techs](#5)
   <br /> <br />
   
