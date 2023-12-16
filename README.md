@@ -3,7 +3,7 @@
 
 20-30대를 중심으로 빠르게 성장하는 테니스 인기를 반영하여 기존 매칭 플랫폼들과 차별화된 기능을 제공하는 새로운 테니스 경기 매칭 플랫폼입니다. 
 <br />
-## 목차
+## ▶️ 목차
 - [팀원 소개](#1)
 - [프로젝트 기간](#2)
 - [라켓 펀처(Racket Puncher)의 차별화된 기능](#3)
@@ -11,13 +11,13 @@
 - [Techs](#5)
   <br /> <br />
   
-## 관련 자료
+## 📚 관련 자료
 발표영상 [바로가기]() <br />
 발표자료 [바로가기]() <br />
 팀 노션 주소 [바로가기](https://www.notion.so/b00ac06c0a6a44e2b8e68c953b7c33b5) <br />
 <br />
 
-## 팀원 소개 <a id="1"></a>
+## 💁‍♀️ 팀원 소개 <a id="1"></a>
 <details>
   <summary>DESIGNER</summary>
   <ul>
@@ -44,7 +44,7 @@
 - 2023년 12월 ~ 
 <br />
 
-## ✅ 라켓 펀처(Racket Puncher)의 차별화된 기능 <a id="3"></a>
+## 🥎 라켓 펀처(Racket Puncher)의 차별화된 기능 <a id="3"></a>
 
 ### 👇원클릭 매칭 신청
 
@@ -67,10 +67,10 @@
 - 우천시 경기 취소가 가능하도록 경기 당일 우천이 예상되면 당일 경기 취소가 가능해지며, 경기 참여자들에게 우천 알림이 보내집니다!
 <br />
 
-## Service Architecture <a id="4"></a>
+## ⚙️ Service Architecture <a id="4"></a>
 <img width="1100" alt="그림1" src="https://file.notion.so/f/f/74e33ddb-ed16-4725-88e2-bd1be1e6cfae/c6fbb8d2-8bd9-46e2-b682-397bf0cde3a1/Untitled.png?id=9db8f892-0c88-42a6-98ba-84a1fd1957bb&table=block&spaceId=74e33ddb-ed16-4725-88e2-bd1be1e6cfae&expirationTimestamp=1702828800000&signature=BIsKHtYZmi_BApdU42FlG3gi4r45X467__nYkMdRSlQ&downloadName=Untitled.png">
 
-## Techs <a id="5"></a>
+## 🛠️ Techs <a id="5"></a>
 |    Category    |           Library            |                 Content                  |
 | :------------: | :--------------------------: | :--------------------------------------: |
 |      Base      |           Next.js            |             React Framework              |
