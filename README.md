@@ -1,36 +1,52 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+![로고](public/images/logo.png)
 
-## Getting Started
+20-30대를 중심으로 빠르게 성장하는 테니스 인기를 반영하여 기존 매칭 플랫폼들과 차별화된 기능을 제공하는 새로운 테니스 경기 매칭 플랫폼입니다. 
 
-First, run the development server:
+## 관련 자료
+발표영상 [바로가기]() <br />
+발표자료 [바로가기]() <br />
+팀 노션 주소 [바로가기](https://www.notion.so/b00ac06c0a6a44e2b8e68c953b7c33b5) <br />
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### 팀원 소개
+<details>
+  <summary>DESIGNER</summary>
+  <ul>
+    <li>전보연</li>
+    <li>전민지</li>
+  </ul>
+</details>
+<details>
+  <summary>FRONTEND</summary>
+  <ul>
+    <li>지송이</li>
+  </ul>
+</details>
+<details>
+  <summary>BACKEND</summary>
+  <ul>
+    <li>박현진</li>
+    <li>나영서</li>
+  </ul>
+</details>
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### ✅ 라켓 펀처(Racket Puncher)의 차별화된 기능
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+**👇원클릭 매칭 신청**
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+- 매칭 등록자에게 메시지를 보내는 번거로움 없이 버튼 클릭만으로 원클릭 참가 신청을 해보세요!
 
-## Learn More
+🗺️ **지도 기반 내 주변 매칭 조회**
 
-To learn more about Next.js, take a look at the following resources:
+- 지도 기반 매칭 조회 시스템을 통해 직관적인 시각화 서비스를 제공합니다!
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+👀 **경기장 예약 여부를 알 수 있는 매칭 플랫폼**
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+- 매칭 등록시 경기장 예약 여부를 명기하기 때문에 해당 매칭의 경기장 예약 여부를 알 수 있어요!
 
-## Deploy on Vercel
+**📢 패널티 시스템**
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- 참여자의 무분별한 이탈 혹은 경기 주최자의 무분별한 매칭글 삭제/수정을 방지하기 위한 패널티 시스템을 제공합니다!
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+**⛈️ 우천 알림 기능** 
+
+- 우천시 경기 취소가 가능하도록 경기 당일 우천이 예상되면 당일 경기 취소가 가능해지며, 경기 참여자들에게 우천 알림이 보내집니다!
