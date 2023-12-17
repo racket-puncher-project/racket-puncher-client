@@ -74,26 +74,21 @@
 |    Category    |           Library            |                 Content                  |
 | :------------: | :--------------------------: | :--------------------------------------: |
 |      Base      |           Next.js            |             React Framework              |
-|       -        |        Redux Toolkit         |             State Container              |
-|       -        |   emotion (react, styled)    |                css styles                |
+|       -        |           Recoil             |             State Container              |
+|       -        | Styled-Components + SASS + polished  |        css styles                |
 |       -        |          TypeScript          |           Programming Language           |
-|       -        |        Riot Games API        |                 Open API                 |
-| Authentication |         NextAuth.js          |        Authentication for Next.js        |
-|       -        |   Prisma (+@prisma/client)   |         Node.js / TypeScript ORM         |
-|       -        |    PostgreSQL (← SQLite)     |    object-relational database system     |
-|       -        |            Docker            |            software platform             |
-|       -        |           bcryptjs           |             password-hashing             |
-|       -        |            Heroku            |        Cloud Application Platform        |
-|       -        |            vercel            |           Deployment Platform            |
-|      i18n      |        next-translate        |      translations in a Next.js env       |
+|       -        |       eslint + Prettier      |             code convention              |
+|      -         |           Webpack            |              Module Bundler              |
+| Authentication |       Kakao Login API        |                 Open API                 |
+|      Map       |         Kakao Map API        |        set of the Kakao Maps API         |
+|     cookie     |          js-cookie           |              set of cookie               |
 |      Test      |             Jest             |           JS testing Framework           |
-|      Map       |       google-map-react       |        set of the Google Maps API        |
-|  localStorage  |           storejs            | JS API for handling browser localStorage |
-|     Graph      |           victory            | modular charting and data visualization  |
 |     Slide      | react-slick + slick-carousel |            Carousel component            |
-|      Etc       |         bignumber.js         |      arbitrary-precision arithmetic      |
-|       -        |           date-fns           |             JS date utility              |
-|       -        |          react-use           |   Collection of essential React Hooks    |
+|     CI/CD      |   github-action + gh-pages   |Continuous Integration/Continuous Delivery|
+|      Etc       |            antd              |           UI Component Library           |
+|       -        |           moment             |             JS date utility              |
+|       -        |     react-hook-form + yup    |           controll form data             |
 |       -        |            axios             |        Promise based HTTP client         |
-|       -        |          facepaint           |  Responsive style values for css-in-js   |
-|       -        |            lodash            |      modern JavaScript utility lib       |
+|       -        |    react-infinite-scroller   |           pagenation component           |
+|       -        |     react-beautiful-dnd      |          drag and drop Library           |
+ 
