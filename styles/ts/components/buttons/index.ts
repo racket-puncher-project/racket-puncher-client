@@ -13,8 +13,9 @@ interface IButtonProps {
 	readonly fontfamily?: boolean;
 	readonly bordercolor?: string;
 }
+
 export const RoundButton = styled.button<IButtonProps>`
-	width: ${(props) =>
+  width: ${(props) =>
 		props.theme.isResponsive
 			? props.width
 				? pxToRem(props.width)
@@ -22,7 +23,7 @@ export const RoundButton = styled.button<IButtonProps>`
 			: props.width
 			  ? rem(props.width)
 			  : '100%'};
-	height: ${(props) =>
+  height: ${(props) =>
 		props.theme.isResponsive
 			? props.height
 				? pxToRem(props.height)
@@ -30,10 +31,10 @@ export const RoundButton = styled.button<IButtonProps>`
 			: props.height
 			  ? rem(props.height)
 			  : rem('60px')};
-	font-family: Pretendard-Medium;
-	font-size: ${(props) =>
+  font-family: Pretendard-Medium;
+  font-size: ${(props) =>
 		props.theme.isResponsive ? pxToRem(common.FontSizeSm) : rem(common.FontSizeSm)};
-	color: ${(props) => {
+  color: ${(props) => {
 		switch (props.colorstyle) {
 			case 'is-yellow':
 				return common.KakaoFontColor;
@@ -43,11 +44,11 @@ export const RoundButton = styled.button<IButtonProps>`
 				return common.WhiteColor;
 		}
 	}};
-	border: none;
-	border-radius: 20px;
-	cursor: pointer;
-	-webkit-tap-highlight-color: transparent !important;
-	background-color: ${(props) => {
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent !important;
+  background-color: ${(props) => {
 		switch (props.colorstyle) {
 			case 'is-black':
 				return common.BlackColor;
@@ -64,73 +65,82 @@ export const RoundButton = styled.button<IButtonProps>`
 		}
 	}};
 
-	&:disabled {
-		background-color: ${(props) => props.disabled && common.DisabledColor}
-	}
+  &:disabled {
+    background-color: ${(props) => props.disabled && common.DisabledColor}
+  }
 ;
 }
 
 div.align-box {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	gap: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
 }
 `;
 export const SquareButton = styled.button<IButtonProps>`
-	width: ${(props) =>
-		props.theme.isResponsive
-			? props.width
-				? pxToRem(props.width)
-				: '100%'
-			: props.width
-			  ? rem(props.width)
-			  : '100%'};
-	height: ${(props) =>
-		props.theme.isResponsive
-			? props.height
-				? pxToRem(props.height)
-				: pxToRem('60px')
-			: props.height
-			  ? rem(props.height)
-			  : rem('60px')};
-	font-family: Pretendard-Medium;
-	font-size: ${(props) =>
-		props.theme.isResponsive ? pxToRem(common.FontSizeSm) : rem(common.FontSizeSm)};
-	color: ${(props) => {
-		switch (props.colorstyle) {
-			case 'is-black':
-				return common.WhiteColor;
-			case 'is-white':
-				return common.ReportColor;
-			default:
-				return common.WhiteColor;
-		}
-	}};
-	border: 1px solid ${(props) => {
-		switch (props.bordercolor) {
-			case 'is-lightGray':
-				return common.LightGrayColor;
-			default:
-				return 'transparent';
-		}
-	}};
-	border-radius: 5px;
-	cursor: pointer;
-	-webkit-tap-highlight-color: transparent !important;
-	background-color: ${(props) => {
-		switch (props.colorstyle) {
-			case 'is-black':
-				return common.BlackColor;
-			case 'is-white':
-				return common.WhiteColor;
-			default:
-				return common.BlackColor;
-		}
-	}};
-	&:disabled {
-		background-color: ${(props) => props.disabled && common.DisabledColor}};
-}
+  width: ${(props) =>
+          props.theme.isResponsive
+                  ? props.width
+                          ? pxToRem(props.width)
+                          : '100%'
+                  : props.width
+                          ? rem(props.width)
+                          : '100%'};
+  height: ${(props) =>
+          props.theme.isResponsive
+                  ? props.height
+                          ? pxToRem(props.height)
+                          : pxToRem('60px')
+                  : props.height
+                          ? rem(props.height)
+                          : rem('60px')};
+  font-family: Pretendard-Medium;
+  font-size: ${(props) =>
+          props.theme.isResponsive ? pxToRem(common.FontSizeSm) : rem(common.FontSizeSm)};
+  color: ${(props) => {
+    switch (props.colorstyle) {
+      case 'is-black':
+        return common.WhiteColor;
+      case 'is-white':
+        return common.ReportColor;
+      case 'is-whiteBlack':
+        return common.BlackColor;
+      default:
+        return common.WhiteColor;
+    }
+  }};
+  border: 1px solid ${(props) => {
+    switch (props.bordercolor) {
+      case 'is-lightGray':
+        return common.LightGrayColor;
+      case 'is-whiteBlack':
+        return common.BlackColor;
+      default:
+        return 'transparent';
+    }
+  }};
+  border-radius: 5px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent !important;
+  background-color: ${(props) => {
+    switch (props.colorstyle) {
+      case 'is-black':
+        return common.BlackColor;
+      case 'is-white':
+        return common.WhiteColor;
+      case 'is-whiteBlack':
+        return common.WhiteColor;
+      default:
+        return common.BlackColor;
+    }
+  }};
+
+  &:disabled {
+    background-color: ${(props) => props.disabled && common.DisabledColor}
+  };
+	
+	
 `;
 
 export const ImgButton = styled.button`
