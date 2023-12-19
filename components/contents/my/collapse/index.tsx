@@ -14,6 +14,7 @@ import {
 } from '../../../../styles/ts/common';
 import { ImageBox } from '../../../../styles/ts/components/box';
 import PlayerCard from '../../../common/playerCard';
+import { RoundButton } from '../../../../styles/ts/components/buttons';
 
 interface IMyListItemProps {
 	postInfo: {
@@ -51,17 +52,27 @@ export default function MyListItem(props: IMyListItemProps) {
 			),
 			children: (
 				<PlayerCardContainer>
-					{playerList.map((_, i) => {
-						const { userNickName, profilePicURL, userEmail } = props.postInfo.playerList[i];
-						return (
-							<PlayerCard
-								key={i}
-								userNickName={userNickName}
-								profilePicURL={profilePicURL}
-								userEmail={userEmail}
-							/>
-						);
-					})}
+					<>
+						{playerList.map((_, i) => {
+							const { userNickName, profilePicURL, userEmail } = props.postInfo.playerList[i];
+							return (
+								<PlayerCard
+									key={i}
+									userNickName={userNickName}
+									profilePicURL={profilePicURL}
+									userEmail={userEmail}
+								/>
+							);
+						})}
+						<RoundButton
+							onClick={() => {
+								console.log('클릭')
+							}}
+							colorstyle={'is-black'}
+							aria-label='평가하기 페이지로 이동'>
+							평가하기
+						</RoundButton>
+					</>
 				</PlayerCardContainer>
 			),
 			showArrow: false,
