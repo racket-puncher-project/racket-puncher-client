@@ -107,7 +107,7 @@ const MyListItemContainer = styled(AntdCollapse)`
 	margin-bottom: ${rem('30px')};
 
 	.ant-collapse-content-box {
-		background-color: ${PlayerListBGColor};
+		background-color: 2${PlayerListBGColor};
 		border-radius: 0px 0px ${rem('10px')} ${rem('10px')};
 	}
 `;
