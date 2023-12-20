@@ -41,16 +41,16 @@ export default function MainPage() {
 	return (
 		<>
 			<MainViewContainer>
-				<SliderContainer>
-					<Slider {...settings}>
-						<ImageBox heightInit={true}>
-							<img src={`${prefix}/images/main-slider-image.png`} alt='main-slider-img' />
-						</ImageBox>
-						<ImageBox heightInit={true}>
-							<img src={`${prefix}/images/main-slider-image.png`} alt='main-slider-img' />
-						</ImageBox>
-					</Slider>
-				</SliderContainer>
+				{/* <SliderContainer> */}
+				{/*	<Slider {...settings}> */}
+				{/*		<ImageBox heightInit={true}> */}
+				{/*			<img src={`${prefix}/images/main-slider-image.png`} alt='main-slider-img' /> */}
+				{/*		</ImageBox> */}
+				{/*		<ImageBox heightInit={true}> */}
+				{/*			<img src={`${prefix}/images/main-slider-image.png`} alt='main-slider-img' /> */}
+				{/*		</ImageBox> */}
+				{/*	</Slider> */}
+				{/* </SliderContainer> */}
 
 				<MainContainer>
 					<CustomTab defaultActiveKey='1' items={items} />
