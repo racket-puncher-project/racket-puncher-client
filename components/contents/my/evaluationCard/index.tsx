@@ -11,6 +11,9 @@ import {
 } from '../../../../styles/ts/common';
 import { rem } from 'polished';
 import { pxToRem } from '../../../../utils/formatter';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { FreeMode } from 'swiper/modules';
+
 
 export default function EvaluationCard() {
 	const [goodCardData, setGoodCardData] = useState([
@@ -82,32 +85,42 @@ export default function EvaluationCard() {
 						<Cards>
 							<ButtonArea>
 								<>
-									{goodCardData.map((item, index) => {
-										return (
-											<>
-												<SquareButton
-													width='150px'
-													height='40px'
-													colorstyle={item.isActive ? 'is-green' : 'is-whiteBlack'}
-													bordercolor={item.isActive ? 'is-green' : 'is-whiteBlack'}
-													onClick={() => {
-														setGoodCardData(
-															goodCardData.map((innerItem, innerIndex) => {
-																if (innerIndex === index) {
-																	return {
-																		...innerItem,
-																		isActive: !innerItem.isActive,
-																	};
-																}
-																return innerItem;
-															})
-														);
-													}}>
-													{item.label}
-												</SquareButton>
-											</>
-										);
-									})}
+									<Swiper
+										slidesPerView={3}
+										spaceBetween={0}
+										freeMode={true}
+										modules={[FreeMode]}
+										className="mySwiper"
+									>
+										{goodCardData.map((item, index) => {
+											return (
+												<>
+													<SwiperSlide>
+														<SquareButton
+															width='150px'
+															height='40px'
+															colorstyle={item.isActive ? 'is-green' : 'is-whiteBlack'}
+															bordercolor={item.isActive ? 'is-green' : 'is-whiteBlack'}
+															onClick={() => {
+																setGoodCardData(
+																	goodCardData.map((innerItem, innerIndex) => {
+																		if (innerIndex === index) {
+																			return {
+																				...innerItem,
+																				isActive: !innerItem.isActive,
+																			};
+																		}
+																		return innerItem;
+																	})
+																);
+															}}>
+															{item.label}
+														</SquareButton>
+													</SwiperSlide>
+												</>
+											);
+										})}
+									</Swiper>
 								</>
 							</ButtonArea>
 						</Cards>
@@ -115,32 +128,42 @@ export default function EvaluationCard() {
 						<Cards>
 							<ButtonArea>
 								<>
-									{badCardData.map((item, index) => {
-										return (
-											<>
-												<SquareButton
-													width='150px'
-													height='40px'
-													colorstyle={item.isActive ? 'is-green' : 'is-whiteBlack'}
-													bordercolor={item.isActive ? 'is-green' : 'is-whiteBlack'}
-													onClick={() => {
-														setBadCardData(
-															badCardData.map((innerItem, innerIndex) => {
-																if (innerIndex === index) {
-																	return {
-																		...innerItem,
-																		isActive: !innerItem.isActive,
-																	};
-																}
-																return innerItem;
-															})
-														);
-													}}>
-													{item.label}
-												</SquareButton>
-											</>
-										);
-									})}
+									<Swiper
+										slidesPerView={3}
+										spaceBetween={0}
+										freeMode={true}
+										modules={[FreeMode]}
+										className="mySwiper"
+									>
+										{badCardData.map((item, index) => {
+											return (
+												<>
+													<SwiperSlide>
+														<SquareButton
+															width='150px'
+															height='40px'
+															colorstyle={item.isActive ? 'is-green' : 'is-whiteBlack'}
+															bordercolor={item.isActive ? 'is-green' : 'is-whiteBlack'}
+															onClick={() => {
+																setBadCardData(
+																	badCardData.map((innerItem, innerIndex) => {
+																		if (innerIndex === index) {
+																			return {
+																				...innerItem,
+																				isActive: !innerItem.isActive,
+																			};
+																		}
+																		return innerItem;
+																	})
+																);
+															}}>
+															{item.label}
+														</SquareButton>
+													</SwiperSlide>
+												</>
+											);
+										})}
+									</Swiper>
 								</>
 							</ButtonArea>
 						</Cards>
@@ -175,15 +198,6 @@ const ButtonArea = styled.div`
 	margin-right: 9px;
 `;
 const Cards = styled.div`
-	display: flex;
-	overflow: scroll;
-	-ms-overflow-style: none; /* IE and Edge */
-	scrollbar-width: none; /* Firefox */
-
-	&::-webkit-scrollbar {
-		display: none;
-	}
-
 	&:first-child {
 		margin-bottom: 10px;
 	}
