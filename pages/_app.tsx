@@ -6,8 +6,6 @@ import { ThemeProvider } from 'styled-components';
 import LayoutContainer from '../components/layouts';
 import '../styles/css/reset.css';
 import '../styles/scss/font-family.scss';
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
 
 function MyApp({ Component, pageProps }: any) {
 	const router = useRouter();

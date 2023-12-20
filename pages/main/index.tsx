@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import Slider from 'react-slick';
 import { rem } from 'polished';
 import type { TabsProps } from 'antd';
 
