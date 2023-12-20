@@ -26,7 +26,7 @@ export default function EvaluationPage() {
 }
 
 const EvaluationContainer = styled.div`
-  padding: 50px 35px;
+  padding: ${(props) => (props.theme.isResponsive ? `${pxToRem('50px')} ${pxToRem('35px')}` : `${rem('50px')} ${rem('35px')}`)};
   p {
     color: ${InputLabelColor};
     font-family: ${FontFamilySemiBold};
