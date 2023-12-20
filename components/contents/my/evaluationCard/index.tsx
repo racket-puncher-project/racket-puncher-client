@@ -177,13 +177,13 @@ export default function EvaluationCard() {
 const EvaluationCardContainer = styled.div`
 	border-radius: 10px;
 	border: 1px solid ${InputBorderColor};
-	padding: 10px;
+	padding: ${(props) => (props.theme.isResponsive ? pxToRem('10px') : rem('10px'))};
 	margin-bottom: 20px;
 `;
 const EvaluationCardBox = styled.div``;
 const ProfileContainer = styled.div`
 	display: flex;
-	gap: 20px;
+	gap: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
 	align-items: center;
 	margin-bottom: 20px;
 `;
