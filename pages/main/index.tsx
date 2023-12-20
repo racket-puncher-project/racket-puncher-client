@@ -10,6 +10,8 @@ import { CustomTab } from '../../styles/ts/components/tab';
 import useRouterHook from '../../utils/useRouterHook';
 import { prefix } from '../../constants/prefix';
 import { pxToRem } from '../../utils/formatter';
+import { Swiper, SwiperSlide } from 'swiper/react';
+
 
 const settings = {
 	arrows: false,
@@ -40,17 +42,28 @@ export default function MainPage() {
 	return (
 		<>
 			<MainViewContainer>
-				{/* <SliderContainer> */}
-				{/*	<Slider {...settings}> */}
-				{/*		<ImageBox heightInit={true}> */}
-				{/*			<img src={`${prefix}/images/main-slider-image.png`} alt='main-slider-img' /> */}
-				{/*		</ImageBox> */}
-				{/*		<ImageBox heightInit={true}> */}
-				{/*			<img src={`${prefix}/images/main-slider-image.png`} alt='main-slider-img' /> */}
-				{/*		</ImageBox> */}
-				{/*	</Slider> */}
-				{/* </SliderContainer> */}
-
+				<Swiper
+					spaceBetween={0}
+					slidesPerView={1}
+					onSlideChange={() => console.log('slide change')}
+					onSwiper={(swiper) => console.log(swiper)}
+				>
+					<SwiperSlide>
+						<ImageBox width={'640px'} heightInit={true}>
+							<img src={`${prefix}/images/main-slider-image.png`} alt='main-slider-img' />
+						</ImageBox>
+					</SwiperSlide>
+					<SwiperSlide>
+						<ImageBox width={'640px'} heightInit={true}>
+							<img src={`${prefix}/images/main-slider-image.png`} alt='main-slider-img' />
+						</ImageBox>
+					</SwiperSlide>
+					<SwiperSlide>
+						<ImageBox width={'640px'} heightInit={true}>
+							<img src={`${prefix}/images/main-slider-image.png`} alt='main-slider-img' />
+						</ImageBox>
+					</SwiperSlide>
+				</Swiper>
 				<MainContainer>
 					<CustomTab defaultActiveKey='1' items={items} />
 				</MainContainer>
@@ -60,12 +73,6 @@ export default function MainPage() {
 }
 
 const MainViewContainer = styled.div``;
-
-const SliderContainer = styled.div`
-	div.slick-slide {
-		width: ${(props) => (props.theme.isResponsive ? pxToRem('640px') : rem('640px'))};
-	}
-`;
 
 const MainContainer = styled.div`
 	margin-top: 30px;
