@@ -10,7 +10,7 @@ import {
 	PrimaryColor,
 } from '../../../styles/ts/common';
 import { useEffect } from 'react';
-import {pxToRem} from "../../../utils/formatter";
+import { pxToRem } from '../../../utils/formatter';
 
 interface IBtnRadioProps {
 	readonly idString?: string;
@@ -49,7 +49,7 @@ export default function ButtonStyleRadio(props: IBtnRadioProps) {
 const RadioGroup = styled(AntdRadio.Group)`
 	display: flex;
 	flex-direction: row;
-	gap: 20px;
+	gap: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
 
 	& :not(:first-child)::before {
 		width: 0px;
@@ -59,12 +59,13 @@ const RadioGroup = styled(AntdRadio.Group)`
 
 const RadioButton = styled(AntdRadio.Button)`
 	width: 100%;
-	min-height:${(props) => props.theme.isResponsive ? pxToRem('50px') : rem('50px')};
+	min-height: ${(props) => (props.theme.isResponsive ? pxToRem('50px') : rem('50px'))};
 	border: 1px solid ${InputBorderColor};
 	border-radius: 5px;
-	font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeSm) : rem(FontSizeSm))} !important;
+	font-size: ${(props) =>
+		props.theme.isResponsive ? pxToRem(FontSizeSm) : rem(FontSizeSm)} !important;
 	text-align: center;
-	
+
 	& :last-child {
 		position: absolute;
 		left: 0;

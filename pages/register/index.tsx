@@ -467,18 +467,18 @@ export default function register() {
 }
 
 const RegisterViewContainer = styled.div`
-	margin-top: 50px;
+	margin-top: ${(props) => (props.theme.isResponsive ? pxToRem('50px') : rem('50px'))};
 `;
 
 const ImageSection = styled.div`
 	display: flex;
 	justify-content: center;
-	margin-top: 30px;
+	margin-top: ${(props) => (props.theme.isResponsive ? pxToRem('30px') : rem('30px'))};
 	cursor: pointer;
 `;
 
 const InputContainer = styled.div`
-	margin-top: 30px;
+	margin-top: ${(props) => (props.theme.isResponsive ? pxToRem('30px') : rem('30px'))};
 `;
 
 const SelectBox = styled.div`
@@ -486,7 +486,7 @@ const SelectBox = styled.div`
 	justify-content: space-between;
 
 	div.input__InputBox-sc-7b0p27-0 {
-		flex-basis: 280px;
+		flex-basis: ${(props) => (props.theme.isResponsive ? pxToRem('280px') : rem('280px'))};
 
 		&:first-child {
 			margin-right: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
@@ -500,23 +500,23 @@ const InputButtonBox = styled.div`
 	align-items: center;
 
 	.input__InputBox-sc-7b0p27-0 {
-		flex-basis: 380px;
+		flex-basis: ${(props) => (props.theme.isResponsive ? pxToRem('380px') : rem('380px'))};
 	}
 
 	.buttons__SquareButton-sc-1doc049-1 {
-		flex-basis: 180px;
-		margin-top: 6px;
+		flex-basis: ${(props) => (props.theme.isResponsive ? pxToRem('180px') : rem('180px'))};
+		margin-top: ${(props) => (props.theme.isResponsive ? pxToRem('6px') : rem('6px'))};
 		margin-left: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
 	}
 `;
 
 const ButtonBox = styled.div`
-	margin-top: 30px;
-	margin-bottom: 50px;
+	margin-top: ${(props) => (props.theme.isResponsive ? pxToRem('30px') : rem('30px'))};
+	margin-bottom: ${(props) => (props.theme.isResponsive ? pxToRem('50px') : rem('50px'))};
 `;
 
 const DescTextBox = styled.div`
-	margin-bottom: 20px;
+	margin-bottom: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
 
 	p {
 		font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeSpSm) : rem(FontSizeSpSm))};
@@ -527,7 +527,7 @@ const DescTextBox = styled.div`
 `;
 
 const AddressContainer = styled.div`
-	margin-top: 20px;
+	margin-top: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
 `;
 
 const AddressBoxWrap = styled.div`
@@ -537,7 +537,7 @@ const AddressBoxWrap = styled.div`
 	border: 1px solid ${InputBorderColor};
 	border-radius: 5px;
 	padding: ${(props) => (props.theme.isResponsive ? pxToRem('15px') : rem('15px'))};
-	margin-bottom: 10px;
+	margin-bottom: ${(props) => (props.theme.isResponsive ? pxToRem('10px') : rem('10px'))};
 `;
 
 const AddLeftWrap = styled.div`
@@ -549,14 +549,14 @@ const AddressBox = styled.div`
 	align-items: center;
 
 	&:first-child {
-		margin-bottom: 10px;
+		margin-bottom: ${(props) => (props.theme.isResponsive ? pxToRem('10px') : rem('10px'))};
 	}
 
 	p {
-		margin-left: ${rem('10px')};
+		margin-left: ${(props) => (props.theme.isResponsive ? pxToRem('10px') : rem('10px'))};
 		font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeSpSm) : rem(FontSizeSpSm))};
 		font-family: Pretendard-Regular;
-		line-height: ${rem(FontSizeMd)};
+		line-height: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeMd) : rem(FontSizeMd))};
 	}
 `;
 
@@ -573,14 +573,15 @@ const InputNoTitleButtonBox = styled.div`
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+	margin-bottom: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
 
 	.input__InputBox-sc-7b0p27-0 {
-		flex-basis: 380px;
+		flex-basis: ${(props) => (props.theme.isResponsive ? pxToRem('38px') : rem('380px'))};
+		margin-bottom: 0 !important;
 	}
 
 	.buttons__SquareButton-sc-1doc049-1 {
-		flex-basis: 180px;
-		margin-top: 6px;
+		flex-basis: ${(props) => (props.theme.isResponsive ? pxToRem('180px') : rem('180px'))};
 		margin-left: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
 	}
 `;

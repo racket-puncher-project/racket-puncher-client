@@ -12,7 +12,6 @@ import { prefix } from '../../constants/prefix';
 import { pxToRem } from '../../utils/formatter';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
-
 const settings = {
 	arrows: false,
 	dots: false,
@@ -46,8 +45,7 @@ export default function MainPage() {
 					spaceBetween={0}
 					slidesPerView={1}
 					onSlideChange={() => console.log('slide change')}
-					onSwiper={(swiper) => console.log(swiper)}
-				>
+					onSwiper={(swiper) => console.log(swiper)}>
 					<SwiperSlide>
 						<ImageBox width={'640px'} heightInit={true}>
 							<img src={`${prefix}/images/main-slider-image.png`} alt='main-slider-img' />
@@ -75,6 +73,6 @@ export default function MainPage() {
 const MainViewContainer = styled.div``;
 
 const MainContainer = styled.div`
-	margin-top: 30px;
+	margin-top: ${(props) => (props.theme.isResponsive ? pxToRem('30px') : rem('30px'))};
 	padding: ${(props) => (props.theme.isResponsive ? `0 ${pxToRem('30px')}` : `0 ${rem('30px')}`)};
 `;

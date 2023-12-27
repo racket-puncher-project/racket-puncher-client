@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { ImageBox } from '../../../styles/ts/components/box';
 import { FontSizeSpSm } from '../../../styles/ts/common';
 import { rem } from 'polished';
-import { dateFormatter } from '../../../utils/formatter';
+import { pxToRem, dateFormatter } from '../../../utils/formatter';
 import { prefix } from '../../../constants/prefix';
 
 interface IDatePickerProps {
@@ -52,7 +52,10 @@ export default function CustomDatePicker(props: IDatePickerProps) {
 
 const CustomDatePickerBox = styled.div`
 	width: 100%;
-	padding: 17px ${rem('14px')};
+	padding: ${(props) =>
+		props.theme.isResponsive
+			? `${pxToRem('17px')} ${pxToRem('14px')}`
+			: `${rem('17px')} ${rem('14px')}`};
 	border-radius: 10px;
 	border: 1px solid #dcdcdc;
 	background: #f9f9f9;

@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { rem } from 'polished';
 import MyListItem from '../collapse';
-
+import { pxToRem } from '../../../../utils/formatter';
 interface IMyMatchingListProps {
 	listType: 'submitted' | 'applied';
 }
@@ -156,11 +156,11 @@ export default function MyMatchingList(props: IMyMatchingListProps) {
 			<MyListContainer>
 				{listType === 'submitted'
 					? submittedList.map((_, i) => {
-							return <MyListItem key={i + 1} postInfo={submittedList[i]} />;
-					  })
+						return <MyListItem key={i + 1} postInfo={submittedList[i]} />;
+					})
 					: appliedList.map((_, i) => {
-							return <MyListItem key={i + 2} postInfo={appliedList[i]} />;
-					  })}
+						return <MyListItem key={i + 2} postInfo={appliedList[i]} />;
+					})}
 			</MyListContainer>
 		</>
 	);
@@ -168,5 +168,5 @@ export default function MyMatchingList(props: IMyMatchingListProps) {
 
 const MyListContainer = styled.ul`
 	min-width: 100%;
-	margin-top: ${rem('20px')};
+	margin-top: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
 `;

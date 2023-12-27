@@ -18,6 +18,8 @@ import { prefix } from '../../constants/prefix';
 import AuthService from '../../service/auth/service';
 import useCookies from '../../utils/useCookies';
 import useToast from '../../utils/useToast';
+import { pxToRem } from '../../utils/formatter';
+import { rem } from 'polished';
 
 interface FormData {
 	readonly email: string;
@@ -162,24 +164,24 @@ export default function Login() {
 }
 
 const LoginViewContainer = styled.div`
-	margin-top: 50px;
+	margin-top: ${(props) => (props.theme.isResponsive ? pxToRem('50px') : rem('50px'))};
 `;
 
 const InputContainer = styled.div`
-	margin-top: 50px;
+	margin-top: ${(props) => (props.theme.isResponsive ? pxToRem('50px') : rem('50px'))};
 `;
 
 const ButtonContainer = styled.div`
-	margin-top: 40px;
+	margin-top: ${(props) => (props.theme.isResponsive ? pxToRem('40px') : rem('40px'))};
 `;
 
 const ButtonBox = styled.div`
-	margin-bottom: 20px;
+	margin-bottom: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
 `;
 
 const UnderLineBox = styled.div`
 	display: flex;
-	gap: 15px;
+	gap: ${(props) => (props.theme.isResponsive ? pxToRem('15px') : rem('15px'))};
 	justify-content: flex-end;
 `;
 
@@ -191,6 +193,6 @@ const UnderLineTexts = styled.p`
 
 const BottomUnderLineBox = styled.div`
 	display: flex;
-	gap: 10px;
+	gap: ${(props) => (props.theme.isResponsive ? pxToRem('10px') : rem('10px'))};
 	justify-content: center;
 `;

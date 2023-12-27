@@ -105,12 +105,12 @@ const MyProfileContainer = styled.div`
 	flex-direction: column;
 	align-items: center;
 
-	gap: ${rem('20px')};
+	gap: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
 	width: 100%;
-	margin: ${rem('30px')} 0px;
+	margin: ${(props) => (props.theme.isResponsive ? `${pxToRem('30px')} 0` : `${rem('30px')} 0`)};
 `;
 const ProfileImage = styled(ImageBox)`
-	border-radius: ${rem('20px')};
+	border-radius: 20px;
 	background-color: lightblue;
 	max-width: ${(props) => (props.theme.isResponsive ? pxToRem('150px') : rem('150px'))};
 	max-height: ${(props) => (props.theme.isResponsive ? pxToRem('150px') : rem('150px'))};
@@ -129,20 +129,21 @@ const ProfileInfoList = styled.ul`
 	display: flex;
 	flex-direction: column;
 	justify-content: left;
-	max-width: ${(props) => (props.theme.isResponsive ? `calc(100vw - ${pxToRem('60px')})` : `calc(100vw - ${rem('60px')})`)};
+	max-width: ${(props) =>
+		props.theme.isResponsive ? `calc(100vw - ${pxToRem('60px')})` : `calc(100vw - ${rem('60px')})`};
 
 	& #info01 {
-		margin-right: ${rem('20px')};
+		margin-right: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
 	}
-`
+`;
 
 const ProfileInfoItem = styled.li`
 	display: flex;
 	flex-direction: row;
 	align-items: center;
-	gap: ${rem('4px')};
+	gap: ${(props) => (props.theme.isResponsive ? pxToRem('4px') : rem('4px'))};
 	width: fit-content;
-	margin-top: ${rem('15px')};
+	margin-top: ${(props) => (props.theme.isResponsive ? pxToRem('15px') : rem('15px'))};
 `;
 
 const ItemName = styled.span`
@@ -163,7 +164,7 @@ const Badge = styled.div`
 	width: ${(props) => (props.theme.isResponsive ? pxToRem('41px') : rem('41px'))};
 	height: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
 	background-color: ${PrimaryColor};
-	border-radius: ${rem('10px')};
+	border-radius: 10px;
 
 	text-align: center;
 	color: ${WhiteColor};

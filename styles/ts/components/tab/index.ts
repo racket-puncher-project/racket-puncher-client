@@ -16,7 +16,10 @@ export const CustomTab = styled(AntdTabs)`
   div.ant-tabs-nav {
     margin: 0 !important;
     background-color: ${PlayerListBGColor} !important;
-    padding: ${(props) => (props.theme.isResponsive ? `${pxToRem('10px')} ${pxToRem('20px')}` : `${rem('10px')} ${rem('20px')}`)} !important;
+    padding: ${(props) =>
+            props.theme.isResponsive
+                    ? `${pxToRem('10px')} ${pxToRem('20px')}`
+                    : `${rem('10px')} ${rem('20px')}`} !important;
     border-radius: 50px !important;
     &::before {
       display: none !important;
@@ -32,25 +35,29 @@ export const CustomTab = styled(AntdTabs)`
       div.ant-tabs-nav-list {
         display: flex !important;
         div.ant-tabs-tab {
-          width: ${(props) => (props.theme.isResponsive ? pxToRem('260px') : rem('260px'))} !important;
+          width: ${(props) =>
+                  props.theme.isResponsive ? pxToRem('260px') : rem('260px')} !important;
           display: block !important;
-          padding: 11px 0 !important;
+          padding: ${(props) =>
+                  props.theme.isResponsive ? `${pxToRem('11px')} 0` : `${rem('11px')} 0`} !important;
           font-size: inherit !important;
           margin: 0 !important;
           text-align: center !important;
-          font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeMd) : rem(FontSizeMd))} !important;
+          font-size: ${(props) =>
+                  props.theme.isResponsive ? pxToRem(FontSizeMd) : rem(FontSizeMd)} !important;
           font-family: Pretendard-Regular;
           color: ${ReportColor};
           &.ant-tabs-tab-active {
             width: ${(props) => (props.theme.isResponsive ? pxToRem('260px') : rem('260px'))};
             text-align: center;
             background: ${WhiteColor};
-            padding: 11px 0;
+            padding: ${(props) =>
+                    props.theme.isResponsive ? `${pxToRem('11px')} 0` : `${rem('11px')} 0`};
             border-radius: 50px;
             border: 1px solid ${PrimaryColor};
-            color:  ${PrimaryColor} !important;
+            color: ${PrimaryColor} !important;
             .ant-tabs-tab-btn {
-              color:  ${PrimaryColor};
+              color: ${PrimaryColor};
             }
           }
         }

@@ -18,14 +18,14 @@ interface IInputBox {
 export const InputBox = styled.div<IInputBox>`
 	display: flex;
 	flex-direction: column;
-	margin-bottom: 20px;
+	margin-bottom: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
 	position: ${(props) => props.certify === 'true' && 'relative'};
 
 	label {
 		display: block;
 		font-family: Pretendard-Regular;
 		font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeSpSm) : rem(FontSizeSpSm))};
-		margin-bottom: 10px;
+		margin-bottom: ${(props) => (props.theme.isResponsive ? pxToRem('10px') : rem('10px'))};
 		color: ${InputLabelColor};
 	}
 

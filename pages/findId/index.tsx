@@ -152,11 +152,11 @@ export default function FindId() {
 }
 
 const FindIdViewContainer = styled.div`
-	margin-top: 50px;
+	margin-top: ${(props) => (props.theme.isResponsive ? pxToRem('50px') : rem('50px'))};
 `;
 
 const InputContainer = styled.div`
-	margin-top: 30px;
+	margin-top: ${(props) => (props.theme.isResponsive ? pxToRem('30px') : rem('30px'))};
 `;
 
 const InputButtonBox = styled.div`
@@ -170,12 +170,12 @@ const InputButtonBox = styled.div`
 
 	.buttons__SquareButton-sc-1doc049-1 {
 		flex-basis: ${(props) => (props.theme.isResponsive ? pxToRem('180px') : rem('180px'))};
-		margin-bottom: 20px;
+		margin-bottom: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
 		margin-left: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
 	}
 `;
 
 const ButtonBox = styled.div`
-	margin-top: 30px;
-	margin-bottom: 50px;
+	margin-top: ${(props) => (props.theme.isResponsive ? pxToRem('30px') : rem('30px'))};
+	margin-bottom: ${(props) => (props.theme.isResponsive ? pxToRem('50px') : rem('50px'))};
 `;

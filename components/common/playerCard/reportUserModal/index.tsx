@@ -5,6 +5,7 @@ import ModalBox from '../../modal';
 import { SquareButton } from '../../../../styles/ts/components/buttons';
 import { InputBox } from '../../../../styles/ts/components/input';
 import { TextArea } from '../../../../styles/ts/components/textarea';
+import { pxToRem } from '../../../../utils/formatter';
 
 interface IReportUserModalProps {
 	readonly userNickName: string;
@@ -53,11 +54,10 @@ const UserReportForm = styled.form`
 `;
 
 const ReportTextArea = styled(TextArea)`
-	height: ${rem('140px')};
+	height: ${(props) => (props.theme.isResponsive ? pxToRem('140px') : rem('140px'))};
 `;
 
 const SubmitReportBtn = styled(SquareButton)`
-	width: ${rem('180px')};
-	height:;
-	margin: 0px auto;
+	width: ${(props) => (props.theme.isResponsive ? pxToRem('180px') : rem('180px'))};
+	margin: 0 auto;
 `;

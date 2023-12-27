@@ -11,6 +11,7 @@ import {
 } from '../../../styles/ts/common';
 
 import { ImageBox } from '../../../styles/ts/components/box';
+import { pxToRem } from '../../../utils/formatter';
 
 interface IAlarmListItemProps {
 	alarmTestData: {
@@ -49,14 +50,14 @@ const AlarmListItemContainer = styled.li`
 	flex-direction: row;
 	align-items: center;
 	justify-content: space-between;
-	gap: ${rem('5px')};
+	gap: ${(props) => (props.theme.isResponsive ? pxToRem('5px') : rem('5px'))};
 
 	width: 100%;
 	max-height: fit-content;
-	margin-bottom: ${rem('20px')};
-	padding: ${rem('15px')};
+	margin-bottom: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
+	padding: ${(props) => (props.theme.isResponsive ? pxToRem('15px') : rem('15px'))};
 	background-color: ${InputBoxColor};
-	border-radius: ${rem('20px')};
+	border-radius: 20px;
 	border: solid 1px ${InputBorderColor};
 
 	box-shadow: 0px 4px 5px 0px rgba(0, 0, 0, 0.15);
@@ -66,20 +67,20 @@ const AlarmDataArea = styled.div`
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
-	gap: ${rem('10px')};
+	gap: ${(props) => (props.theme.isResponsive ? pxToRem('10px') : rem('10px'))};
 `;
 
 const AlarmItemTitle = styled.div`
 	text-align: left;
 	font-family: ${FontFamilySemiBold};
-	font-size: ${FontSizeLg};
+	font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeLg) : rem(FontSizeLg))};
 	color: ${BlackColor};
 `;
 const AlarmItemContent = styled(AlarmItemTitle)`
 	font-family: ${FontFamilyRegular};
-	font-size: ${FontSizeSpSm};
+	font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeSpSm) : rem(FontSizeSpSm))};
 `;
 
 const IconArea = styled.div`
-	min-width: ${rem('40px')};
+	min-width: ${(props) => (props.theme.isResponsive ? pxToRem('40px') : rem('40px'))};
 `;
