@@ -20,7 +20,6 @@ import useToast from '../../../../utils/useToast';
 import { useRouter } from 'next/router';
 import { pxToRem } from '../../../../utils/formatter';
 
-
 export default function MatchingList() {
 	const { movePage } = useRouterHook();
 	const { checkLogin } = useCookies();
@@ -189,13 +188,14 @@ const ControlBox = styled.div`
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	margin: 25px 0;
+	margin: ${(props) => (props.theme.isResponsive ? `${pxToRem('25px')} 0` : `${rem('25px')} 0`)};
 
 	.buttons__RoundButton-sc-1doc049-0 {
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		padding: ${(props) => (props.theme.isResponsive ? `10px ${pxToRem('30px')}` : `10px ${rem('30px')}`)};
+		padding: ${(props) =>
+			props.theme.isResponsive ? `10px ${pxToRem('30px')}` : `10px ${rem('30px')}`};
 		border-radius: 10px;
 
 		p {

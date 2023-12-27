@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react';
 import MatchingCard from '../card';
 import { v4 as uuidv4 } from 'uuid';
 import { prefix } from '../../../../constants/prefix';
+import { pxToRem } from '../../../../utils/formatter';
+import { rem } from 'polished';
 
 const positions = [
 	{
@@ -159,14 +161,14 @@ export default function MyAroundMatching() {
 
 const MyAroundMatchingContainer = styled.div`
 	.custom-infowindow {
-		padding: 10px;
+		padding: ${(props) => (props.theme.isResponsive ? pxToRem('10px') : rem('10px'))};
 		border: 1px solid #ccc;
 		background-color: white;
 		border-radius: 5px;
-		font-size: 14px;
+		font-size: ${(props) => (props.theme.isResponsive ? pxToRem('14px') : rem('14px'))};
 	}
 `;
 
 const MapBox = styled.div`
-	margin: 20px 0;
+	margin: ${(props) => (props.theme.isResponsive ? `${pxToRem('20px')} 0` : `${rem('20px')} 0`)};
 `;

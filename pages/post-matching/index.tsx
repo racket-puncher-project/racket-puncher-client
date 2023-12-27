@@ -7,7 +7,8 @@ import { rem } from 'polished';
 
 import MatchesService from '../../service/matches/service';
 import {
-	FontFamilyRegular, FontSizeSm,
+	FontFamilyRegular,
+	FontSizeSm,
 	InputBorderColor,
 	InputBoxColor,
 	ReportColor,
@@ -23,7 +24,7 @@ import TPicker from '../../components/contents/postMatching/timePicker/TPicker';
 import ButtonStyleRadio from '../../components/common/buttonRadio';
 import SearchCourtDrawer from '../../components/contents/postMatching/searchCourtDrawer';
 import useToast from '../../utils/useToast';
-import {pxToRem} from "../../utils/formatter";
+import { pxToRem } from '../../utils/formatter';
 
 const schema = yup.object().shape({
 	postTitle: yup.string().required('제목을 입력해주세요.'),
@@ -76,10 +77,10 @@ export default function PostMatching() {
 		option.includes('SINGLE')
 			? setOptionsForNOR([{ value: 1, label: '1 명' }])
 			: setOptionsForNOR([
-					{ value: 1, label: '1 명' },
-					{ value: 2, label: '2 명' },
-					{ value: 3, label: '3 명' },
-			  ]);
+				{ value: 1, label: '1 명' },
+				{ value: 2, label: '2 명' },
+				{ value: 3, label: '3 명' },
+			]);
 	};
 
 	const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -424,7 +425,7 @@ const PostMatchingForm = styled.form`
 const HalfContainer = styled.div`
 	display: flex;
 	flex-direction: row;
-	gap: ${rem('20px')};
+	gap: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
 
 	.input__InputBox-sc-7b0p27-0 {
 		width: 100%;
@@ -445,9 +446,9 @@ const CourtFeeArea = styled.div`
 
 const FeeForEachSpan = styled.span`
 	position: absolute;
-	top: ${rem('3px')};
-	right:${(props) => props.theme.isResponsive ? pxToRem('5px') : rem('5px')};
-	max-width: ${(props) => props.theme.isResponsive ? pxToRem('150px') : rem('150px')};
+	top: ${(props) => (props.theme.isResponsive ? pxToRem('3px') : rem('3px'))};
+	right: ${(props) => (props.theme.isResponsive ? pxToRem('5px') : rem('5px'))};
+	max-width: ${(props) => (props.theme.isResponsive ? pxToRem('150px') : rem('150px'))};
 	white-space: nowrap;
 	overflow: hidden;
 
@@ -457,7 +458,7 @@ const FeeForEachSpan = styled.span`
 `;
 
 const SubmitBtn = styled(RoundButton)`
-	margin: ${rem('30px')} 0px;
+	margin: ${(props) => (props.theme.isResponsive ? `${pxToRem('30px')} 0` : `${rem('30px')} 0`)};
 `;
 
 const ImageSection = styled.div`
@@ -466,10 +467,10 @@ const ImageSection = styled.div`
 	cursor: pointer;
 	width: 100%;
 	min-height: fit-content;
-	max-width: ${(props) => props.theme.isResponsive ? pxToRem('620px') : rem('620px')};
-	max-height: ${(props) => props.theme.isResponsive ? pxToRem('400px') : rem('400px')};
+	max-width: ${(props) => (props.theme.isResponsive ? pxToRem('620px') : rem('620px'))};
+	max-height: ${(props) => (props.theme.isResponsive ? pxToRem('400px') : rem('400px'))};
 	border: none;
-	margin-bottom: ${rem('30px')};
+	margin-bottom: ${(props) => (props.theme.isResponsive ? pxToRem('30px') : rem('30px'))};
 
 	img {
 		width: 100%;
@@ -482,8 +483,8 @@ const ImageSection = styled.div`
 `;
 
 const MainTextArea = styled(TextArea)`
-	max-width: ${(props) => props.theme.isResponsive ? pxToRem('620px') : rem('620px')};
-	height: ${(props) => props.theme.isResponsive ? pxToRem('400px') : rem('400px')};
+	max-width: ${(props) => (props.theme.isResponsive ? pxToRem('620px') : rem('620px'))};
+	height: ${(props) => (props.theme.isResponsive ? pxToRem('400px') : rem('400px'))};
 `;
 
 const HiddenInput = styled.input`

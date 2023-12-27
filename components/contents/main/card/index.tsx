@@ -3,7 +3,7 @@ import { GrayLine, ImageBox } from '../../../../styles/ts/components/box';
 import { CustomBadge } from '../../../../styles/ts/components/badge';
 import React from 'react';
 import { rem } from 'polished';
-import { formatDateTime } from '../../../../utils/formatter';
+import { formatDateTime, pxToRem } from '../../../../utils/formatter';
 
 import {
 	FontSizeLg,
@@ -67,35 +67,35 @@ export default function MatchingCard(props: IMatchingCardProps) {
 }
 
 const CardContainer = styled.div`
-	padding: 20px 0;
+	padding: ${(props) => (props.theme.isResponsive ? `${pxToRem('20px')} 0` : `${rem('20px')} 0`)};
 `;
 const ContentBox = styled.div`
 	display: flex;
 	align-items: center;
 `;
 const LeftBox = styled.div`
-	flex-basis: 128.205px;
-	margin-right: ${rem('20px')};
+	flex-basis: ${(props) => (props.theme.isResponsive ? pxToRem('128.205px') : rem('128.205px'))};
+	margin-right: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
 `;
 const RightBox = styled.div``;
 const BadgeBox = styled.div`
 	display: flex;
-	gap: 10px;
+	gap: ${(props) => (props.theme.isResponsive ? pxToRem('10px') : rem('10px'))};
 	flex-wrap: wrap;
-	margin-bottom: 10px;
+	margin-bottom: ${(props) => (props.theme.isResponsive ? pxToRem('10px') : rem('10px'))};
 `;
 const MatchingTimeBox = styled.div`
-	margin-bottom: 10px;
+	margin-bottom: ${(props) => (props.theme.isResponsive ? pxToRem('10px') : rem('10px'))};
 	p {
 		font-family: Pretendard-Regular;
-		font-size: ${FontSizeMc};
+		font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeMc) : rem(FontSizeMc))};
 		color: ${InputLabelColor};
 	}
 `;
 const MatchingTitleBox = styled.div`
 	p {
 		font-family: Pretendard-Regular;
-		font-size: ${FontSizeLg};
+		font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeLg) : rem(FontSizeLg))};
 		color: ${InputLabelColor};
 	}
 `;

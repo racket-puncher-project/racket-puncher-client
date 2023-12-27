@@ -2,6 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { ImageBox } from '../../../styles/ts/components/box';
 import { BlackColor, FontSizeLg } from '../../../styles/ts/common';
+import { pxToRem } from '../../../utils/formatter';
+import { rem } from 'polished';
 
 export default function NoResultBox() {
 	return (
@@ -21,9 +23,9 @@ const NoResultContainer = styled.div`
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	padding: 80px 0;
+	padding: ${(props) => (props.theme.isResponsive ? `${pxToRem('80px')} 0` : `${rem('80px')} 0`)};
 	p {
-		margin-top: 25px;
+		margin-top: ${(props) => (props.theme.isResponsive ? pxToRem('25px') : rem('25px'))};
 		font-size: ${FontSizeLg};
 		color: ${BlackColor};
 	}

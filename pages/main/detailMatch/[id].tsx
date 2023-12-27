@@ -224,15 +224,18 @@ export default function DetailMatching() {
 }
 
 const DetailMatchingContainer = styled.div`
-	margin-top: 38px;
-	padding-bottom: 100px;
+	margin-top: ${(props) => (props.theme.isResponsive ? pxToRem('38px') : rem('38px'))};
+	padding-bottom: ${(props) => (props.theme.isResponsive ? pxToRem('100px') : rem('100px'))};
 `;
 const ProfileContainer = styled.div`
-	margin-bottom: 30px;
+	margin-bottom: ${(props) => (props.theme.isResponsive ? pxToRem('30px') : rem('30px'))};
 `;
 const ProfileBox = styled.div`
 	height: ${(props) => (props.theme.isResponsive ? pxToRem('347px') : rem('347px'))};
-	padding: ${(props) => (props.theme.isResponsive ? `${pxToRem('40px')} ${pxToRem('40px')}` : `${rem('40px')} ${rem('40px')}`)};
+	padding: ${(props) =>
+		props.theme.isResponsive
+			? `${pxToRem('40px')} ${pxToRem('40px')}`
+			: `${rem('40px')} ${rem('40px')}`};
 	background-color: ${PlayerListBGColor};
 	border-radius: 20px;
 	box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.15);
@@ -245,7 +248,7 @@ const ImageWrap = styled.div`
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	gap: 13px;
+	gap: ${(props) => (props.theme.isResponsive ? pxToRem('13px') : rem('13px'))};
 
 	p {
 		font-family: Pretendard-Medium;
@@ -256,7 +259,7 @@ const ImageWrap = styled.div`
 const ControlBox = styled.div`
 	display: flex;
 	justify-content: space-between;
-	margin: 30px 0;
+	margin: ${(props) => (props.theme.isResponsive ? `${pxToRem('30px')} 0` : `${rem('30px')} 0`)};
 `;
 const ProgressBarContainer = styled.div`
 	p {
@@ -264,7 +267,7 @@ const ProgressBarContainer = styled.div`
 		color: ${InputLabelColor};
 		font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeLg) : rem(FontSizeLg))};
 		text-align: center;
-		margin-bottom: 20px;
+		margin-bottom: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
 
 		span {
 			color: ${PrimaryColor};
@@ -272,19 +275,19 @@ const ProgressBarContainer = styled.div`
 	}
 `;
 const ContentContainer = styled.div`
-	margin-top: 20px;
+	margin-top: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
 `;
 const MapBox = styled.div``;
 const DetailMatchItemBox = styled.div`
 	display: flex;
 	flex-direction: column;
-	padding-bottom: 20px;
+	padding-bottom: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
 
 	label {
 		display: block;
 		font-family: Pretendard-Regular;
 		font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeSpSm) : rem(FontSizeSpSm))};
-		margin-bottom: 10px;
+		margin-bottom: ${(props) => (props.theme.isResponsive ? pxToRem('10px') : rem('10px'))};
 		color: ${InputLabelColor};
 	}
 `;
@@ -295,12 +298,12 @@ const DetailMatchContent = styled.div<DetailMatchContentProps>`
 				? pxToRem(props.height)
 				: pxToRem('50px')
 			: props.height
-			  ? rem(props.height)
-			  : rem('50px')};
+				? rem(props.height)
+				: rem('50px')};
 	border: 1px solid ${InputBorderColor};
 	background: ${InputBoxColor};
 	border-radius: 5px;
-	padding: 0 15px;
+	padding: ${(props) => (props.theme.isResponsive ? `0 ${pxToRem('15px')}` : `0 ${rem('15px')}`)};
 
 	&:focus {
 		border: 1px solid ${PrimaryColor};
@@ -312,7 +315,7 @@ const FlexBox = styled.div`
 	justify-content: space-between;
 
 	div.id__DetailMatchItemBox-sc-11oq75o-8 {
-		flex-basis: 280px;
+		flex-basis: ${(props) => (props.theme.isResponsive ? pxToRem('280px') : rem('280px'))};
 
 		&:first-child {
 			margin-right: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
@@ -324,61 +327,61 @@ const ButtonBox = styled.div``;
 const FloatBox = styled.div`
 	max-width: ${(props) => (props.theme.isResponsive ? pxToRem('640px') : rem('640px'))};
 	width: 100%;
-	padding: 0 30px;
+	padding: ${(props) => (props.theme.isResponsive ? `0 ${pxToRem('30px')}` : `0 ${rem('30px')}`)};
 	position: fixed;
 	left: 50%;
 	transform: translateX(-50%);
-	bottom: 20px;
+	bottom: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
 	z-index: 1000;
 `;
 
 // 모집현황 모달 --------------------------------------------------------------------
 
 const ModalWrapBox = styled.div`
-  position: relative;
-  width: 100%;
-  height: ${(props) => (props.theme.isResponsive ? pxToRem('410px') : rem('410px'))};
-  border-radius: 20px;
-  background: #f9f9f9;
-  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
-  overflow-y: scroll;
-  margin-bottom: 20px;
+	position: relative;
+	width: 100%;
+	height: ${(props) => (props.theme.isResponsive ? pxToRem('410px') : rem('410px'))};
+	border-radius: 20px;
+	background: #f9f9f9;
+	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
+	overflow-y: scroll;
+	margin-bottom: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
 
-  &::-webkit-scrollbar {
-    display: none;
-  }
+	&::-webkit-scrollbar {
+		display: none;
+	}
 
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+	-ms-overflow-style: none;
+	scrollbar-width: none;
 
-  div.is-modal-wrap-header {
-    position: sticky;
-    top: 0px;
-    max-width: ${(props) => (props.theme.isResponsive ? pxToRem('540px') : rem('540px'))};
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: #84a840;
-    border-radius: 20px 20px 0 0;
-    padding: ${rem('16px')} ${rem('20px')};
-    padding: ${(props) =>
-            props.theme.isResponsive
-                    ? `${pxToRem('16px')} ${pxToRem('20px')}`
-                    : `${rem('16px')} ${rem('20px')}`};
+	div.is-modal-wrap-header {
+		position: sticky;
+		top: 0;
+		max-width: ${(props) => (props.theme.isResponsive ? pxToRem('540px') : rem('540px'))};
+		width: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		background: #84a840;
+		border-radius: 20px 20px 0 0;
+		padding: ${rem('16px')} ${rem('20px')};
+		padding: ${(props) =>
+			props.theme.isResponsive
+				? `${pxToRem('16px')} ${pxToRem('20px')}`
+				: `${rem('16px')} ${rem('20px')}`};
 
-    p {
-      color: #fff;
-      font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeSm) : rem(FontSizeSm))};
-    }
-  }
+		p {
+			color: #fff;
+			font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeSm) : rem(FontSizeSm))};
+		}
+	}
 
-  div.is-modal-wrap-body {
-    padding: ${(props) =>
-            props.theme.isResponsive
-                    ? `${pxToRem('20px')} ${pxToRem('20px')}`
-                    : `${rem('20px')} ${rem('20px')}`};
-  }
+	div.is-modal-wrap-body {
+		padding: ${(props) =>
+			props.theme.isResponsive
+				? `${pxToRem('20px')} ${pxToRem('20px')}`
+				: `${rem('20px')} ${rem('20px')}`};
+	}
 `;
 
 const ModalWrapItem = styled.div`
@@ -387,7 +390,7 @@ const ModalWrapItem = styled.div`
 	border: 1px solid #dcdcdc;
 	background: #fff;
 	padding: ${(props) => (props.theme.isResponsive ? pxToRem('10px') : rem('10px'))};
-	margin-bottom: 20px;
+	margin-bottom: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
 	cursor: pointer;
 
 	div.box-top {
@@ -404,15 +407,14 @@ const ModalWrapItem = styled.div`
 	div.box-footer {
 		display: flex;
 		align-items: center;
-		margin-top: 10px;
+		margin-top: ${(props) => (props.theme.isResponsive ? pxToRem('10px') : rem('10px'))};
 
 		div.is-btn {
 			width: 100%;
 			text-align: center;
 			border-radius: 5px;
 			font-family: Pretendard-Medium;
-			font-size: ${(props) =>
-				props.theme.isResponsive ? pxToRem(FontSizeSm) : rem(FontSizeSm)};
+			font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeSm) : rem(FontSizeSm))};
 			padding: ${(props) =>
 				props.theme.isResponsive ? `${pxToRem('10px')} 0` : `${rem('10px')} 0`};
 

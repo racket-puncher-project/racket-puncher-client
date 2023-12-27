@@ -6,6 +6,7 @@ import { rem } from 'polished';
 import { FontSizeLg } from '../../../styles/ts/common';
 import { RoundButton } from '../../../styles/ts/components/buttons';
 import useRouterHook from '../../../utils/useRouterHook';
+import { pxToRem } from '../../../utils/formatter';
 
 export default function FindIDResult() {
 	const { moveToBack } = useRouterHook();
@@ -26,7 +27,7 @@ export default function FindIDResult() {
 }
 
 const FindIDResultContainer = styled.div`
-	margin-top: 50px;
+	margin-top: ${(props) => (props.theme.isResponsive ? pxToRem('50px') : rem('50px'))};
 `;
 
 const FoundIdContainer = styled.div`
@@ -36,6 +37,6 @@ const FoundIdContainer = styled.div`
 `;
 
 const ButtonBox = styled.div`
-	margin-top: 30px;
-	margin-bottom: 50px;
+	margin-top: ${(props) => (props.theme.isResponsive ? pxToRem('30px') : rem('30px'))};
+	margin-bottom: ${(props) => (props.theme.isResponsive ? pxToRem('50px') : rem('50px'))};
 `;

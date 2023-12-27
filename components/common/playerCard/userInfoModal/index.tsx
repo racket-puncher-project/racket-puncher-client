@@ -12,6 +12,7 @@ import {
 	FontSizeMd,
 	FontSizeMc,
 } from '../../../../styles/ts/common';
+import { pxToRem } from '../../../../utils/formatter';
 
 interface IUserInfoModalProps {
 	readonly userNickName: string;
@@ -87,39 +88,39 @@ export default function UserInfoModal(props: IUserInfoModalProps) {
 const UserInfoContainer = styled.div`
 	display: flex;
 	flex-direction: row;
-	gap: ${rem('40px')};
+	gap: ${(props) => (props.theme.isResponsive ? pxToRem('40px') : rem('40px'))};
 `;
 
 const ProfilePicArea = styled.div`
-	max-width: ${rem('220px')};
-	max-height: ${rem('220px')};
-	border-radius: ${rem('20px')};
+	max-width: ${(props) => (props.theme.isResponsive ? pxToRem('220px') : rem('220px'))};
+	max-height: ${(props) => (props.theme.isResponsive ? pxToRem('220px') : rem('220px'))};
+	border-radius: 20px;
 	overflow: hidden;
 `;
 
 const UserInfoList = styled.ul`
 	display: flex;
 	flex-direction: column;
-	padding: ${rem('7px')} 0px;
+	padding: ${(props) => (props.theme.isResponsive ? `${pxToRem('7px')} 0` : `${rem('7px')} 0`)};
 `;
 
 const UserInfoItem = styled.li`
-	margin-bottom: ${rem('15px')};
+	margin-bottom: ${(props) => (props.theme.isResponsive ? pxToRem('15px') : rem('15px'))};
 	font-family: ${FontFamilySemiBold};
-	font-size: ${rem(`${FontSizeLg}`)};
+	font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeLg) : rem(FontSizeLg))};
 	color: ${BlackColor};
 `;
 
 const ItemName = styled.span`
 	min-width: fit-content;
 	font-family: inherit;
-	font-size: ${rem(`${FontSizeMd}`)};
+	font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeMd) : rem(FontSizeMd))};
 	color: ${PrimaryColor};
 `;
 const ItemContent = styled.span`
 	min-width: fit-content;
 	font-family: inherit;
-	font-size: ${rem(`${FontSizeMd}`)};
+	font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeMd) : rem(FontSizeMd))};
 	color: ${BlackColor};
 `;
 
@@ -132,15 +133,15 @@ const NickNameArea = styled(UserInfoItem)`
 const Badge = styled.div`
 	display: inline-block;
 	width: fit-content;
-	height: ${rem('20px')};
-	padding: 0px 5px;
-	margin-left: 10px;	
+	height: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
+	padding: ${(props) => (props.theme.isResponsive ? `0 ${pxToRem('5px')}` : `0 ${rem('5px')}`)};
+	margin-left: ${(props) => (props.theme.isResponsive ? pxToRem('10px') : rem('10px'))};
 	background-color: ${PrimaryColor};
-	border-radius: ${rem('10px')};
+	border-radius: 10px;
 
 	text-align: center;
 	color: ${WhiteColor};
-	font-size: ${rem(`${FontSizeMc}`)};
-	line-height: ${rem('18px')};
-	font-family ${FontFamilySemiBold};
+	font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeMc) : rem(FontSizeMc))};
+	line-height: ${(props) => (props.theme.isResponsive ? pxToRem('18px') : rem('18px'))};
+	font-family: ${FontFamilySemiBold};
 `;

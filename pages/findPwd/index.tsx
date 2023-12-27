@@ -8,8 +8,9 @@ import { InputBox } from '../../styles/ts/components/input';
 import { InputErrorText } from '../../styles/ts/components/text';
 import { RoundButton, SquareButton } from '../../styles/ts/components/buttons';
 import { PageMainTitle } from '../../styles/ts/components/titles';
-import { onlyNumber } from '../../utils/formatter';
+import { onlyNumber, pxToRem } from '../../utils/formatter';
 import useRouterHook from '../../utils/useRouterHook';
+import { rem } from 'polished';
 
 const schema = yup.object().shape({
 	email: yup
@@ -167,11 +168,11 @@ export default function FindPwd() {
 }
 
 const FindPwdViewContainer = styled.div`
-	margin-top: 50px;
+	margin-top: ${(props) => (props.theme.isResponsive ? pxToRem('50px') : rem('50px'))};
 `;
 
 const InputContainer = styled.div`
-	margin-top: 30px;
+	margin-top: ${(props) => (props.theme.isResponsive ? pxToRem('30px') : rem('30px'))};
 `;
 
 const InputButtonBox = styled.div`
@@ -180,17 +181,17 @@ const InputButtonBox = styled.div`
 	align-items: flex-end;
 
 	.input__InputBox-sc-7b0p27-0 {
-		flex-basis: 380px;
+		flex-basis: ${(props) => (props.theme.isResponsive ? pxToRem('380px') : rem('380px'))};
 	}
 
 	.buttons__SquareButton-sc-1doc049-1 {
-		flex-basis: 180px;
-		margin-bottom: 20px;
-		margin-left: 20px;
+		flex-basis: ${(props) => (props.theme.isResponsive ? pxToRem('180px') : rem('180px'))};
+		margin-bottom: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
+		margin-left: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
 	}
 `;
 
 const ButtonBox = styled.div`
-	margin-top: 30px;
-	margin-bottom: 50px;
+	margin-top: ${(props) => (props.theme.isResponsive ? pxToRem('30px') : rem('30px'))};
+	margin-bottom: ${(props) => (props.theme.isResponsive ? pxToRem('50px') : rem('50px'))};
 `;

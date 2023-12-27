@@ -69,21 +69,22 @@ export default function ModalBox(props: IModalProps) {
 const CustomModal = styled(AntdModal).withConfig({
 	shouldForwardProp: (props) => props !== 'heightType',
 })<IModalProps>`
-  div.ant-modal-content {
-    border-radius: 20px !important;
-    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.15) !important;
-    padding: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))} !important;
-    height: 100%;
-    overflow-y: scroll;
+	div.ant-modal-content {
+		border-radius: 20px !important;
+		box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.15) !important;
+		padding: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))} !important;
+		height: 100%;
+		overflow-y: scroll;
 
-    div.ant-modal-header {
-      padding: 20px 0;
-    }
+		div.ant-modal-header {
+			padding: ${(props) =>
+				props.theme.isResponsive ? `${pxToRem('20px')} 0` : `${rem('20px')} 0`};
+		}
 
-    div.ant-modal-body {
-      height: 100%;
-    }
-  }
+		div.ant-modal-body {
+			height: 100%;
+		}
+	}
 `;
 
 const CustomHeaderBox = styled.div`

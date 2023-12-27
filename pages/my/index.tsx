@@ -72,8 +72,8 @@ export default MyPage;
 
 const MyPageAlign = styled.div`
 	padding: ${(props) => (props.theme.isResponsive ? `0 ${pxToRem('30px')}` : `0 ${rem('30px')}`)};
-`
+`;
 
 const ListArea = styled.div`
-	margin-top: 30px;
+	margin-top: ${(props) => (props.theme.isResponsive ? pxToRem('30px') : rem('30px'))};
 `;

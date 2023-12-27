@@ -14,7 +14,6 @@ import { pxToRem } from '../../../../utils/formatter';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { FreeMode } from 'swiper/modules';
 
-
 export default function EvaluationCard() {
 	const [goodCardData, setGoodCardData] = useState([
 		{
@@ -90,8 +89,7 @@ export default function EvaluationCard() {
 										spaceBetween={0}
 										freeMode={true}
 										modules={[FreeMode]}
-										className="mySwiper"
-									>
+										className='mySwiper'>
 										{goodCardData.map((item, index) => {
 											return (
 												<>
@@ -133,8 +131,7 @@ export default function EvaluationCard() {
 										spaceBetween={0}
 										freeMode={true}
 										modules={[FreeMode]}
-										className="mySwiper"
-									>
+										className='mySwiper'>
 										{badCardData.map((item, index) => {
 											return (
 												<>
@@ -178,14 +175,14 @@ const EvaluationCardContainer = styled.div`
 	border-radius: 10px;
 	border: 1px solid ${InputBorderColor};
 	padding: ${(props) => (props.theme.isResponsive ? pxToRem('10px') : rem('10px'))};
-	margin-bottom: 20px;
+	margin-bottom: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
 `;
 const EvaluationCardBox = styled.div``;
 const ProfileContainer = styled.div`
 	display: flex;
 	gap: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
 	align-items: center;
-	margin-bottom: 20px;
+	margin-bottom: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
 `;
 const ProfileImgBox = styled.div``;
 const ProfileTextBox = styled.div`
@@ -195,10 +192,10 @@ const ProfileTextBox = styled.div`
 `;
 const CardBoxes = styled.div``;
 const ButtonArea = styled.div`
-	margin-right: 9px;
+	margin-right: ${(props) => (props.theme.isResponsive ? pxToRem('9px') : rem('9px'))};
 `;
 const Cards = styled.div`
 	&:first-child {
-		margin-bottom: 10px;
+		margin-bottom: ${(props) => (props.theme.isResponsive ? pxToRem('10px') : rem('10px'))};
 	}
 `;

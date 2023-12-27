@@ -7,6 +7,9 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { InputBox } from '../../../styles/ts/components/input';
 import { InputErrorText } from '../../../styles/ts/components/text';
 import { RoundButton } from '../../../styles/ts/components/buttons';
+import { pxToRem } from '../../../utils/formatter';
+
+import { rem } from 'polished';
 
 const schema = yup.object().shape({
 	password: yup
@@ -71,14 +74,14 @@ export default function FindPwdResult() {
 }
 
 const FindPwdResultContainer = styled.div`
-	margin-top: 50px;
+	margin-top: ${(props) => (props.theme.isResponsive ? pxToRem('50px') : rem('50px'))};
 `;
 
 const InputContainer = styled.div`
-	margin-top: 30px;
+	margin-top: ${(props) => (props.theme.isResponsive ? pxToRem('30px') : rem('30px'))};
 `;
 
 const ButtonBox = styled.div`
-	margin-top: 30px;
-	margin-bottom: 50px;
+	margin-top: ${(props) => (props.theme.isResponsive ? pxToRem('30px') : rem('30px'))};
+	margin-bottom: ${(props) => (props.theme.isResponsive ? pxToRem('50px') : rem('50px'))};
 `;

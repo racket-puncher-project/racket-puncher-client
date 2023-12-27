@@ -66,7 +66,7 @@ export default function MyListItem(props: IMyListItemProps) {
 						})}
 						<RoundButton
 							onClick={() => {
-								console.log('클릭')
+								console.log('클릭');
 							}}
 							colorstyle={'is-black'}
 							aria-label='평가하기 페이지로 이동'>
@@ -104,17 +104,20 @@ export default function MyListItem(props: IMyListItemProps) {
 
 const MyListItemContainer = styled(AntdCollapse)`
 	width: 100%;
-	margin-bottom: ${rem('30px')};
+	margin-bottom: ${(props) => (props.theme.isResponsive ? pxToRem('30px') : rem('30px'))};
 
 	.ant-collapse-content-box {
-		background-color: 2${PlayerListBGColor};
+		background-color: ${PlayerListBGColor};
 		border-radius: 0px 0px ${rem('10px')} ${rem('10px')};
 	}
 `;
 
 const Header = styled.div`
 	display: grid;
-	grid-template-columns: ${(props) => (props.theme.isResponsive ? `${pxToRem('75px')} auto ${pxToRem('25px')}` : `${rem('75px')} auto ${rem('25px')}`)};
+	grid-template-columns: ${(props) =>
+		props.theme.isResponsive
+			? `${pxToRem('75px')} auto ${pxToRem('25px')}`
+			: `${rem('75px')} auto ${rem('25px')}`};
 	grid-template-areas: 'dateNDay title collapseIcon';
 	gap: ${(props) => (props.theme.isResponsive ? pxToRem('15px') : rem('15px'))};
 
@@ -145,7 +148,10 @@ const IconImageBox = styled(ImageBox)`
 `;
 
 const PlayerCardContainer = styled.div`
-	padding: ${(props) => (props.theme.isResponsive ? `16px ${pxToRem('4px')} 4px ${pxToRem('4px')}` : `16px ${rem('4px')} 4px ${rem('4px')}`)};
+	padding: ${(props) =>
+		props.theme.isResponsive
+			? `16px ${pxToRem('4px')} 4px ${pxToRem('4px')}`
+			: `16px ${rem('4px')} 4px ${rem('4px')}`};
 	display: flex;
 	flex-direction: column;
 	gap: ${(props) => (props.theme.isResponsive ? pxToRem('10px') : rem('10px'))};
