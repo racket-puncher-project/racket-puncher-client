@@ -8,7 +8,7 @@ import KakaoLogin from 'react-kakao-login';
 
 import { RoundButton } from '../../styles/ts/components/buttons';
 import { ImageBox } from '../../styles/ts/components/box';
-import { PrimaryColor } from '../../styles/ts/common';
+import { BlackColor, FontSizeMc, PrimaryColor } from '../../styles/ts/common';
 import useRouterHook from '../../utils/useRouterHook';
 import { PageMainTitle } from '../../styles/ts/components/titles';
 import ModalBox from '../../components/common/modal';
@@ -141,7 +141,7 @@ export default function Login() {
 				</ButtonContainer>
 
 				<BottomUnderLineBox>
-					<p>아이디가 없으신가요?</p>
+					<p className='label-title'>아이디가 없으신가요?</p>
 					<UnderLineTexts onClick={() => movePage('/register')}>회원가입하기</UnderLineTexts>
 				</BottomUnderLineBox>
 
@@ -186,6 +186,7 @@ const UnderLineBox = styled.div`
 `;
 
 const UnderLineTexts = styled.p`
+	font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeMc) : rem(FontSizeMc))};
 	text-decoration: underline;
 	color: ${PrimaryColor};
 	cursor: pointer;
@@ -195,4 +196,8 @@ const BottomUnderLineBox = styled.div`
 	display: flex;
 	gap: ${(props) => (props.theme.isResponsive ? pxToRem('10px') : rem('10px'))};
 	justify-content: center;
+	p.label-title {
+		font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeMc) : rem(FontSizeMc))};
+		color: ${BlackColor};
+	}
 `;
