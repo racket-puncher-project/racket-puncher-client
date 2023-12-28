@@ -538,6 +538,11 @@ const AddressBoxWrap = styled.div`
 	border-radius: 5px;
 	padding: ${(props) => (props.theme.isResponsive ? pxToRem('15px') : rem('15px'))};
 	margin-bottom: ${(props) => (props.theme.isResponsive ? pxToRem('10px') : rem('10px'))};
+	cursor: pointer;
+	-webkit-tap-highlight-color: transparent !important;
+	&:hover {
+		background-color: #efefef;
+	}
 `;
 
 const AddLeftWrap = styled.div`
@@ -576,7 +581,7 @@ const InputNoTitleButtonBox = styled.div`
 	margin-bottom: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
 
 	.input__InputBox-sc-7b0p27-0 {
-		flex-basis: ${(props) => (props.theme.isResponsive ? pxToRem('38px') : rem('380px'))};
+		flex-basis: ${(props) => (props.theme.isResponsive ? pxToRem('380px') : rem('380px'))};
 		margin-bottom: 0 !important;
 	}
 
