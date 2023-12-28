@@ -2,7 +2,7 @@ import moment from 'moment';
 
 // 날짜 포맷터
 export const dateFormatter = (date: Date) => {
-	return moment(date).format('YYYY/MM/DD');
+	return moment(date).format('YYYY-MM-DD');
 };
 
 // 시간 포매터
