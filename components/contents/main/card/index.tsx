@@ -43,7 +43,7 @@ export default function MatchingCard(props: IMatchingCardProps) {
 								{props.reserved ? '예약완료' : '예약X'}
 							</CustomBadge>
 							<CustomBadge color={'#4682A9'} fontsize={FontSizeMc}>
-								남자 단식
+								{convertMatchingType(props.matchingType)}
 							</CustomBadge>
 							<CustomBadge color={PrimaryColor} fontsize={FontSizeMc}>
 								{props.ntrp}
@@ -65,6 +65,19 @@ export default function MatchingCard(props: IMatchingCardProps) {
 		</>
 	);
 }
+
+const convertMatchingType = (type: string) => {
+	switch (type) {
+		case 'SINGLE':
+			return '단식';
+		case 'DOUBLE':
+			return '복식';
+		case 'MIXED_DOUBLE':
+			return '혼성 복식';
+		case 'OTHER':
+			return '기타';
+	}
+};
 
 const CardContainer = styled.div`
 	padding: ${(props) => (props.theme.isResponsive ? `${pxToRem('20px')} 0` : `${rem('20px')} 0`)};
