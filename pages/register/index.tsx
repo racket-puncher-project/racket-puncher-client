@@ -212,18 +212,19 @@ export default function register() {
 		}
 
 		const params = {
-			email: signupGetValue('userName'),
+			email: signupGetValue('email'),
 			password: signupGetValue('password'),
 			nickname: signupGetValue('nickName'),
-			roles: ['ROLE_USER'],
-			ageGroup: signupGetValue('age'),
+			phoneNumber: signupGetValue('phoneNumber'),
+			siteusername: signupGetValue('userName'),
 			gender: signupGetValue('gender'),
+			ntrp: signupGetValue('NTRP'),
 			address: signupGetValue('detailAddress'),
 			zipCode: signupGetValue('address'),
-			ntrp: signupGetValue('NTRP'),
-			phoneNumber: signupGetValue('phoneNumber'),
 			profileImg: '',
+			ageGroup: signupGetValue('age'),
 		};
+
 		try {
 			const formData = new FormData();
 			formData.append('imageFile', fileData);
@@ -540,6 +541,7 @@ const AddressBoxWrap = styled.div`
 	margin-bottom: ${(props) => (props.theme.isResponsive ? pxToRem('10px') : rem('10px'))};
 	cursor: pointer;
 	-webkit-tap-highlight-color: transparent !important;
+
 	&:hover {
 		background-color: #efefef;
 	}

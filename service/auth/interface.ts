@@ -3,14 +3,14 @@ export interface reqSignupApiData {
 	email: string;
 	password: string;
 	nickname: string;
-	roles: object;
-	ageGroup: string;
+	phoneNumber: string;
+	siteusername: string;
 	gender: string;
+	ntrp: string;
 	address: string;
 	zipCode: string;
-	ntrp: string;
-	phoneNumber: string;
 	profileImg: string;
+	ageGroup: string;
 }
 
 // 로그인
