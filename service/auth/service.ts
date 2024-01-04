@@ -16,7 +16,7 @@ import {
 
 // 회원가입
 const signup = (data: reqSignupApiData) => {
-	return http.post('/api/auth/signup', data);
+	return http.post('/api/auth/sign-up', data);
 };
 
 // 로그인
