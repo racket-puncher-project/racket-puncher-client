@@ -4,7 +4,7 @@ export interface reqSignupApiData {
 	password: string;
 	nickname: string;
 	phoneNumber: string;
-	siteusername: string;
+	siteUserName: string;
 	gender: string;
 	ntrp: string;
 	address: string;

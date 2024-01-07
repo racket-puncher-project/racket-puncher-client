@@ -142,7 +142,7 @@ export default function register() {
 		};
 		try {
 			const res = await AuthService.checkNickname(params);
-			setMessage('success', res.data.response);
+			setMessage('success', res.data.response.message);
 			console.log(res);
 		} catch (e) {
 			console.log(e);
@@ -216,13 +216,14 @@ export default function register() {
 			password: signupGetValue('password'),
 			nickname: signupGetValue('nickName'),
 			phoneNumber: signupGetValue('phoneNumber'),
-			siteusername: signupGetValue('userName'),
+			siteUserName: signupGetValue('userName'),
 			gender: signupGetValue('gender'),
 			ntrp: signupGetValue('NTRP'),
 			address: signupGetValue('detailAddress'),
 			zipCode: signupGetValue('address'),
 			profileImg: '',
 			ageGroup: signupGetValue('age'),
+			authType: 'GENERAL',
 		};
 
 		try {
