@@ -21,13 +21,13 @@ const signup = (data: reqSignupApiData) => {
 
 // 로그인
 const login = (data: reqLoginApiData) => {
-	return http.post('/api/auth/signin', data);
+	return http.post('/api/auth/sign-in', data);
 };
 
 // 회원가입 프로필 이미지
 const uploadImgSignup = (data: any) => {
 	console.log(data);
-	return httpFile.post('/api/auth/upload-image', data);
+	return httpFile.post('/api/aws/upload-image', data);
 };
 
 // 카카오톡 회원가입
