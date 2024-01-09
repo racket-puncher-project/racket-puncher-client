@@ -79,10 +79,11 @@ export default function Login() {
 	};
 
 	// 소셜로그인 --------------------------------------
-	const postSocialLogin = (res) => {
-		console.log(res);
-		const accessToken = res.response.accessToken;
-		movePage('/main');
+	const postSocialLogin = () => {
+		// rest-api key 적용
+		// 결과값 code 반환
+		window.location.href =
+			'https://kauth.kakao.com/oauth/authorize?client_id=0fe7dd1a1614374c27fd672849d17cdd&redirect_uri=http://localhost:8080/kakaoLogin&response_type=code';
 	};
 
 	return (
@@ -114,6 +115,22 @@ export default function Login() {
 						</RoundButton>
 					</ButtonBox>
 					<ButtonBox>
+						<RoundButton
+							colorstyle={'is-yellow'}
+							onClick={(e) => {
+								e.preventDefault();
+								postSocialLogin();
+							}}>
+							<div className='align-box'>
+								<ImageBox width={'15px'} height={'14px'}>
+									<img src={`${prefix}/images/kakao-icon.png`} alt='kakao-icon' />
+								</ImageBox>
+								<p>카카오 로그인</p>
+							</div>
+						</RoundButton>
+						{/*
+						// 자바스크립트 SDK key 적용
+						// react-kakao-login 라이브러리 사용
 						<KakaoLogin
 							token={'20bd45f114aff9ec8fee730fe2453f5c'}
 							onSuccess={postSocialLogin}
@@ -136,7 +153,7 @@ export default function Login() {
 									</RoundButton>
 								);
 							}}
-						/>
+						/> */}
 					</ButtonBox>
 				</ButtonContainer>
 
