@@ -47,8 +47,13 @@ export interface reqDeleteUserApiData {
 	password: string;
 }
 
-// 아이디 중복 체크
-export interface reqCheckIdApiData {
+// 닉네임 중복 체크
+export interface reqCheckNicknameApiData {
+	nickname: string;
+}
+
+// 이메일 중복 체크
+export interface reqCheckEmailApiData {
 	email: string;
 }
 

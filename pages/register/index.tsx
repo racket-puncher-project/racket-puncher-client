@@ -84,6 +84,11 @@ export default function register() {
 	const [addressDrawer, setAddressDrawer] = useState(false);
 	const [addressList, setAddressList] = useState(null);
 
+	// CheckComplete
+	const [checkPhoneCertifyComplete, setCheckPhoneCertifyComplete] = useState(false);
+	const [checkNicknameComplete, setCheckNicknameComplete] = useState(false);
+	const [checkEmailComplete, setCheckEmailComplete] = useState(false);
+
 	const profileImgStyle = {
 		backgroundImage: `url(${virtualImgData})`,
 		border: `1px solid ${InputBorderColor}`,
@@ -138,14 +143,19 @@ export default function register() {
 	// 닉네임 중복 체크 ---------------------------------------------------------------
 	const checkNickname = async () => {
 		const params = {
-			email: signupGetValue('nickName'),
+			nickname: signupGetValue('nickName'),
 		};
 		try {
 			const res = await AuthService.checkNickname(params);
 			setMessage('success', res.data.response.message);
+			setCheckNicknameComplete(true);
 			console.log(res);
 		} catch (e) {
 			console.log(e);
+			if (e.response.data.code === 400) {
+				setMessage('error', e.response.data.message);
+			}
+			setCheckNicknameComplete(false);
 		}
 	};
 
@@ -227,16 +237,28 @@ export default function register() {
 		};
 
 		try {
+			// 이메일 중복 체크
+			const emailRes = await AuthService.checkEmail({ email: signupGetValue('email') });
+			console.log(emailRes);
+			setCheckEmailComplete(true);
+
+			// 이미지 등록
 			const formData = new FormData();
 			formData.append('imageFile', fileData);
 			const fileUrl = await AuthService.uploadImgSignup(formData);
+
 			const res = await AuthService.signup({
 				...params,
 				profileImg: fileUrl.data.response,
 			});
+
 			movePage('/login');
 		} catch (e) {
 			console.log(e);
+			if (e.response.data.code === 400) {
+				setMessage('error', e.response.data.message);
+				setCheckEmailComplete(false);
+			}
 		}
 	};
 
@@ -402,7 +424,24 @@ export default function register() {
 				</InputContainer>
 
 				<ButtonBox>
-					<RoundButton colorstyle={'is-green'} onClick={signupHandleSubmit(signUpComplete)}>
+					<RoundButton
+						disabled={
+							!signupWatch('userName') ||
+							!signupWatch('phoneNumber') ||
+							!signupWatch('certifyNumber') ||
+							!signupWatch('gender') ||
+							!signupWatch('age') ||
+							!signupWatch('NTRP') ||
+							!signupWatch('email') ||
+							!signupWatch('password') ||
+							!signupWatch('rePassword') ||
+							!signupWatch('nickName') ||
+							!signupWatch('address') ||
+							!signupWatch('detailAddress') ||
+							!checkNicknameComplete
+						}
+						colorstyle={'is-green'}
+						onClick={signupHandleSubmit(signUpComplete)}>
 						회원가입
 					</RoundButton>
 				</ButtonBox>

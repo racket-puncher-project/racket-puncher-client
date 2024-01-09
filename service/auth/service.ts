@@ -1,7 +1,8 @@
 import http from '../../lib/http/httpInterceptor';
 import httpFile from '../../lib/http/httpFileInterceptor';
 import {
-	reqCheckIdApiData,
+	reqCheckEmailApiData,
+	reqCheckNicknameApiData,
 	reqDeleteUserApiData,
 	reqFindIdApiData,
 	reqFindPwdApiData,
@@ -51,7 +52,12 @@ const logout = (data: reqLogoutApiData) => {
 // };
 
 // 닉네임 중복 체크
-const checkNickname = (data: reqCheckIdApiData) => {
+const checkNickname = (data: reqCheckNicknameApiData) => {
+	return http.post('/api/auth/check-nickname', data);
+};
+
+// 이메일 중복 체크
+const checkEmail = (data: reqCheckEmailApiData) => {
 	return http.post('/api/auth/check-email', data);
 };
 
@@ -85,6 +91,7 @@ const AuthService = {
 	logout,
 	// deleteUser,
 	checkNickname,
+	checkEmail,
 	phoneVerify,
 	emailVerify,
 	findId,
