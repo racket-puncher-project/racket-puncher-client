@@ -179,14 +179,19 @@ export default function register() {
 		setIntervalId(Number(newIntervalId));
 	};
 
-	// 인증번호 받기
-	const getVerification = () => {
+	// 휴대폰 번호 인증번호 받기
+	const getVerification = async () => {
 		try {
+			const res = await AuthService.phoneSendCode({ phoneNumber: signupGetValue('phoneNumber') });
+			setMessage('success', res.data.response.message);
 			setCertifyNumVisible(true);
-			setTimer(180);
+			setTimer(300);
 			setCertTimer();
 		} catch (e) {
 			console.log(e);
+			if (e.response.data.code === 500) {
+				setMessage('error', e.response.data.message);
+			}
 		}
 	};
 

@@ -3,16 +3,14 @@ import httpFile from '../../lib/http/httpFileInterceptor';
 import {
 	reqCheckEmailApiData,
 	reqCheckNicknameApiData,
-	reqDeleteUserApiData,
 	reqFindIdApiData,
 	reqFindPwdApiData,
 	reqKakaoLoginApiData,
 	reqKakaoSignupApiData,
 	reqLoginApiData,
 	reqLogoutApiData,
-	reqPhoneVerifyApiData,
+	reqPhoneSendCodeData,
 	reqSignupApiData,
-	reqUploadImgSignupApiData,
 } from './interface';
 
 // 회원가입
@@ -61,15 +59,15 @@ const checkEmail = (data: reqCheckEmailApiData) => {
 	return http.post('/api/auth/check-email', data);
 };
 
-// 핸드폰 인증
-const phoneVerify = (data: reqPhoneVerifyApiData) => {
-	return http.post('/api/auth/phone-verify', data);
+// 휴대폰 인증번호 전송 요청
+const phoneSendCode = (data: reqPhoneSendCodeData) => {
+	return http.post('/api/auth/phone/send-code', data);
 };
 
-// 이메일 인증 링크 전송
-const emailVerify = (data: reqPhoneVerifyApiData) => {
-	return http.post('/api/auth/email-verify', data);
-};
+// // 이메일 인증 링크 전송
+// const emailVerify = (data: reqPhoneVerifyApiData) => {
+// 	return http.post('/api/auth/email-verify', data);
+// };
 
 // 아이디 찾기
 const findId = (data: reqFindIdApiData) => {
@@ -89,11 +87,9 @@ const AuthService = {
 	kakaoSignup,
 	kakaoLogin,
 	logout,
-	// deleteUser,
 	checkNickname,
 	checkEmail,
-	phoneVerify,
-	emailVerify,
+	phoneSendCode,
 	findId,
 	findPwd,
 };
