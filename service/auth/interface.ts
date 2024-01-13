@@ -31,8 +31,7 @@ export interface reqKakaoSignupApiData {
 
 // 카카오톡 로그인
 export interface reqKakaoLoginApiData {
-	authType: string;
-	oauthToken: string;
+	code: string;
 }
 
 // 로그아웃
