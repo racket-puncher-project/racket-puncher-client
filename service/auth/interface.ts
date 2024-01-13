@@ -58,8 +58,8 @@ export interface reqCheckEmailApiData {
 }
 
 // 핸드폰 인증
-export interface reqPhoneVerifyApiData {
-	phone_number: string;
+export interface reqPhoneSendCodeData {
+	phoneNumber: string;
 }
 
 // 이메일 인증 링크 전송
