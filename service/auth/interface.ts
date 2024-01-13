@@ -62,6 +62,12 @@ export interface reqPhoneSendCodeData {
 	phoneNumber: string;
 }
 
+// 인증번호 확인
+export interface reqPhoneVerifyCodeData {
+	phoneNumber: string;
+	authCode: string;
+}
+
 // 이메일 인증 링크 전송
 export interface reqEmailVerifyApiData {
 	email: string;
