@@ -213,6 +213,7 @@ const BottomUnderLineBox = styled.div`
 	display: flex;
 	gap: ${(props) => (props.theme.isResponsive ? pxToRem('10px') : rem('10px'))};
 	justify-content: center;
+
 	p.label-title {
 		font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeMc) : rem(FontSizeMc))};
 		color: ${BlackColor};

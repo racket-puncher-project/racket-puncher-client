@@ -195,6 +195,25 @@ export default function register() {
 		}
 	};
 
+	// 인증번호 확인
+	const confirmCertiyBtn = async () => {
+		const params = {
+			phoneNumber: signupGetValue('phoneNumber'),
+			authCode: signupGetValue('certifyNumber'),
+		};
+
+		try {
+			const res = await AuthService.phoneVerifyCode(params);
+			setMessage('success', res.data.response.message);
+			setCheckPhoneCertifyComplete(true);
+		} catch (e) {
+			console.log(e);
+			if (e.response.data.code === 400) {
+				setMessage('error', e.response.data.message);
+			}
+		}
+	};
+
 	// 주소 검색 모달 ---------------------------------------------------------------
 	const handleAddressDrawer = () => {
 		setAddressDrawer((prev) => !prev);
@@ -340,7 +359,10 @@ export default function register() {
 									<InputErrorText>{signErrors.certifyNumber.message}</InputErrorText>
 								)}
 							</InputBox>
-							<SquareButton height={'50px'} disabled={!signupWatch('certifyNumber')}>
+							<SquareButton
+								onClick={confirmCertiyBtn}
+								height={'50px'}
+								disabled={!signupWatch('certifyNumber')}>
 								확인
 							</SquareButton>
 						</InputButtonBox>
@@ -443,7 +465,9 @@ export default function register() {
 							!signupWatch('nickName') ||
 							!signupWatch('address') ||
 							!signupWatch('detailAddress') ||
-							!checkNicknameComplete
+							!checkEmailComplete ||
+							!checkNicknameComplete ||
+							!checkPhoneCertifyComplete
 						}
 						colorstyle={'is-green'}
 						onClick={signupHandleSubmit(signUpComplete)}>

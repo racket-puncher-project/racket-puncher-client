@@ -10,6 +10,7 @@ import {
 	reqLoginApiData,
 	reqLogoutApiData,
 	reqPhoneSendCodeData,
+	reqPhoneVerifyCodeData,
 	reqSignupApiData,
 } from './interface';
 
@@ -36,7 +37,7 @@ const kakaoSignup = (data: reqKakaoSignupApiData) => {
 
 // 카카오톡 로그인
 const kakaoLogin = (data: reqKakaoLoginApiData) => {
-	return http.post('/api/auth/kakao/callback', data);
+	return http.post('/api/auth/kakao', data);
 };
 
 // 로그아웃
@@ -62,6 +63,11 @@ const checkEmail = (data: reqCheckEmailApiData) => {
 // 휴대폰 인증번호 전송 요청
 const phoneSendCode = (data: reqPhoneSendCodeData) => {
 	return http.post('/api/auth/phone/send-code', data);
+};
+
+// 휴대폰 인증번호 인증 요청
+const phoneVerifyCode = (data: reqPhoneVerifyCodeData) => {
+	return http.post('/api/auth/phone/verify-code', data);
 };
 
 // // 이메일 인증 링크 전송
@@ -90,6 +96,7 @@ const AuthService = {
 	checkNickname,
 	checkEmail,
 	phoneSendCode,
+	phoneVerifyCode,
 	findId,
 	findPwd,
 };
