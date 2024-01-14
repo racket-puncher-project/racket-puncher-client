@@ -1,8 +1,8 @@
 import http from '../../lib/http/httpInterceptor';
-import { reqGetUserInfoApiData } from './interface';
 
-const getUserInfo = (data: reqGetUserInfoApiData) => {
-	return http.post(`/api/users/profile/${data}`);
+// 마이페이지 조회
+const getUserInfo = () => {
+	return http.get('/api/users/my-page');
 };
 
 const usersService = {

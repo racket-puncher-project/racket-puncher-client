@@ -11,6 +11,7 @@ import MyMatchingList from '../../components/contents/my/myMatchingList';
 import useCookies from '../../utils/useCookies';
 import useToast from '../../utils/useToast';
 import { pxToRem } from '../../utils/formatter';
+import usersService from '../../service/users/service';
 
 const MyPage = () => {
 	const { checkLogin } = useCookies();
@@ -46,10 +47,24 @@ const MyPage = () => {
 		},
 	];
 
+	const getUserInfoData = async () => {
+		try {
+			const res = await usersService.getUserInfo();
+			console.log(res);
+		} catch (e) {
+			console.log(e);
+			if (e.response.data.code === 404) {
+				setMessage('error', e.response.data.message);
+			}
+		}
+	};
+
 	useEffect(() => {
 		if (!checkLogin()) {
 			setMessage('error', '로그인이 필요한 서비스입니다.');
 			router.replace('/login');
+		} else {
+			getUserInfoData();
 		}
 	}, []);
 
