@@ -2,11 +2,14 @@ import { useEffect } from 'react';
 import AuthService from '../../service/auth/service';
 import useCookies from '../../utils/useCookies';
 import { useRouter } from 'next/router';
-import useRouterHook from '../../utils/useRouterHook';
+import { useRecoilState } from 'recoil';
+import { kakaoLoginState } from '../../lib/store/kakaoLogin/index';
 
 export default function KakaoLoginPage() {
 	const { setCookie } = useCookies();
 	const router = useRouter();
+
+	const [snsLoginState, setSnsLoginState] = useRecoilState(kakaoLoginState);
 
 	const kakaoLogin = async (queryCode) => {
 		try {
@@ -14,12 +17,19 @@ export default function KakaoLoginPage() {
 			console.log(res);
 
 			// 기존에 등록된 카카오 유저
-			if (res.data.response.registerd) {
+			if (res.data.response.registered) {
 				setCookie('accessToken', res.data.response.accessToken, { expires: 7 });
 				router.replace('/main');
 			} else {
 				// 카카오 로그인 후 최초 접속
+				setSnsLoginState({
+					email: res.data.response.email,
+					profileImageUrl: res.data.response.profileImageUrl,
+					nickname: res.data.response.nickname,
+				});
+				console.log('snsLoginState', snsLoginState);
 				router.replace('/snsRegister');
+				console.log('snsLoginState', snsLoginState);
 			}
 		} catch (e) {
 			console.log(e);
