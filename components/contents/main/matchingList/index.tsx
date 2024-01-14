@@ -50,6 +50,7 @@ export default function MatchingList() {
 	});
 
 	const getMatchingList = async () => {
+		console.log('api진입!!!');
 		const payload = {
 			params: {
 				page: params.page,
@@ -104,6 +105,20 @@ export default function MatchingList() {
 	};
 
 	useEffect(() => {
+		getMatchingList();
+	}, [
+		filterParams.sort,
+		filterParams.startDate,
+		filterParams.endDate,
+		filterParams.startTime,
+		filterParams.endTime,
+		filterParams.regions,
+		filterParams.matchingTypes,
+		filterParams.ageGroups,
+		filterParams.ntrps,
+	]);
+
+	useEffect(() => {
 		if ('geolocation' in navigator) {
 			navigator.geolocation.getCurrentPosition(function (position) {
 				const latitudeValue = position.coords.latitude;
@@ -136,6 +151,7 @@ export default function MatchingList() {
 
 				<GrayLine />
 				<InfiniteScroll
+					initialLoad={false}
 					pageStart={0}
 					loadMore={getMatchingList}
 					hasMore={hasMoreData}
@@ -146,9 +162,8 @@ export default function MatchingList() {
 					}>
 					{matchingList.map((item) => {
 						return (
-							<>
+							<div key={uuidv4()}>
 								<MatchingCard
-									key={uuidv4()}
 									matchingStartDateTime={item.matchingStartDateTime}
 									matchingType={item.matchingType}
 									ntrp={item.ntrp}
@@ -156,7 +171,7 @@ export default function MatchingList() {
 									title={item.title}
 									onClick={() => moveDetailMatching(item)}
 								/>
-							</>
+							</div>
 						);
 					})}
 				</InfiniteScroll>
