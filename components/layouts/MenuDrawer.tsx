@@ -8,6 +8,8 @@ import { RoundButton } from '../../styles/ts/components/buttons';
 import DrawerBox from '../common/drawer';
 import useCookies from '../../utils/useCookies';
 import { pxToRem } from '../../utils/formatter';
+import AuthService from '../../service/auth/service';
+import { getCookies } from 'undici-types';
 
 interface MenuDrawerProps {
 	readonly isOpen: boolean;
@@ -18,6 +20,18 @@ export default function MenuDrawer(props: MenuDrawerProps) {
 	const { checkLogin, removeCookie } = useCookies();
 	const { isOpen, toggleDrawer } = props;
 	const { reload } = useRouterHook();
+	const { getCookie } = useCookies();
+
+	const logout = async () => {
+		try {
+			await AuthService.logout({ accessToken: getCookie('accessToken') });
+			removeCookie('accessToken');
+			toggleDrawer(isOpen);
+			reload();
+		} catch (e) {
+			console.log(e);
+		}
+	};
 
 	return (
 		<DrawerBox
@@ -65,14 +79,7 @@ export default function MenuDrawer(props: MenuDrawerProps) {
 							</Link>
 						</MenuArea>
 						<SignArea>
-							<RoundButton
-								colorstyle={'is-black'}
-								aria-label='로그아웃'
-								onClick={() => {
-									removeCookie('accessToken');
-									toggleDrawer(isOpen);
-									reload();
-								}}>
+							<RoundButton colorstyle={'is-black'} aria-label='로그아웃' onClick={logout}>
 								로그아웃
 							</RoundButton>
 						</SignArea>
