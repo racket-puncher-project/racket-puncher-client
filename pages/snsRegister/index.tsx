@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -31,18 +31,13 @@ import AuthService from '../../service/auth/service';
 import { ageOptions, genderOptions, NTRPOptions } from '../../constants/filterOption';
 import useRouterHook from '../../utils/useRouterHook';
 import useToast from '../../utils/useToast';
+import { useRecoilValue } from 'recoil';
+import { kakaoLoginState } from '../../lib/store/kakaoLogin';
+import { useRouter } from 'next/router';
 
 const schema = yup.object().shape({
-	userName: yup.string().required('이름은 필수입니다.'),
 	phoneNumber: yup.string().required('휴대폰 번호는 필수입니다.'),
 	certifyNumber: yup.string().required('인증번호는 필수입니다.'),
-	email: yup
-		.string()
-		.required('이메일은 필수입니다.')
-		.matches(
-			/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-			'이메일 형식이 올바르지 않습니다.'
-		),
 	nickName: yup.string().required('닉네임은 필수입니다.'),
 	address: yup.string().required('우편번호는 필수입니다.'),
 	detailAddress: yup.string().required('상세주소는 필수입니다.'),
@@ -53,6 +48,7 @@ const schema = yup.object().shape({
 
 export default function snsRegister() {
 	const { movePage } = useRouterHook();
+	const router = useRouter();
 	const { setMessage } = useToast();
 
 	const [certifyNumVisible, setCertifyNumVisible] = useState(false);
@@ -75,8 +71,11 @@ export default function snsRegister() {
 	const [checkNicknameComplete, setCheckNicknameComplete] = useState(false);
 	const [checkEmailComplete, setCheckEmailComplete] = useState(false);
 
+	// Recoil
+	const loginState = useRecoilValue(kakaoLoginState);
+
 	const profileImgStyle = {
-		backgroundImage: `url(${virtualImgData})`,
+		backgroundImage: `url(${virtualImgData || loginState.profileImageUrl})`,
 		border: `1px solid ${InputBorderColor}`,
 		borderRadius: '50%',
 		height: '100%',
@@ -226,22 +225,22 @@ export default function snsRegister() {
 
 	// sns 회원가입 ------------------------------------------------------------------
 	const signUpComplete = async () => {
-		if (!virtualImgData) {
+		if (!virtualImgData || !loginState.profileImageUrl) {
 			setMessage('error', '이미지를 추가해주세요.');
 			return;
 		}
 
 		const params = {
-			email: '',
+			email: loginState.email,
 			password: '',
 			nickname: signupGetValue('nickName'),
 			phoneNumber: signupGetValue('phoneNumber'),
-			siteUserName: '',
+			siteUserName: loginState.nickname,
 			gender: signupGetValue('gender'),
 			ntrp: signupGetValue('NTRP'),
 			address: signupGetValue('detailAddress'),
 			zipCode: signupGetValue('address'),
-			profileImg: '',
+			profileImg: virtualImgData || loginState.profileImageUrl,
 			ageGroup: signupGetValue('age'),
 			authType: 'KAKAO',
 		};
@@ -262,10 +261,17 @@ export default function snsRegister() {
 			console.log(e);
 			if (e.response.data.code === 400) {
 				setMessage('error', e.response.data.message);
-				setCheckEmailComplete(false);
 			}
 		}
 	};
+
+	useEffect(() => {
+		console.log('loginState', loginState);
+		if (!loginState.profileImageUrl && !loginState.email && !loginState.nickname) {
+			setMessage('error', '다시 시도해주세요.');
+			router.replace('/login');
+		}
+	}, []);
 
 	return (
 		<>
@@ -274,11 +280,18 @@ export default function snsRegister() {
 
 				<ImageSection onClick={clickImgFile}>
 					<ImageBox width={'200px'} height={'200px'}>
-						{virtualImgData ? (
+						{loginState.profileImageUrl || virtualImgData ? (
 							<div className='img-align-box' style={profileImgStyle} />
 						) : (
 							<>
-								<img src={`${prefix}/images/add-image.png`} alt='add-image' />
+								<img
+									src={
+										loginState.profileImageUrl
+											? loginState.profileImageUrl
+											: `${prefix}/images/add-image.png`
+									}
+									alt='add-image'
+								/>
 							</>
 						)}
 					</ImageBox>
@@ -294,7 +307,7 @@ export default function snsRegister() {
 				<InputContainer>
 					<InputBox>
 						<label htmlFor='registerUserName'>이름</label>
-						<input id='registerUserName' type={'text'} {...signUpRegister('userName')} />
+						<input id='registerUserName' type={'text'} value={loginState.nickname} disabled />
 					</InputBox>
 					<InputButtonBox>
 						<InputBox>
@@ -413,7 +426,6 @@ export default function snsRegister() {
 				<ButtonBox>
 					<RoundButton
 						disabled={
-							!signupWatch('userName') ||
 							!signupWatch('phoneNumber') ||
 							!signupWatch('certifyNumber') ||
 							!signupWatch('gender') ||
