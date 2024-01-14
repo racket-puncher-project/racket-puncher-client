@@ -1,2 +1,4 @@
-// 매칭 리스트 조회
-export interface reqGetUserInfoApiData {}
+// 마이페이지 조회
+export interface reqGetUserInfoApiData {
+	accessToken: string;
+}
