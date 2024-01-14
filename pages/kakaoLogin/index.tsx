@@ -19,7 +19,7 @@ export default function KakaoLoginPage() {
 				router.replace('/main');
 			} else {
 				// 카카오 로그인 후 최초 접속
-				router.replace('/register');
+				router.replace('/snsRegister');
 			}
 		} catch (e) {
 			console.log(e);
