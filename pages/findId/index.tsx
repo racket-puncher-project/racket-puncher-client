@@ -223,7 +223,7 @@ const InputContainer = styled.div`
 const InputButtonBox = styled.div`
 	display: flex;
 	justify-content: space-between;
-	align-items: flex-end;
+	/* align-items: center; */
 
 	.input__InputBox-sc-7b0p27-0 {
 		flex-basis: ${(props) => (props.theme.isResponsive ? pxToRem('380px') : rem('380px'))};
@@ -231,7 +231,7 @@ const InputButtonBox = styled.div`
 
 	.buttons__SquareButton-sc-1doc049-1 {
 		flex-basis: ${(props) => (props.theme.isResponsive ? pxToRem('180px') : rem('180px'))};
-		margin-bottom: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
+		margin-top: ${(props) => (props.theme.isResponsive ? pxToRem('26px') : rem('26px'))};
 		margin-left: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
 	}
 `;
