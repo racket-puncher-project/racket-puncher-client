@@ -169,10 +169,6 @@ export default function register() {
 		fileReader.readAsDataURL(files);
 	};
 
-	const clickCertifyBtn = () => {
-		setCertifyNumVisible(true);
-	};
-
 	// 닉네임 중복 체크 ---------------------------------------------------------------
 	const checkNickname = async () => {
 		const params = {
@@ -194,7 +190,7 @@ export default function register() {
 
 	// 인증번호 ---------------------------------------------------------------
 	// 인증번호 타이머
-	const setCertTimer = () => {
+	const setCertifyTimer = () => {
 		if (intervalId) {
 			clearInterval(intervalId);
 		}
@@ -223,7 +219,7 @@ export default function register() {
 				setMessage('success', res.data.response.message);
 				setCertifyNumVisible(true);
 				setTimer(300);
-				setCertTimer();
+				setCertifyTimer();
 			} catch (e) {
 				if (e.response.data.code === 500) {
 					setMessage('error', e.response.data.message);
