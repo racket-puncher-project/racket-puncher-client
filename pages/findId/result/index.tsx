@@ -1,25 +1,39 @@
 import styled from 'styled-components';
-import { PageMainTitle } from '../../../styles/ts/components/titles';
 import React from 'react';
 import { rem } from 'polished';
+import { useRouter } from 'next/router';
 
 import { FontSizeLg } from '../../../styles/ts/common';
 import { RoundButton } from '../../../styles/ts/components/buttons';
-import useRouterHook from '../../../utils/useRouterHook';
+import { PageMainTitle } from '../../../styles/ts/components/titles';
+
 import { pxToRem } from '../../../utils/formatter';
 
 export default function FindIDResult() {
-	const { moveToBack } = useRouterHook();
+	const router = useRouter();
+	const { email } = router.query;
+
+	const moveToFindPwd = () => {
+		const email = Array.isArray(router.query.email) ? router.query.email[0] : router.query.email;
+		if (email) {
+			router.push(`/findPwd?email=${encodeURIComponent(email)}`);
+		}
+	};
+
 	return (
 		<>
 			<FindIDResultContainer>
 				<PageMainTitle>아이디 찾기</PageMainTitle>
-				<FoundIdContainer>가입 정보가 없습니다.</FoundIdContainer>
+				<FoundIdContainer>
+					회원님의 계정은 <br />
+					{email}입니다.
+				</FoundIdContainer>
 
 				<ButtonBox>
-					<RoundButton colorstyle={'is-green'} onClick={moveToBack}>
-						돌아가기
+					<RoundButton colorstyle={'is-green'} onClick={() => router.push('/login')}>
+						로그인
 					</RoundButton>
+					<RoundButton onClick={moveToFindPwd}>비밀번호 찾기</RoundButton>
 				</ButtonBox>
 			</FindIDResultContainer>
 		</>
@@ -37,6 +51,8 @@ const FoundIdContainer = styled.div`
 `;
 
 const ButtonBox = styled.div`
+	display: flex;
+	gap: 20px;
 	margin-top: ${(props) => (props.theme.isResponsive ? pxToRem('30px') : rem('30px'))};
 	margin-bottom: ${(props) => (props.theme.isResponsive ? pxToRem('50px') : rem('50px'))};
 `;
