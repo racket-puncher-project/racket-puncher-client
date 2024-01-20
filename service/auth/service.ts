@@ -70,14 +70,9 @@ const phoneVerifyCode = (data: reqPhoneVerifyCodeData) => {
 	return http.post('/api/auth/phone/verify-code', data);
 };
 
-// // 이메일 인증 링크 전송
-// const emailVerify = (data: reqPhoneVerifyApiData) => {
-// 	return http.post('/api/auth/email-verify', data);
-// };
-
 // 아이디 찾기
 const findId = (data: reqFindIdApiData) => {
-	return http.post('/api/auth/id-find', data);
+	return http.post('/api/auth/find-id', data);
 };
 
 // 비밀번호 찾기 (초기화)
