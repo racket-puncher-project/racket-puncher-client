@@ -9,14 +9,19 @@ import { InputBox } from '../../styles/ts/components/input';
 import { RoundButton, SquareButton } from '../../styles/ts/components/buttons';
 import { onlyNumber, pxToRem } from '../../utils/formatter';
 import { InputErrorText } from '../../styles/ts/components/text';
-import useRouterHook from '../../utils/useRouterHook';
 import { rem } from 'polished';
 import AuthService from '../../service/auth/service';
 import useToast from '../../utils/useToast';
 import { useRouter } from 'next/router';
 
 const schema = yup.object().shape({
-	phoneNumber: yup.string().required('휴대폰 번호는 필수입니다.'),
+	phoneNumber: yup
+		.string()
+		.required('휴대폰 번호는 필수입니다.')
+		.matches(
+			/^(01[016789]{1}|02|0[3-9]{1}[0-9]{1})-?[0-9]{3,4}-?[0-9]{4}$/,
+			'휴대폰 번호 형식을 확인해주세요'
+		),
 	certifyNumber: yup.string().required('인증번호는 필수입니다.'),
 });
 
@@ -25,7 +30,6 @@ export default function FindId() {
 	const router = useRouter();
 
 	const [certifyNumVisible, setCertifyNumVisible] = useState(false);
-	const [isClickCheckBtn, setIsClickCheckBtn] = useState(false);
 
 	const [timer, setTimer] = useState(180);
 	const [intervalId, setIntervalId] = useState<number | null>(null);
