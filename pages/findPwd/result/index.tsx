@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -10,6 +10,11 @@ import { RoundButton } from '../../../styles/ts/components/buttons';
 import { pxToRem } from '../../../utils/formatter';
 
 import { rem } from 'polished';
+import { useRecoilValue } from 'recoil';
+import { pwdResetTokenState } from '../../../lib/store/reset';
+import AuthService from '../../../service/auth/service';
+import useToast from '../../../utils/useToast';
+import { useRouter } from 'next/router';
 
 const schema = yup.object().shape({
 	password: yup
@@ -29,18 +34,47 @@ const schema = yup.object().shape({
 });
 
 export default function FindPwdResult() {
+	const router = useRouter();
+	const { setMessage } = useToast();
+	const resetTokenState = useRecoilValue(pwdResetTokenState);
+
 	const {
 		register,
 		handleSubmit,
 		watch,
+		getValues,
 		formState: { errors },
 	} = useForm({
 		resolver: yupResolver(schema),
 	});
 
 	const changePwdBtn = () => {
-		console.log('비밀번호 변경');
+		resetPwd();
 	};
+
+	// 비밀번호 초기화
+	const resetPwd = async () => {
+		const params = {
+			resetToken: resetTokenState,
+			newPassword: getValues('password'),
+		};
+
+		try {
+			const res = await AuthService.resetPwd(params);
+			console.log(res);
+			setMessage('success', res.data.response.message);
+			router.push('/login');
+		} catch (e) {
+			console.log(e);
+			if (e.response.data.code === 401) {
+				setMessage('error', e.response.data.message);
+			}
+		}
+	};
+
+	useEffect(() => {
+		console.log('resetTokenState', resetTokenState.resetToken);
+	}, []);
 
 	return (
 		<>

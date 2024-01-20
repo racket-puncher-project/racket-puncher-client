@@ -4,13 +4,14 @@ import {
 	reqCheckEmailApiData,
 	reqCheckNicknameApiData,
 	reqFindIdApiData,
-	reqFindPwdApiData,
 	reqKakaoLoginApiData,
 	reqKakaoSignupApiData,
 	reqLoginApiData,
 	reqLogoutApiData,
 	reqPhoneSendCodeData,
 	reqPhoneVerifyCodeData,
+	reqPostPwdVerifyApiData,
+	reqResetPwdApiData,
 	reqSignupApiData,
 } from './interface';
 
@@ -75,10 +76,14 @@ const findId = (data: reqFindIdApiData) => {
 	return http.post('/api/auth/find-id', data);
 };
 
-// 비밀번호 찾기 (초기화)
-const findPwd = (data: reqFindPwdApiData) => {
-	console.log('test');
-	return http.post('/api/auth/password-reset', data);
+// 비밀번호 초기화 요청
+const postPwdVerify = (data: reqPostPwdVerifyApiData) => {
+	return http.post('/api/auth/password/verify-user', data);
+};
+
+// 비밀번호 초기화
+const resetPwd = (data: { newPassword: any; resetToken: { resetToken: string } }) => {
+	return http.patch('/api/auth/password/reset', data);
 };
 
 const AuthService = {
@@ -93,7 +98,8 @@ const AuthService = {
 	phoneSendCode,
 	phoneVerifyCode,
 	findId,
-	findPwd,
+	postPwdVerify,
+	resetPwd,
 };
 
 export default AuthService;

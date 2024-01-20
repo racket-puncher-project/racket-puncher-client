@@ -77,8 +77,14 @@ export interface reqFindIdApiData {
 	phoneNumber: string;
 }
 
-// 비밀번호 찾기 (초기화)
-export interface reqFindPwdApiData {
+// 비밀번호 초기화 요청
+export interface reqPostPwdVerifyApiData {
 	email: string;
-	password: string;
+	phoneNumber: string;
+}
+
+// 비밀번호 초기화
+export interface reqResetPwdApiData {
+	resetToken: string;
+	newPassword: string;
 }

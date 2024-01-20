@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
@@ -11,6 +11,13 @@ import { PageMainTitle } from '../../styles/ts/components/titles';
 import { onlyNumber, pxToRem } from '../../utils/formatter';
 import useRouterHook from '../../utils/useRouterHook';
 import { rem } from 'polished';
+import { useRouter } from 'next/router';
+import AuthService from '../../service/auth/service';
+import useToast from '../../utils/useToast';
+import { useRecoilState, useSetRecoilState } from 'recoil';
+import { kakaoLoginState } from '../../lib/store/kakaoLogin';
+import { pwdResetTokenState } from '../../lib/store/reset';
+import { messageValueState } from '../../lib/store/common';
 
 const schema = yup.object().shape({
 	email: yup
@@ -26,39 +33,34 @@ const schema = yup.object().shape({
 
 export default function FindPwd() {
 	const { movePage } = useRouterHook();
+	const { setMessage } = useToast();
+	const router = useRouter();
+
+	const setResetTokenState = useSetRecoilState(pwdResetTokenState);
+
+	const [email, setEmail] = useState('');
 
 	const [certifyNumVisible, setCertifyNumVisible] = useState(false);
 
+	// timer
 	const [intervalId, setIntervalId] = useState<number | null>(null);
 	const [timer, setTimer] = useState(5);
 
-	const [isClickCheckBtn, setIsClickCheckBtn] = useState(false);
+	// CheckComplete
+	const [checkPhoneCertifyComplete, setCheckPhoneCertifyComplete] = useState(false);
 
 	const {
 		register,
 		handleSubmit,
 		watch,
 		setValue,
+		getValues,
 		formState: { errors },
 	} = useForm({
 		resolver: yupResolver(schema),
 	});
 
-	const checkCertifyNum = () => {
-		setIsClickCheckBtn(true);
-	};
-
-	// 인증번호 받기
-	const getVerification = () => {
-		try {
-			setCertifyNumVisible(true);
-			setTimer(180);
-			setCertTimer();
-		} catch (e) {
-			console.log(e);
-		}
-	};
-
+	// 인증번호 ---------------------------------------------------------------
 	// 인증번호 타이머
 	const setCertTimer = () => {
 		if (intervalId) {
@@ -78,9 +80,72 @@ export default function FindPwd() {
 		setIntervalId(Number(newIntervalId));
 	};
 
-	const clickNextBtn = () => {
-		movePage('/findPwd/result');
+	// 휴대폰 번호 인증번호 받기
+	const getVerification = async () => {
+		try {
+			const res = await AuthService.phoneSendCode({ phoneNumber: getValues('phoneNumber') });
+			setMessage('success', res.data.response.message);
+			setCertifyNumVisible(true);
+			setTimer(300);
+			setCertTimer();
+		} catch (e) {
+			console.log(e);
+			if (e.response.data.code === 500) {
+				setMessage('error', e.response.data.message);
+			}
+		}
 	};
+
+	// 인증번호 확인
+	const confirmCertifyBtn = async () => {
+		const params = {
+			phoneNumber: getValues('phoneNumber'),
+			authCode: getValues('certifyNumber'),
+		};
+
+		try {
+			const res = await AuthService.phoneVerifyCode(params);
+			setMessage('success', res.data.response.message);
+			setCheckPhoneCertifyComplete(true);
+		} catch (e) {
+			console.log(e);
+			if (e.response.data.code === 400) {
+				setMessage('error', e.response.data.message);
+			}
+		}
+	};
+
+	// 비밀번호 초기화 요청 ---------------------------------------------------------------
+	const postPwdVerifyApiData = async () => {
+		const params = {
+			email: getValues('email'),
+			phoneNumber: getValues('phoneNumber'),
+		};
+
+		try {
+			const res = await AuthService.postPwdVerify(params);
+			console.log(res);
+			setResetTokenState(res.data.response.resetToken);
+
+			movePage('/findPwd/result');
+		} catch (e) {
+			console.log(e);
+			if (e.response.data.code === 400) {
+				setMessage('error', e.response.data.message);
+			}
+		}
+	};
+
+	const clickNextBtn = () => {
+		postPwdVerifyApiData();
+	};
+
+	useEffect(() => {
+		if (router.query.email && typeof router.query.email === 'string') {
+			setEmail(router.query.email);
+			setValue('email', router.query.email);
+		}
+	}, [router.query, setValue]);
 
 	return (
 		<>
@@ -90,7 +155,13 @@ export default function FindPwd() {
 				<InputContainer>
 					<InputBox>
 						<label htmlFor='findPwdEmail'>이메일</label>
-						<input id='findPwdEmail' {...register('email')} />
+
+						<input
+							id='findPwdEmail'
+							{...register('email')}
+							value={email}
+							onChange={(e) => setEmail(e.target.value)}
+						/>
 						{errors.email?.message && <InputErrorText>{errors.email.message}</InputErrorText>}
 					</InputBox>
 
@@ -142,7 +213,7 @@ export default function FindPwd() {
 							<SquareButton
 								height={'50px'}
 								disabled={!watch('certifyNumber')}
-								onClick={checkCertifyNum}>
+								onClick={confirmCertifyBtn}>
 								확인
 							</SquareButton>
 						</InputButtonBox>
@@ -157,7 +228,7 @@ export default function FindPwd() {
 							!watch('email') ||
 							!watch('phoneNumber') ||
 							!watch('certifyNumber') ||
-							!isClickCheckBtn
+							!checkPhoneCertifyComplete
 						}>
 						다음
 					</RoundButton>
