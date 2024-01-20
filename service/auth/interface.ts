@@ -74,8 +74,7 @@ export interface reqEmailVerifyApiData {
 
 // 아이디 찾기
 export interface reqFindIdApiData {
-	email: string;
-	password: string;
+	phoneNumber: string;
 }
 
 // 비밀번호 찾기 (초기화)

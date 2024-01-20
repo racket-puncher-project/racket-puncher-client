@@ -11,6 +11,9 @@ import { onlyNumber, pxToRem } from '../../utils/formatter';
 import { InputErrorText } from '../../styles/ts/components/text';
 import useRouterHook from '../../utils/useRouterHook';
 import { rem } from 'polished';
+import AuthService from '../../service/auth/service';
+import useToast from '../../utils/useToast';
+import { useRouter } from 'next/router';
 
 const schema = yup.object().shape({
 	phoneNumber: yup.string().required('휴대폰 번호는 필수입니다.'),
@@ -18,37 +21,37 @@ const schema = yup.object().shape({
 });
 
 export default function FindId() {
+	const { setMessage } = useToast();
+	const router = useRouter();
+
 	const [certifyNumVisible, setCertifyNumVisible] = useState(false);
 	const [isClickCheckBtn, setIsClickCheckBtn] = useState(false);
 
 	const [timer, setTimer] = useState(180);
 	const [intervalId, setIntervalId] = useState<number | null>(null);
 
-	const { movePage } = useRouterHook();
+	// CheckComplete
+	const [checkPhoneCertifyComplete, setCheckPhoneCertifyComplete] = useState(false);
 
 	const {
 		register,
 		handleSubmit,
 		watch,
 		setValue,
+		getValues,
 		formState: { errors },
 	} = useForm({
 		resolver: yupResolver(schema),
 	});
 
-	// 인증번호확인
-	const checkCertifyNum = () => {
-		setIsClickCheckBtn(true);
-	};
-
 	// 다음버튼 클릭
 	const clickNextBtn = () => {
 		setCertifyNumVisible(false);
-		movePage('/findId/result');
+		findId();
 	};
 
 	// 인증번호 타이머
-	const setCertTimer = () => {
+	const setCertifyTimer = () => {
 		if (intervalId) {
 			clearInterval(intervalId);
 		}
@@ -66,14 +69,57 @@ export default function FindId() {
 		setIntervalId(Number(newIntervalId));
 	};
 
-	// 인증번호 받기
-	const getVerification = () => {
+	// 휴대폰 번호 인증번호 받기
+	const getVerification = async () => {
 		try {
+			const res = await AuthService.phoneSendCode({ phoneNumber: getValues('phoneNumber') });
+			setMessage('success', res.data.response.message);
 			setCertifyNumVisible(true);
-			setTimer(180);
-			setCertTimer();
+			setTimer(300);
+			setCertifyTimer();
 		} catch (e) {
 			console.log(e);
+			if (e.response.data.code === 500) {
+				setMessage('error', e.response.data.message);
+			}
+		}
+	};
+
+	// 인증번호 확인
+	const confirmCertifyBtn = async () => {
+		const params = {
+			phoneNumber: getValues('phoneNumber'),
+			authCode: getValues('certifyNumber'),
+		};
+
+		try {
+			const res = await AuthService.phoneVerifyCode(params);
+			setMessage('success', res.data.response.message);
+			setCheckPhoneCertifyComplete(true);
+		} catch (e) {
+			console.log(e);
+			if (e.response.data.code === 400) {
+				setMessage('error', e.response.data.message);
+			}
+		}
+	};
+
+	// 아이디 찾기
+	const findId = async () => {
+		try {
+			const res = await AuthService.findId({ phoneNumber: getValues('phoneNumber') });
+			console.log(res);
+			if (res.data.response.authType === 'GENERAL') {
+				router.push(`/findId/result?email=${encodeURIComponent(res.data.response.email)}`);
+			} else {
+				setMessage('error', '카카오로 로그인하세요');
+				router.push('/login');
+			}
+		} catch (e) {
+			console.log(e);
+			if (e.response.data.code === 400) {
+				setMessage('error', e.response.data.message);
+			}
 		}
 	};
 
@@ -131,7 +177,7 @@ export default function FindId() {
 							<SquareButton
 								height={'50px'}
 								disabled={!watch('certifyNumber')}
-								onClick={checkCertifyNum}>
+								onClick={confirmCertifyBtn}>
 								확인
 							</SquareButton>
 						</InputButtonBox>
@@ -142,7 +188,7 @@ export default function FindId() {
 					<RoundButton
 						colorstyle={'is-green'}
 						onClick={handleSubmit(clickNextBtn)}
-						disabled={!isClickCheckBtn}>
+						disabled={!checkPhoneCertifyComplete}>
 						다음
 					</RoundButton>
 				</ButtonBox>

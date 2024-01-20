@@ -196,7 +196,7 @@ export default function register() {
 	};
 
 	// 인증번호 확인
-	const confirmCertiyBtn = async () => {
+	const confirmCertifyBtn = async () => {
 		const params = {
 			phoneNumber: signupGetValue('phoneNumber'),
 			authCode: signupGetValue('certifyNumber'),
@@ -360,7 +360,7 @@ export default function register() {
 								)}
 							</InputBox>
 							<SquareButton
-								onClick={confirmCertiyBtn}
+								onClick={confirmCertifyBtn}
 								height={'50px'}
 								disabled={!signupWatch('certifyNumber')}>
 								확인
