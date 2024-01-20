@@ -27,6 +27,7 @@ const schema = yup.object().shape({
 	rePassword: yup
 		.string()
 		.required('비밀번호는 필수입니다.')
+		.oneOf([yup.ref('password')], '비밀번호가 일치하지 않습니다.')
 		.matches(
 			/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/,
 			'비밀번호는 8자 이상, 숫자/소문자/대문자/특수문자를 각 최소 하나씩 포함해야 합니다.'
