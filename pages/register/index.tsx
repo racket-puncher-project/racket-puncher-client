@@ -34,7 +34,13 @@ import useToast from '../../utils/useToast';
 
 const schema = yup.object().shape({
 	userName: yup.string().required('이름은 필수입니다.'),
-	phoneNumber: yup.string().required('휴대폰 번호는 필수입니다.'),
+	phoneNumber: yup
+		.string()
+		.required('휴대폰 번호는 필수입니다.')
+		.matches(
+			/^(01[016789]{1}|02|0[3-9]{1}[0-9]{1})-?[0-9]{3,4}-?[0-9]{4}$/,
+			'휴대폰 번호 형식을 확인해주세요'
+		),
 	certifyNumber: yup.string().required('인증번호는 필수입니다.'),
 	email: yup
 		.string()
@@ -53,6 +59,7 @@ const schema = yup.object().shape({
 	rePassword: yup
 		.string()
 		.required('비밀번호확인은 필수입니다.')
+		.oneOf([yup.ref('password')], '비밀번호가 일치하지 않습니다.')
 		.matches(
 			/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/,
 			'비밀번호는 8자 이상, 숫자/소문자/대문자/특수문자를 각 최소 하나씩 포함해야 합니다.'
@@ -107,6 +114,8 @@ export default function register() {
 		setValue: signupSetValue,
 		watch: signupWatch,
 		formState: { errors: signErrors },
+		setError,
+		clearErrors,
 	} = useForm({
 		resolver: yupResolver(schema),
 	});
@@ -118,6 +127,30 @@ export default function register() {
 		watch: addressWatch,
 		formState: { errors: addressErrors },
 	} = useForm();
+
+	const checkValidation = () => {
+		const validationArr = [
+			signupWatch('userName'),
+			signupWatch('phoneNumber'),
+			signupWatch('certifyNumber'),
+			signupWatch('gender'),
+			signupWatch('age'),
+			signupWatch('NTRP'),
+			signupWatch('email'),
+			signupWatch('password'),
+			signupWatch('rePassword'),
+			signupWatch('nickName'),
+			signupWatch('address'),
+			signupWatch('detailAddress'),
+			checkEmailComplete,
+			checkNicknameComplete,
+			checkPhoneCertifyComplete,
+		];
+		const checkValue = validationArr.every((item) => {
+			return item !== null && item !== undefined && item !== '';
+		});
+		return checkValue;
+	};
 
 	const clickImgFile = () => {
 		if (fileInputRef.current) {
@@ -182,21 +215,30 @@ export default function register() {
 	// 휴대폰 번호 인증번호 받기
 	const getVerification = async () => {
 		try {
-			const res = await AuthService.phoneSendCode({ phoneNumber: signupGetValue('phoneNumber') });
-			setMessage('success', res.data.response.message);
-			setCertifyNumVisible(true);
-			setTimer(300);
-			setCertTimer();
-		} catch (e) {
-			console.log(e);
-			if (e.response.data.code === 500) {
-				setMessage('error', e.response.data.message);
+			const phoneNumberSchema = yup.reach(schema, 'phoneNumber') as yup.StringSchema;
+			await phoneNumberSchema.validate(signupGetValue('phoneNumber'));
+			clearErrors('phoneNumber');
+			try {
+				const res = await AuthService.phoneSendCode({ phoneNumber: signupGetValue('phoneNumber') });
+				setMessage('success', res.data.response.message);
+				setCertifyNumVisible(true);
+				setTimer(300);
+				setCertTimer();
+			} catch (e) {
+				if (e.response.data.code === 500) {
+					setMessage('error', e.response.data.message);
+				}
 			}
+		} catch (e) {
+			setError('phoneNumber', {
+				type: 'manual',
+				message: e.message,
+			});
 		}
 	};
 
 	// 인증번호 확인
-	const confirmCertifyBtn = async () => {
+	const confirmCertiyBtn = async () => {
 		const params = {
 			phoneNumber: signupGetValue('phoneNumber'),
 			authCode: signupGetValue('certifyNumber'),
@@ -321,6 +363,7 @@ export default function register() {
 							<input
 								id='registerPhoneNum'
 								type={'text'}
+								disabled={certifyNumVisible}
 								maxLength={11}
 								{...signUpRegister('phoneNumber')}
 								onChange={(e) => {
@@ -333,7 +376,9 @@ export default function register() {
 						</InputBox>
 						<SquareButton
 							height={'50px'}
-							onClick={getVerification}
+							onClick={() => {
+								getVerification();
+							}}
 							disabled={!signupWatch('phoneNumber')}>
 							인증번호 전송
 						</SquareButton>
@@ -360,7 +405,7 @@ export default function register() {
 								)}
 							</InputBox>
 							<SquareButton
-								onClick={confirmCertifyBtn}
+								onClick={confirmCertiyBtn}
 								height={'50px'}
 								disabled={!signupWatch('certifyNumber')}>
 								확인
@@ -452,23 +497,7 @@ export default function register() {
 
 				<ButtonBox>
 					<RoundButton
-						disabled={
-							!signupWatch('userName') ||
-							!signupWatch('phoneNumber') ||
-							!signupWatch('certifyNumber') ||
-							!signupWatch('gender') ||
-							!signupWatch('age') ||
-							!signupWatch('NTRP') ||
-							!signupWatch('email') ||
-							!signupWatch('password') ||
-							!signupWatch('rePassword') ||
-							!signupWatch('nickName') ||
-							!signupWatch('address') ||
-							!signupWatch('detailAddress') ||
-							!checkEmailComplete ||
-							!checkNicknameComplete ||
-							!checkPhoneCertifyComplete
-						}
+						disabled={!checkValidation()}
 						colorstyle={'is-green'}
 						onClick={signupHandleSubmit(signUpComplete)}>
 						회원가입
@@ -567,7 +596,7 @@ const SelectBox = styled.div`
 const InputButtonBox = styled.div`
 	display: flex;
 	justify-content: space-between;
-	align-items: center;
+	/* align-items: center; */
 
 	.input__InputBox-sc-7b0p27-0 {
 		flex-basis: ${(props) => (props.theme.isResponsive ? pxToRem('380px') : rem('380px'))};
@@ -575,7 +604,7 @@ const InputButtonBox = styled.div`
 
 	.buttons__SquareButton-sc-1doc049-1 {
 		flex-basis: ${(props) => (props.theme.isResponsive ? pxToRem('180px') : rem('180px'))};
-		margin-top: ${(props) => (props.theme.isResponsive ? pxToRem('6px') : rem('6px'))};
+		margin-top: ${(props) => (props.theme.isResponsive ? pxToRem('26px') : rem('26px'))};
 		margin-left: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
 	}
 `;
