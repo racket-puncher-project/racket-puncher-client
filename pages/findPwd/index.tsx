@@ -60,6 +60,8 @@ export default function FindPwd() {
 		setValue,
 		getValues,
 		formState: { errors },
+		setError,
+		clearErrors,
 	} = useForm({
 		resolver: yupResolver(schema),
 	});
@@ -87,16 +89,25 @@ export default function FindPwd() {
 	// 휴대폰 번호 인증번호 받기
 	const getVerification = async () => {
 		try {
-			const res = await AuthService.phoneSendCode({ phoneNumber: getValues('phoneNumber') });
-			setMessage('success', res.data.response.message);
-			setCertifyNumVisible(true);
-			setTimer(300);
-			setCertTimer();
-		} catch (e) {
-			console.log(e);
-			if (e.response.data.code === 500) {
-				setMessage('error', e.response.data.message);
+			const phoneNumberSchema = yup.reach(schema, 'phoneNumber') as yup.StringSchema;
+			await phoneNumberSchema.validate(getValues('phoneNumber'));
+			clearErrors('phoneNumber');
+			try {
+				const res = await AuthService.phoneSendCode({ phoneNumber: getValues('phoneNumber') });
+				setMessage('success', res.data.response.message);
+				setCertifyNumVisible(true);
+				setTimer(300);
+				setCertTimer();
+			} catch (e) {
+				if (e.response.data.code === 500) {
+					setMessage('error', e.response.data.message);
+				}
 			}
+		} catch (e) {
+			setError('phoneNumber', {
+				type: 'manual',
+				message: e.message,
+			});
 		}
 	};
 
