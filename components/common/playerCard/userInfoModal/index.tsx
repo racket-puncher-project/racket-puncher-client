@@ -16,7 +16,6 @@ import { pxToRem } from '../../../../utils/formatter';
 
 interface IUserInfoModalProps {
 	readonly userNickName: string;
-	readonly userEmail: string;
 	readonly profilePicURL: string;
 	readonly isOpen: boolean;
 	readonly toggleModal: () => void;
@@ -25,7 +24,6 @@ interface IUserInfoModalProps {
 
 const userInfo = {
 	registeredDate: '2023/05/15',
-	userEmail: 'bboongbboong2@gmail.com',
 	userName: '최연희',
 	phoneNumber: '01000000000',
 	userAddress: '서울 마포구',
@@ -40,7 +38,7 @@ const userInfo = {
 };
 
 export default function UserInfoModal(props: IUserInfoModalProps) {
-	const { userNickName, userEmail, profilePicURL, isOpen, toggleModal, onCancel } = props;
+	const { userNickName, profilePicURL, isOpen, toggleModal, onCancel } = props;
 	// userEmail로 회원정보(userInfo) 불러오기
 	// useEffect(()=> userEmail)
 	const { userAddress, gender, NTRP, winningRate, mannerPoint } = userInfo;

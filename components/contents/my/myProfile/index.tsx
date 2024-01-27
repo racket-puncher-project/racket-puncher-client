@@ -14,84 +14,87 @@ import {
 
 import { pxToRem } from '../../../../utils/formatter';
 
-interface IProfileProps {
+export interface IProfileProps {
 	userInfos: {
-		readonly userNickName: string;
-		readonly age: number;
-		readonly gender: string;
-		readonly ntrp: string;
-		readonly userAddress: string;
-		readonly winningRate: Array<number>;
-		readonly mannerPoint: number;
-		readonly realName: string;
+		readonly siteUserName: string;
+		readonly nickname: number;
 		readonly email: string;
-		readonly imageURL: string;
+		readonly ntrp: string;
+		readonly phoneNumber: string;
+		readonly mannerScore: number;
+		readonly gender: number;
+		readonly address: string;
+		readonly zipCode: string;
+		readonly ageGroup: string;
+		readonly profileImg: string;
+		readonly id?: number;
 	};
 }
 
 export default function MyProfile(props: IProfileProps) {
 	const {
-		userNickName,
-		age,
+		siteUserName,
+		nickname,
+		email,
+		phoneNumber,
+		mannerScore,
 		gender,
 		ntrp,
-		userAddress,
-		winningRate,
-		mannerPoint,
-		realName,
-		email,
-		imageURL,
+		address,
+		zipCode,
+		ageGroup,
+		profileImg,
 	} = props.userInfos;
 
 	return (
 		<>
 			<MyProfileContainer>
 				<ProfileImage width='280px' height='280px'>
-					<img src={imageURL || ''} alt='프로필 사진' />
+					<img src={profileImg} alt='프로필 사진' />
 				</ProfileImage>
 				<ProfileInfoArea>
 					<ProfileInfoList id='Info01'>
 						<ProfileInfoItem>
 							<ItemName>닉네임 : </ItemName>
-							<ItemContent>{userNickName || '-'}</ItemContent>
-							<Badge> {ntrp || '-'} </Badge>
+							<ItemContent>{nickname}</ItemContent>
+							<Badge> {ntrp} </Badge>
 						</ProfileInfoItem>
 						<ProfileInfoItem>
 							<ItemName>연령/성별 :</ItemName>
 							<ItemContent>
-								만 {age || '-'}세 / {gender || '-'}
+								{ageGroup} / {gender}
 							</ItemContent>
 						</ProfileInfoItem>
 						<ProfileInfoItem>
 							<ItemName>주소 : </ItemName>
-							<ItemContent>{userAddress || '-'}</ItemContent>
+							<ItemContent>
+								{address}({zipCode})
+							</ItemContent>
 						</ProfileInfoItem>
 					</ProfileInfoList>
 
 					<ProfileInfoList id='Info02'>
 						<ProfileInfoItem>
 							<ItemName>NTRP : </ItemName>
-							<ItemContent>{ntrp || '-'}</ItemContent>
+							<ItemContent>{ntrp}</ItemContent>
 						</ProfileInfoItem>
 						<ProfileInfoItem>
-							<ItemName>승률 : </ItemName>
-							<ItemContent>
-								{winningRate[0] || '-'}승 {winningRate[1] || '-'}패
-							</ItemContent>
+							<ItemName>휴대폰번호 : </ItemName>
+							<ItemContent>{phoneNumber}</ItemContent>
 						</ProfileInfoItem>
 						<ProfileInfoItem>
 							<ItemName>매너점수 : </ItemName>
-							<ItemContent>{mannerPoint || '-'} 점</ItemContent>
+							<ItemContent>{mannerScore}</ItemContent>
 						</ProfileInfoItem>
 					</ProfileInfoList>
 					<ProfileInfoList id='Info03'>
 						<ProfileInfoItem>
 							<ItemName>실명 : </ItemName>
-							<ItemContent>{realName || '-'}</ItemContent>
+							<ItemContent>{siteUserName}</ItemContent>
 						</ProfileInfoItem>
 						<ProfileInfoItem>
 							<ItemName>이메일 : </ItemName>
-							<ItemContent>{email || '-'}</ItemContent>
+							<ItemContent>{email}</ItemContent>
 						</ProfileInfoItem>
 					</ProfileInfoList>
 				</ProfileInfoArea>
