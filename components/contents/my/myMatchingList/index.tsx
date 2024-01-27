@@ -1,19 +1,21 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { rem } from 'polished';
-import MyListItem from '../collapse';
+import MyListItem, { IPostInfo } from '../collapse';
+
 import { pxToRem } from '../../../../utils/formatter';
+import usersService from '../../../../service/users/service';
+
 interface IMyMatchingListProps {
-	listType: 'submitted' | 'applied';
+	listType: 'hosted' | 'applied';
 }
 
 export default function MyMatchingList(props: IMyMatchingListProps) {
-	// To-do
-	// GET 매칭글 리스트
-	// 프로필 수정 페이지 라우팅
-	// key값 어떻게 할지 정하기
-
 	const { listType } = props;
+
+	const [hostedData, setHostedData] = useState<IPostInfo[] | []>([]);
+	const [appliedData, setAppliedData] = useState<IPostInfo[] | []>([]);
+
 	const submittedList = [
 		{
 			postNum: 1,
@@ -151,17 +153,40 @@ export default function MyMatchingList(props: IMyMatchingListProps) {
 		},
 	];
 
+	// 등록한 매칭 조회
+	const getUserHostedList = async () => {
+		try {
+			const res = await usersService.getUserHostedData();
+			console.log('hostedList', res.data.response);
+			setHostedData(res.data.response);
+		} catch (e) {
+			console.log(e);
+		}
+	};
+
+	// 내가 신청한 매칭 조회
+	const getUserAppliedList = async () => {
+		try {
+			const res = await usersService.getUserAppliedData();
+			console.log('appliedList', res.data.response);
+			setAppliedData(res.data.response);
+		} catch (e) {
+			console.log(e);
+		}
+	};
+
+	useEffect(() => {
+		getUserHostedList();
+		getUserAppliedList();
+	}, []);
+
 	return (
 		<>
-			<MyListContainer>
-				{listType === 'submitted'
-					? submittedList.map((_, i) => {
-						return <MyListItem key={i + 1} postInfo={submittedList[i]} />;
-					})
-					: appliedList.map((_, i) => {
-						return <MyListItem key={i + 2} postInfo={appliedList[i]} />;
-					})}
-			</MyListContainer>
+			{listType === 'hosted' && hostedData.length > 0 ? (
+				<MyListItem postInfo={hostedData[0]} />
+			) : listType === 'applied' && appliedData.length > 0 ? (
+				<MyListItem postInfo={appliedData[0]} />
+			) : null}
 		</>
 	);
 }

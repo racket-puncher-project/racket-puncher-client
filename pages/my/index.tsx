@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import { TabsProps } from 'antd';
@@ -6,7 +6,7 @@ import { rem } from 'polished';
 
 import { CustomTab } from '../../styles/ts/components/tab';
 import { RoundButton } from '../../styles/ts/components/buttons';
-import MyProfile from '../../components/contents/my/myProfile';
+import MyProfile, { IProfileProps } from '../../components/contents/my/myProfile';
 import MyMatchingList from '../../components/contents/my/myMatchingList';
 import useCookies from '../../utils/useCookies';
 import useToast from '../../utils/useToast';
@@ -18,6 +18,7 @@ const MyPage = () => {
 	const { setMessage } = useToast();
 	const router = useRouter();
 
+	const [profileData, setProfileData] = useState<IProfileProps['userInfos'] | null>(null);
 	// To-do
 	// userInfos get 요청
 
@@ -38,7 +39,7 @@ const MyPage = () => {
 		{
 			key: 'submittedMatchingList',
 			label: '등록한 매칭',
-			children: <MyMatchingList listType='submitted' />,
+			children: <MyMatchingList listType='hosted' />,
 		},
 		{
 			key: 'appliedMatchingList',
@@ -50,7 +51,9 @@ const MyPage = () => {
 	const getUserInfoData = async () => {
 		try {
 			const res = await usersService.getUserInfo();
-			console.log(res);
+			console.log('userInfo', res.data.response);
+			setProfileData(res.data.response);
+			console.log('profileData', profileData);
 		} catch (e) {
 			console.log(e);
 			if (e.response.data.code === 404) {
@@ -71,7 +74,7 @@ const MyPage = () => {
 	return (
 		<>
 			<MyPageAlign>
-				<MyProfile userInfos={userInfos} />
+				{profileData && <MyProfile userInfos={profileData} />}
 				<RoundButton colorstyle='is-black' aria-label='프로필 수정페이지로 이동'>
 					프로필 수정
 				</RoundButton>

@@ -16,7 +16,6 @@ import { pxToRem } from '../../../utils/formatter';
 
 interface IPlayerCardProps {
 	userNickName: string;
-	userEmail: string;
 	profilePicURL: string;
 }
 
@@ -29,7 +28,7 @@ export default function PlayerCard(props: IPlayerCardProps) {
 	const [isReportUserModalOpen, setIsReportUserModalOpen] = useState(false);
 	const toggleReportUserModal = () => setIsReportUserModalOpen(!isReportUserModalOpen);
 
-	const { userNickName, profilePicURL, userEmail } = props;
+	const { userNickName, profilePicURL } = props;
 	return (
 		<>
 			<PlayerCardContainer>
@@ -59,7 +58,6 @@ export default function PlayerCard(props: IPlayerCardProps) {
 			</PlayerCardContainer>
 			<UserInfoModal
 				userNickName={userNickName}
-				userEmail={userEmail}
 				profilePicURL={profilePicURL}
 				isOpen={isUserInfoModalOpen}
 				toggleModal={toggleUserInfoModal}
@@ -67,7 +65,6 @@ export default function PlayerCard(props: IPlayerCardProps) {
 			/>
 			<ReportUserModal
 				userNickName={userNickName}
-				userEmail={userEmail}
 				profilePicURL={profilePicURL}
 				isOpen={isReportUserModalOpen}
 				toggleModal={toggleReportUserModal}

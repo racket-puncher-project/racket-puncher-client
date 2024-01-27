@@ -16,34 +16,42 @@ import { ImageBox } from '../../../../styles/ts/components/box';
 import PlayerCard from '../../../common/playerCard';
 import { RoundButton } from '../../../../styles/ts/components/buttons';
 
+interface IUser {
+	readonly id: number; // 유저 아이디
+	readonly profileImg: string; // 프로필 이미지
+	readonly nickname: string; // 닉네임
+}
+
+// “모집” 종류가 아니라 “경기” 종료 - 스케줄러를 통해 자동으로 상태가 변한다.
+// 모집중 | 인원다참 | 확정 | 모집실패 | 우천 | 경기 종료
+type RecruitStatus = 'OPEN' | 'FULL' | 'CONFIRMED' | 'FAILED' | 'WEATHER_ISSUE' | 'FINISHED';
+
+export interface IPostInfo {
+	readonly id: number; // 매칭 id
+	readonly title: string; // 제목
+	readonly location: string; // 장소 - ㅇㅇ시 ㅇㅇ구
+	readonly date: string; // 날짜
+	readonly matchingType: string; // 매칭 타입
+	readonly otherUsers: IUser[]; // 매칭에 참여한 유저 목록 (본인 제외)
+	readonly recruitStatus: RecruitStatus; // 모집 상태
+	readonly evaluated: boolean; // 평가 상태
+}
+
 interface IMyListItemProps {
-	postInfo: {
-		readonly postNum?: number;
-		readonly date?: string;
-		readonly day?: string;
-		readonly postTitle?: string;
-		readonly userAddress?: string;
-		readonly matchType?: string;
-		readonly playerList?: { userNickName: string; userEmail: string; profilePicURL: string }[];
-	};
+	postInfo: IPostInfo;
 }
 
 export default function MyListItem(props: IMyListItemProps) {
-	// To do
-	// key값 어떻게 지정할지
-
-	const { postNum, date, day, postTitle, userAddress, matchType, playerList } = props.postInfo;
+	const { id, date, title, location, matchingType, otherUsers } = props.postInfo;
 
 	const items: IAntdCollapseProps['items'] = [
 		{
-			key: postNum + '',
+			key: id,
 			label: (
 				<Header>
-					<DateNDay id='dataNDay'>
-						{date || '-'}/{day || '-'}
-					</DateNDay>
+					<DateNDay id='dataNDay'>{date}</DateNDay>
 					<TitleLink id='title'>
-						{postTitle || '-'} / {userAddress || '-'} / {matchType || '-'}
+						{title} / {location} / {matchingType}
 					</TitleLink>
 					<IconImageBox id='collapseIcon' width='24px' height='24px'>
 						<img src='/svg/arrow.svg' />
@@ -53,14 +61,12 @@ export default function MyListItem(props: IMyListItemProps) {
 			children: (
 				<PlayerCardContainer>
 					<>
-						{playerList.map((_, i) => {
-							const { userNickName, profilePicURL, userEmail } = props.postInfo.playerList[i];
+						{otherUsers?.map((otherUsersItem) => {
 							return (
 								<PlayerCard
-									key={i}
-									userNickName={userNickName}
-									profilePicURL={profilePicURL}
-									userEmail={userEmail}
+									key={otherUsersItem.id}
+									userNickName={otherUsersItem.nickname}
+									profilePicURL={otherUsersItem.profileImg}
 								/>
 							);
 						})}
@@ -80,25 +86,31 @@ export default function MyListItem(props: IMyListItemProps) {
 	];
 
 	return (
-		<ConfigProvider
-			theme={{
-				components: {
-					Collapse: {
-						borderRadiusLG: 20,
-						headerBg: `${PrimaryColor}`,
-						headerPadding: '10px 20px',
-						colorTextHeading: `${WhiteColor}`,
-						fontFamily: `${FontFamilyMedium}`,
-					},
-				},
-			}}>
-			<MyListItemContainer
-				aria-role='listitem'
-				items={items}
-				defaultActiveKey={['1']}
-				bordered={false}
-			/>
-		</ConfigProvider>
+		<>
+			{otherUsers && (
+				<>
+					<ConfigProvider
+						theme={{
+							components: {
+								Collapse: {
+									borderRadiusLG: 20,
+									headerBg: `${PrimaryColor}`,
+									headerPadding: '10px 20px',
+									colorTextHeading: `${WhiteColor}`,
+									fontFamily: `${FontFamilyMedium}`,
+								},
+							},
+						}}>
+						<MyListItemContainer
+							aria-role='listitem'
+							items={items}
+							defaultActiveKey={['1']}
+							bordered={false}
+						/>
+					</ConfigProvider>
+				</>
+			)}
+		</>
 	);
 }
 

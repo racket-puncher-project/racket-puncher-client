@@ -9,7 +9,6 @@ import { pxToRem } from '../../../../utils/formatter';
 
 interface IReportUserModalProps {
 	readonly userNickName: string;
-	readonly userEmail: string;
 	readonly profilePicURL: string;
 	readonly isOpen: boolean;
 	readonly toggleModal: () => void;
@@ -18,7 +17,7 @@ interface IReportUserModalProps {
 }
 
 export default function ReportUserModal(props: IReportUserModalProps) {
-	const { userNickName, userEmail, profilePicURL, isOpen, toggleModal, onCancel, onOk } = props;
+	const { userNickName, profilePicURL, isOpen, toggleModal, onCancel, onOk } = props;
 	// userEmail로 회원정보 불러오기
 	// useEffect(()=> GET userEmail)
 	const [mainText, setMainText] = useState('');
