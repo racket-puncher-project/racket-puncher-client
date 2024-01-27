@@ -1,21 +1,32 @@
 import styled from 'styled-components';
+import { useEffect, useState } from 'react';
 import { rem } from 'polished';
+
 import { PageMainTitle } from '../../styles/ts/components/titles';
 import { ImageBox } from '../../styles/ts/components/box';
-import { prefix } from '../../constants/prefix';
 import { BlackColor, FontSizeLg, FontSizeSpSm } from '../../styles/ts/common';
+
+import { prefix } from '../../constants/prefix';
 import { pxToRem } from '../../utils/formatter';
+import useToast from '../../utils/useToast';
 import usersService from '../../service/users/service';
-import { useEffect, useState } from 'react';
-import { useStore } from 'react-redux';
 
 export default function AlarmPage() {
+	const { setMessage } = useToast();
+
 	const [alarmData, setAlaramData] = useState([]);
 
 	const getNotificationList = async () => {
-		const res = await usersService.getNotificationData();
-		console.log(res.data.response);
-		setAlaramData(res.data.response);
+		try {
+			const res = await usersService.getNotificationData();
+			console.log(res.data.response);
+			setAlaramData(res.data.response);
+		} catch (e) {
+			console.log(e);
+			if (e.response.data.code === 404) {
+				setMessage('error', e.response.data.message);
+			}
+		}
 	};
 
 	useEffect(() => {
