@@ -5,12 +5,11 @@ import {
 	reqGetMatchingListApiData,
 	reqMatchingApplyStateApiData,
 	reqModifyMatchingApiData,
-	reqRegMatchingApiData,
-	reqSearchAddressApiData,
+	reqGetMapMatchingListApiData,
 } from './interface';
 
 // 매칭글 게시
-const regMatchingData = (data: reqRegMatchingApiData) => {
+const regMatchingData = (data: any) => {
 	return http.post('/api/matches', data);
 };
 
@@ -34,6 +33,11 @@ const getMatchingList = (data: reqGetMatchingListApiData) => {
 	return http.post('/api/matches/list', data.body, {
 		params: data.params,
 	});
+};
+
+// 반경 3km 매칭 리스트 조회
+const getMapMatchingList = (data: reqGetMapMatchingListApiData) => {
+	return http.post('/api/matches/list/map', data);
 };
 
 // 지도
@@ -63,6 +67,7 @@ const MatchesService = {
 	deleteMatchingList,
 	getMatchingApplyState,
 	searchAddress,
+	getMapMatchingList,
 };
 
 export default MatchesService;

@@ -1,57 +1,84 @@
 import React, { ChangeEvent, useRef, useState } from 'react';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import styled from 'styled-components';
 import { rem } from 'polished';
-
-import MatchesService from '../../service/matches/service';
-import {
-	FontFamilyRegular,
-	FontSizeSm,
-	InputBorderColor,
-	InputBoxColor,
-	ReportColor,
-} from '../../styles/ts/common';
 import { PageMainTitle } from '../../styles/ts/components/titles';
 import { InputBox } from '../../styles/ts/components/input';
-import { RoundButton } from '../../styles/ts/components/buttons';
 import { CustomSelect } from '../../styles/ts/components/select';
-import { ImageBox } from '../../styles/ts/components/box';
-import { TextArea } from '../../styles/ts/components/textarea';
-import DPicker from '../../components/contents/postMatching/datePicker/DPicker';
-import TPicker from '../../components/contents/postMatching/timePicker/TPicker';
+import { onlyNumber, pxToRem } from '../../utils/formatter';
+import { RoundButton, SquareButton } from '../../styles/ts/components/buttons';
+import CustomDatePicker from '../../components/common/datePicker';
+import CustomTimePicker from '../../components/common/timePicker';
 import ButtonStyleRadio from '../../components/common/buttonRadio';
-import SearchCourtDrawer from '../../components/contents/postMatching/searchCourtDrawer';
-import useToast from '../../utils/useToast';
-import { pxToRem } from '../../utils/formatter';
+import { GrayLine, ImageBox } from '../../styles/ts/components/box';
+import {
+	BlackColor,
+	FontSizeMd,
+	FontSizeMdLg,
+	FontSizeSpSm,
+	InputBorderColor,
+	InputBoxColor,
+	LightBlackColor,
+	PrimaryColor,
+} from '../../styles/ts/common';
+import { TextArea } from '../../styles/ts/components/textarea';
+import MatchesService from '../../service/matches/service';
+import DrawerBox from '../../components/common/drawer';
+import { CustomBadge } from '../../styles/ts/components/badge';
+import { v4 as uuidv4 } from 'uuid';
+import AuthService from '../../service/auth/service';
 
 const schema = yup.object().shape({
-	postTitle: yup.string().required('제목을 입력해주세요.'),
-	matchType: yup.string().required('경기 유형을 선택해주세요.'),
-	numOfRecruited: yup.number().required('모집 인원수를 선택해주세요.'),
-	selectedAge: yup.string().required('모집 연령대를 선택해주세요.'),
-	selectedNTRP: yup.string().required('모집할 NTRP를 선택해주세요.'),
-	matchDate: yup.string().required('경기 날짜를 선택해주세요.'),
-	matchStartTime: yup.string().required('경기 시작 시간을 선택해주세요.'),
-	matchEndTime: yup.string().required('경기 종료 시간을 선택해주세요.'),
-	deadlineDate: yup.string().required('모집 마감일을 선택해주세요.'),
-	deadlineTime: yup.string().required('모집 마감 시간을 선택해주세요.'),
-	courtAddress: yup.string().required('경기장 주소를 입력해주세요.'),
-	isCourtBooked: yup.boolean().required('경기장 예약 여부를 선택해주세요.'),
-	courtFee: yup
-		.number()
-		.required('경기장 대여료를 입력해주세요. (무료일 경우 0을 입력해주세요.)')
-		.min(0),
+	title: yup.string().required('제목을 입력해주세요.'),
+	matchingType: yup.string().required('경기 유형을 선택해주세요.'),
+	recruitNum: yup.number().required('모집 인원수를 선택해주세요.'),
+	ageGroup: yup.string().required('모집 연령대를 선택해주세요.'),
+	ntrp: yup.string().required('모집할 NTRP를 선택해주세요.'),
+	/** */
+	// matchDate: yup.string().required('경기 날짜를 선택해주세요.'),
+	// matchStartTime: yup.string().required('경기 시작 시간을 선택해주세요.'),
+	// matchEndTime: yup.string().required('경기 종료 시간을 선택해주세요.'),
+	// deadlineDate: yup.string().required('모집 마감일을 선택해주세요.'),
+	// deadlineTime: yup.string().required('모집 마감 시간을 선택해주세요.'),
+	location: yup.string().required('경기장 주소를 입력해주세요.'),
+	isReserved: yup.boolean().required('경기장 예약 여부를 선택해주세요.'),
+	cost: yup.string().required('경기장 대여료를 입력해주세요'),
 	locationImg: yup.string(),
-	mainText: yup.string().required('본문 내용을 입력해주세요.'),
+	content: yup.string().required('본문 내용을 입력해주세요.'),
 });
 export default function PostMatching() {
 	// To-do
 	// 프론트에서 모집 마감일 받을 때 등록일 이후~경기시작 시간 이전으로 모집 마감일 선택하도록 설정
 	// 이미지 api 붙이기
 
+	// 경기 일시 state
+	const [dateState, setDateState] = useState('');
+
+	// 시작 시간 state
+	const [startTimeState, setStartTimeState] = useState('');
+
+	// 종료 시간 state
+	const [endTimeState, setEndTimeState] = useState('');
+
+	// 모집마감일 state
+	const [recruitDueDateState, setRecruitDueDateState] = useState('');
+
+	// 모집마감시간 state
+	const [recruitDueTimeState, setRecruitDueTimeState] = useState('');
+
+	// 이미지
+	const fileInputRef = useRef<HTMLInputElement | null>(null);
+	const [fileData, setFileData] = useState(null);
+	const [virtualImgData, setVirtualImgData] = useState(null);
+
+	// address
+	const [addressDrawer, setAddressDrawer] = useState(false);
+	const [addressList, setAddressList] = useState(null);
+
 	const {
+		control: postMatchControl,
 		register: postMatchingResister,
 		handleSubmit: postMatchingHandleSubmit,
 		setValue: postMatchingSetValue,
@@ -61,316 +88,242 @@ export default function PostMatching() {
 	} = useForm({
 		resolver: yupResolver(schema),
 	});
-	const { setMessage } = useToast();
-	const [matchDate, setMatchDate] = useState(null);
-	const [matchStartTime, setMatchStartTime] = useState('');
-	const [matchEndTime, setMatchEndTime] = useState('');
-	const [deadlineDate, setDeadlineDate] = useState('');
-	const [deadlineTime, setDeadlineTime] = useState('');
-	const [courtInfos, setCourtInfos] = useState({ address: '', lat: '', lon: '' });
-	const [numOfAllPlayers, setNumOfAllPlayers] = useState(1);
-	const [selectedImage, setSelectedImage] = useState(null);
-	const [optionsForNOR, setOptionsForNOR] = useState([
-		{ value: null, label: '경기 유형을 먼저 선택해주세요.' },
-	]);
-	const selectHandler = (option: string) => {
-		option.includes('SINGLE')
-			? setOptionsForNOR([{ value: 1, label: '1 명' }])
-			: setOptionsForNOR([
-				{ value: 1, label: '1 명' },
-				{ value: 2, label: '2 명' },
-				{ value: 3, label: '3 명' },
-			]);
-	};
 
-	const fileInputRef = useRef<HTMLInputElement | null>(null);
+	const {
+		register: addressRegister,
+		handleSubmit: addressHandleSubmit,
+		setValue: addressSetValue,
+		watch: addressWatch,
+		formState: { errors: addressErrors },
+	} = useForm();
+
 	const clickImgFile = () => {
 		if (fileInputRef.current) {
 			fileInputRef.current.click();
 		}
 	};
+
 	const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const files = event.target.files;
-		if (files && files.length > 0) {
-			const selectedFile = files[0];
+		const files = event.target.files[0];
+		const fileReader = new FileReader();
 
-			const fileReader = new FileReader();
-			fileReader.readAsDataURL(selectedFile);
-			fileReader.onloadend = () => {
-				setSelectedImage(fileReader.result);
-			};
-			console.log(fileReader);
-			postMatchingSetValue('locationImg', `${fileReader.result}`);
-		}
-	};
-
-	const [isSearchDrawerOpen, setIsSearchDrawerOpen] = useState(false);
-	const toggleSearchDrawer = () => setIsSearchDrawerOpen((prev: boolean) => !prev);
-
-	const checkValidation = () => {
-		if (
-			!postMatchingWatch('postTitle') ||
-			!postMatchingWatch('matchType') ||
-			!postMatchingWatch('numOfRecruited') ||
-			!postMatchingWatch('selectedAge') ||
-			!postMatchingWatch('selectedNTRP') ||
-			!postMatchingWatch('matchDate') ||
-			!postMatchingWatch('matchStartTime') ||
-			!postMatchingWatch('matchEndTime') ||
-			!postMatchingWatch('deadlineDate') ||
-			!postMatchingWatch('deadlineTime') ||
-			!postMatchingWatch('courtAddress') ||
-			!postMatchingWatch('isCourtBooked') ||
-			!postMatchingWatch('courtFee') ||
-			// !postMatchingWatch('courtPhoto') ||
-			!postMatchingWatch('mainText')
-		) {
-			return true;
-		} else {
-			return false;
-		}
-	};
-
-	const onSubmit = (e: any) => {
-		e.preventDefault();
-		const postedData = {
-			title: postMatchingGetValues('postTitle'),
-			matchingType: postMatchingGetValues('matchType'),
-			recruitNum: postMatchingGetValues('numOfRecruited'),
-			ageGroup: postMatchingGetValues('selectedAge'),
-			ntrp: postMatchingGetValues('selectedNTRP'),
-			matchingDate: postMatchingGetValues('matchDate'),
-			matchingStartTime: postMatchingGetValues('matchStartTime'),
-			matchingEndTime: postMatchingGetValues('matchEndTime'),
-			recruitDueDate: postMatchingGetValues('deadlineDate'),
-			recruitDueTime: postMatchingGetValues('deadlineTime'),
-			location: postMatchingGetValues('courtAddress'),
-			lat: `${courtInfos.lat}`,
-			len: `${courtInfos.lon}`,
-			isReserved: postMatchingGetValues('isCourtBooked'),
-			cost: postMatchingGetValues('courtFee'),
-			locationImg: postMatchingGetValues('locationImg'),
-			content: postMatchingGetValues('mainText'),
+		fileReader.onload = (event) => {
+			setVirtualImgData(event.target.result);
 		};
-		console.log(e);
-		console.log(postedData);
-		MatchesService.regMatchingData(postedData)
-			.then(() => console.log('포스트됨'))
-			.catch((e) => console.log(e));
+		setFileData(files);
+		fileReader.readAsDataURL(files);
+	};
+
+	// 주소 검색 모달 ---------------------------------------------------------------
+	const handleAddressDrawer = () => {
+		setAddressDrawer((prev) => !prev);
+	};
+
+	// 주소 검색
+	const onClickSearchAddress = async (data: any) => {
+		const payload = {
+			keyword: data.address,
+		};
+		try {
+			const res = await MatchesService.searchAddress(payload);
+			setAddressList(res.data.response);
+		} catch (e) {
+			console.log(e);
+		}
+	};
+
+	// 주소 아이템 클릭시
+	const onClickAddressItem = (item: any) => {
+		handleAddressDrawer();
+		postMatchingSetValue('location', item.jibunAddr);
+	};
+
+	const onSubmit = async () => {
+		const params = {
+			title: postMatchingGetValues('title'),
+			ageGroup: postMatchingGetValues('ageGroup'),
+			matchingType: postMatchingGetValues('matchingType'),
+			ntrp: postMatchingGetValues('ntrp'),
+			recruitNum: postMatchingGetValues('recruitNum'),
+			date: dateState,
+			startTime: startTimeState,
+			endTime: endTimeState,
+			recruitDueDate: recruitDueDateState,
+			recruitDueTime: recruitDueTimeState.split(':')[0],
+			isReserved: postMatchingGetValues('isReserved'),
+			cost: Number(postMatchingGetValues('cost')),
+			content: postMatchingGetValues('content'),
+			location: postMatchingGetValues('location'),
+		};
+		try {
+			// 이미지 등록
+			const formData = new FormData();
+			formData.append('imageFile', fileData);
+			const fileUrl = await AuthService.uploadImgSignup(formData);
+
+			const res = await MatchesService.regMatchingData({
+				...params,
+				locatinImg: fileUrl.data.response,
+			});
+			console.log('res', res);
+		} catch (e) {
+			console.log(e);
+		}
 	};
 
 	return (
 		<>
-			<SearchCourtDrawer
-				isOpen={isSearchDrawerOpen}
-				toggleDrawer={toggleSearchDrawer}
-				setCourtInfos={setCourtInfos}
-				setAddress={postMatchingSetValue}
-			/>
 			<PageTitleArea>
 				<PageMainTitle>매칭 글 등록</PageMainTitle>
 			</PageTitleArea>
-			<PostMatchingForm onSubmit={onSubmit}>
+			<PostMatchingFormBox>
+				{/* 제목 */}
 				<InputBox>
 					<label htmlFor='postTitle'>제목</label>
-					<input
-						id='postTitle'
-						type='text'
-						{...postMatchingResister('postTitle')}
-						onChange={(e) => postMatchingSetValue('postTitle', e.target.value)}
+					<input type='text' {...postMatchingResister('title')} />
+				</InputBox>
+				{/* 경기 유형 / 모집 인원 */}
+				<HalfBox>
+					<InputBox>
+						<label>경기 유형</label>
+						<Controller
+							name='matchingType'
+							control={postMatchControl}
+							render={({ field }) => (
+								<CustomSelect
+									{...field}
+									options={[
+										{ value: 'SINGLE', label: '단식' },
+										{ value: 'MIXED_SINGLE', label: '혼성 단식' },
+										{ value: 'DOUBLE', label: '복식' },
+										{ value: 'MIXED_DOUBLE', label: '혼성 복식' },
+									]}
+								/>
+							)}
+						/>
+					</InputBox>
+					<InputBox>
+						<label>모집 인원</label>
+						<Controller
+							name='recruitNum'
+							control={postMatchControl}
+							render={({ field }) => (
+								<CustomSelect
+									{...field}
+									options={[
+										{ value: 1, label: '1명' },
+										{ value: 2, label: '2명' },
+										{ value: 3, label: '3명' },
+									]}
+								/>
+							)}
+						/>
+					</InputBox>
+				</HalfBox>
+				{/* 모집 연령대 / 모집 NTRP */}
+				<HalfBox>
+					<InputBox>
+						<label>모집 연령대</label>
+						<Controller
+							name='ageGroup'
+							control={postMatchControl}
+							render={({ field }) => (
+								<CustomSelect
+									{...field}
+									options={[
+										{ value: 'TEENAGER', label: '10대' },
+										{ value: 'TWENTIES', label: '20대' },
+										{ value: 'THIRTIES', label: '30대' },
+										{ value: 'FORTIES', label: '40대' },
+										{ value: 'FIFTIES', label: '50대' },
+										{ value: 'SIXTIES', label: '60대' },
+									]}
+								/>
+							)}
+						/>
+					</InputBox>
+					<InputBox>
+						<label>모집 NTRP</label>
+						<Controller
+							name='ntrp'
+							control={postMatchControl}
+							render={({ field }) => (
+								<CustomSelect
+									{...field}
+									options={[
+										{ value: 'DEVELOPMENT', label: 'NewBie (1.0 ~ 2.0)' },
+										{ value: 'BEGINNER', label: 'Beginner (2.5 ~ 3.5)' },
+										{ value: 'INTERMEDIATE', label: 'Intermediate (4.0 ~ 4.5)' },
+										{ value: 'ADVANCED', label: 'Advanced (5.0 ~ 5.5)' },
+										{ value: 'PRO', label: 'Pro (6.0 ~ 7.0)' },
+									]}
+								/>
+							)}
+						/>
+					</InputBox>
+				</HalfBox>
+				{/* 경기일시 */}
+				<InputBox>
+					<label>경기일</label>
+					<CustomDatePicker dateState={dateState} setDateState={setDateState} />
+				</InputBox>
+				{/* 시작 시간 / 종료 시간 */}
+				<HalfBox>
+					<InputBox>
+						<label>시작 시간</label>
+						<CustomTimePicker dateState={startTimeState} setDateState={setStartTimeState} />
+					</InputBox>
+					<InputBox>
+						<label>종료 시간</label>
+						<CustomTimePicker dateState={endTimeState} setDateState={setEndTimeState} />
+					</InputBox>
+				</HalfBox>
+				{/* 모집마감일 */}
+				<InputBox>
+					<label>모집마감일</label>
+					<CustomDatePicker dateState={recruitDueDateState} setDateState={setRecruitDueDateState} />
+				</InputBox>
+				{/* 모집마감시간 */}
+				<InputBox>
+					<label>모집마감시간</label>
+					<CustomTimePicker dateState={recruitDueTimeState} setDateState={setRecruitDueTimeState} />
+				</InputBox>
+				{/* 경기장 예약여부 */}
+				<InputBox>
+					<label>경기장 예약 여부</label>
+					<ButtonStyleRadio
+						setState={postMatchingSetValue}
+						{...postMatchingResister('isReserved')}
 					/>
 				</InputBox>
-				<HalfContainer>
-					<InputBox>
-						<label htmlFor='matchType'>경기 유형</label>
-						<CustomSelect
-							id='matchType'
-							options={[
-								{ value: 'SINGLE', label: '단식' },
-								{ value: 'MIXED_SINGLE', label: '혼성 단식' },
-								{ value: 'DOUBLE', label: '복식' },
-								{ value: 'MIXED_DOUBLE', label: '혼성 복식' },
-							]}
-							{...postMatchingResister('matchType')}
-							onChange={(e: ChangeEvent<HTMLInputElement>) => {
-								const selected = e + '';
-								postMatchingSetValue('matchType', selected);
-								setNumOfAllPlayers(selected.includes('SINGLE') ? 2 : 4);
-								selectHandler(selected);
-							}}
-						/>
-					</InputBox>
-					<InputBox>
-						<label htmlFor='numOfRecruited'>모집 인원</label>
-						<CustomSelect
-							id='numOfRecruited'
-							options={optionsForNOR}
-							{...postMatchingResister('numOfRecruited')}
-							onChange={(e: number) => postMatchingSetValue('numOfRecruited', e)}
-						/>
-					</InputBox>
-				</HalfContainer>
-				<HalfContainer>
-					<InputBox>
-						<label htmlFor='selectedAge'>모집 연령대</label>
-						<CustomSelect
-							id='selectedAge'
-							options={[
-								{ value: 'TEENAGER', label: '10대' },
-								{ value: 'TWENTIES', label: '20대' },
-								{ value: 'THIRTIES', label: '30대' },
-								{ value: 'FORTIES', label: '40대' },
-								{ value: 'FIFTIES', label: '50대' },
-								{ value: 'SIXTIES', label: '60대' },
-							]}
-							onChange={(e: string) => postMatchingSetValue('selectedAge', e)}
-						/>
-					</InputBox>
-					<InputBox>
-						<label htmlFor='selectedNTRP'>모집 NTRP</label>
-						<CustomSelect
-							id='selectedNTRP'
-							options={[
-								{ value: 'DEVELOPMENT', label: 'NewBie (1.0 ~ 2.0)' },
-								{ value: 'BEGINNER', label: 'Beginner (2.5 ~ 3.5)' },
-								{ value: 'INTERMEDIATE', label: 'Intermediate (4.0 ~ 4.5)' },
-								{ value: 'ADVANCED', label: 'Advanced (5.0 ~ 5.5)' },
-								{ value: 'PRO', label: 'Pro (6.0 ~ 7.0)' },
-							]}
-							{...postMatchingResister('selectedNTRP')}
-							onChange={(e: string) => {
-								postMatchingSetValue('selectedNTRP', e);
-							}}
-						/>
-					</InputBox>
-				</HalfContainer>
-
+				{/* 비용 */}
 				<InputBox>
-					<label htmlFor='matchDate'>경기일</label>
-					<DPicker name='matchDate' setState={postMatchingSetValue} />
-					<HiddenInput
-						type='text'
-						id='matchDate'
-						value={`${matchDate}`}
-						{...postMatchingResister('matchDate')}
-						readOnly
-					/>
-				</InputBox>
-
-				<HalfContainer>
-					<InputBox>
-						<label htmlFor='matchStartTime'>시작 시간</label>
-						<TPicker name='matchStartTime' setState={postMatchingSetValue} type={[true, true]} />
-						<HiddenInput
-							type='text'
-							id='matchStartTime'
-							value={`${matchStartTime}`}
-							{...postMatchingResister('matchStartTime')}
-							readOnly
-						/>
-					</InputBox>
-					<InputBox>
-						<label htmlFor='matchEndTime'>종료 시간</label>
-						<TPicker name='matchEndTime' setState={postMatchingSetValue} type={[true, true]} />
-						<HiddenInput
-							type='text'
-							id='matchEndTime'
-							value={`${matchEndTime}`}
-							{...postMatchingResister('matchEndTime')}
-							readOnly
-						/>
-					</InputBox>
-				</HalfContainer>
-
-				<InputBox>
-					<label htmlFor='deadlineDnT'>모집 마감 기한</label>
-					<HalfContainer>
-						<DPicker
-							name='deadlineDate'
-							setState={postMatchingSetValue}
-							matchDate={`${deadlineDate}`}
-							type={[true, true, true]}
-						/>
-						<HiddenInput
-							type='text'
-							id='deadlineDate'
-							value={`${deadlineDate}`}
-							{...postMatchingResister('deadlineDate')}
-							readOnly
-							onChange={(e: ChangeEvent<HTMLInputElement>) => {
-								postMatchingSetValue('deadlineDate', e.target.value);
-								console.log(postMatchingGetValues('deadlineDate'));
-							}}
-						/>
-						<TPicker name='deadlineTime' setState={postMatchingSetValue} type={[true, false]} />
-						<HiddenInput
-							type='text'
-							id='deadlineTime'
-							value={`${deadlineTime}`}
-							{...postMatchingResister('deadlineTime')}
-							readOnly
-						/>
-					</HalfContainer>
-				</InputBox>
-
-				<InputBox>
-					<label htmlFor='courtAddress'>경기장 주소</label>
+					<label>구장대여비</label>
 					<input
-						type='text'
-						id='courtAddress'
-						defaultValue={''}
-						value={`${courtInfos.address}`}
-						{...postMatchingResister('courtAddress')}
-						onClick={(e) => {
-							e.preventDefault();
-							setIsSearchDrawerOpen(true);
+						type={'text'}
+						{...postMatchingResister('cost')}
+						onChange={(e) => {
+							postMatchingSetValue('cost', onlyNumber(e.target.value));
 						}}
-						readOnly
 					/>
 				</InputBox>
-
-				<HalfContainer>
+				{/* 구장 주소 */}
+				<InputButtonBox>
 					<InputBox>
-						<label htmlFor='isCourtBooked'>경기장 예약 여부</label>
-						<ButtonStyleRadio
-							idString='isCourtBooked'
-							setState={postMatchingSetValue}
-							{...postMatchingResister('isCourtBooked')}
-						/>
+						<label>주소</label>
+						<input placeholder={'주소'} {...postMatchingResister('location')} readOnly />
 					</InputBox>
-				</HalfContainer>
-				<CourtFeeArea>
-					<FeeForEachSpan>
-						1인당{' '}
-						{Number.isInteger(postMatchingGetValues('courtFee') / numOfAllPlayers)
-							? `${postMatchingGetValues('courtFee') / numOfAllPlayers}`
-							: '-'}{' '}
-						원
-					</FeeForEachSpan>
-					<InputBox>
-						<label htmlFor='courtFee'>구장 대여비</label>
-						<input
-							type='number'
-							id='courtFee'
-							className='text-align-right'
-							pattern='^[0-9]+$'
-							{...postMatchingResister('courtFee')}
-							onChange={(e) => postMatchingSetValue('courtFee', Number(e.target.value))}
-							onClick={() => {
-								if (numOfAllPlayers === 0) setMessage('warning', '경기 유형을 먼저 선택해주세요!');
-							}}
-							// 포커스 옮기기
-							// matchTypeREF.current.focus();
-						/>
-					</InputBox>
-				</CourtFeeArea>
-
+					<SquareButton height={'50px'} onClick={handleAddressDrawer}>
+						주소 검색
+					</SquareButton>
+				</InputButtonBox>
+				{/* 구장 이미지 */}
 				<InputBox>
-					<label htmlFor='courtPhoto'>경기장 이미지</label>
+					<label>경기장 이미지</label>
 					<ImageSection onClick={clickImgFile}>
 						<ImageBox width={'620px'} height={'380px'}>
 							<img
-								src={selectedImage || '/images/add-image-rectangle-00.png'}
+								src={virtualImgData || '/images/add-image-rectangle-00.png'}
 								alt='경기장 이미지'
 							/>
 						</ImageBox>
@@ -384,21 +337,74 @@ export default function PostMatching() {
 						/>
 					</ImageSection>
 				</InputBox>
-
+				{/* 내용 */}
 				<InputBox>
-					<label htmlFor='mainText'>본문 내용</label>
+					<label>본문 내용</label>
 					<MainTextArea
-						id={'mainText'}
-						onChange={(e) => postMatchingSetValue('mainText', e.target.value)}
+						onChange={(e) => postMatchingSetValue('content', e.target.value)}
 						placeholder='내용을 입력하세요.'
-						{...postMatchingResister('mainText')}
+						{...postMatchingResister('content')}
 					/>
 				</InputBox>
+			</PostMatchingFormBox>
+			<div className={'btn-box'}>
+				<RoundButton onClick={onSubmit}>적용하기</RoundButton>
+			</div>
+			<DrawerBox
+				title={'주소 검색'}
+				isOpen={addressDrawer}
+				placement={'bottom'}
+				height={'100%'}
+				toggleDrawer={handleAddressDrawer}>
+				<>
+					<InputNoTitleButtonBox>
+						<InputBox>
+							<input
+								id='registerAddress'
+								placeholder={'우편번호'}
+								{...addressRegister('address')}
+							/>
+						</InputBox>
+						<SquareButton height={'50px'} onClick={addressHandleSubmit(onClickSearchAddress)}>
+							주소 검색
+						</SquareButton>
+					</InputNoTitleButtonBox>
 
-				<SubmitBtn colorstyle={'is-black'} type='submit' disabled={checkValidation()}>
-					등록하기
-				</SubmitBtn>
-			</PostMatchingForm>
+					<DescTextBox>
+						<p>
+							찾으시려는 도로명주소, 동(읍/면/리) 또는 건물명을 입력해주세요.
+							<br />
+							(예 : 판교동, 판교원로 68, 판교실리콘파크)
+						</p>
+					</DescTextBox>
+
+					<GrayLine />
+
+					<AddressContainer>
+						{addressList?.map((item) => {
+							return (
+								<AddressBoxWrap
+									key={uuidv4()}
+									onClick={() => {
+										onClickAddressItem(item);
+									}}>
+									<AddLeftWrap>
+										<AddressBox>
+											<CustomBadge color={PrimaryColor}>도로명</CustomBadge>
+											<p>{item.roadAddr}</p>
+										</AddressBox>
+										<AddressBox>
+											<CustomBadge>지번</CustomBadge>
+											<p>{item.jibunAddr}</p>
+										</AddressBox>
+									</AddLeftWrap>
+									<AddRightWrap>{item.zipNo}</AddRightWrap>
+								</AddressBoxWrap>
+							);
+						})}
+					</AddressContainer>
+				</>
+			</DrawerBox>
 		</>
 	);
 }
@@ -407,58 +413,19 @@ const PageTitleArea = styled.div`
 	margin: ${rem('50px')} auto;
 `;
 
-const PostMatchingForm = styled.form`
+const PostMatchingFormBox = styled.div``;
+
+const HalfBox = styled.div`
 	display: flex;
-	flex-direction: column;
+	justify-content: space-between;
 
-	.input__InputBox-sc-7b0p27-0 {
-		.text-align-right {
-			text-align: right;
-		}
+	div.input__InputBox-sc-7b0p27-0 {
+		flex-basis: ${(props) => (props.theme.isResponsive ? pxToRem('280px') : rem('280px'))};
 
-		.select__CustomSelect-sc-1q63q92-0 {
-			margin-bottom: 0px;
+		&:first-child {
+			margin-right: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
 		}
 	}
-`;
-
-const HalfContainer = styled.div`
-	display: flex;
-	flex-direction: row;
-	gap: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
-
-	.input__InputBox-sc-7b0p27-0 {
-		width: 100%;
-
-		.text-align-right {
-			text-align: right;
-		}
-
-		.select__CustomSelect-sc-1q63q92-0 {
-			margin-bottom: 0px;
-		}
-	}
-`;
-const CourtFeeArea = styled.div`
-	position: relative;
-	width: 100%;
-`;
-
-const FeeForEachSpan = styled.span`
-	position: absolute;
-	top: ${(props) => (props.theme.isResponsive ? pxToRem('3px') : rem('3px'))};
-	right: ${(props) => (props.theme.isResponsive ? pxToRem('5px') : rem('5px'))};
-	max-width: ${(props) => (props.theme.isResponsive ? pxToRem('150px') : rem('150px'))};
-	white-space: nowrap;
-	overflow: hidden;
-
-	font-family: ${FontFamilyRegular};
-	font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeSm) : rem(FontSizeSm))};
-	color: ${ReportColor};
-`;
-
-const SubmitBtn = styled(RoundButton)`
-	margin: ${(props) => (props.theme.isResponsive ? `${pxToRem('30px')} 0` : `${rem('30px')} 0`)};
 `;
 
 const ImageSection = styled.div`
@@ -487,16 +454,95 @@ const MainTextArea = styled(TextArea)`
 	height: ${(props) => (props.theme.isResponsive ? pxToRem('400px') : rem('400px'))};
 `;
 
-const HiddenInput = styled.input`
-	position: absolute;
-	width: 0px;
-	height: 0px;
-	max-width: 0px;
-	max-height: 0px;
-	background-color: transparent;
-	padding: 0px;
-	border: 1px solid transparent;
-	border-radius: 0px;
-	box-shadow: none;
-	visibility: hidden;
+const InputNoTitleButtonBox = styled.div`
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
+
+	.input__InputBox-sc-7b0p27-0 {
+		flex-basis: ${(props) => (props.theme.isResponsive ? pxToRem('380px') : rem('380px'))};
+		margin-bottom: 0 !important;
+	}
+
+	.buttons__SquareButton-sc-1doc049-1 {
+		flex-basis: ${(props) => (props.theme.isResponsive ? pxToRem('180px') : rem('180px'))};
+		margin-left: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
+	}
+`;
+
+const DescTextBox = styled.div`
+	margin-bottom: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
+
+	p {
+		font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeSpSm) : rem(FontSizeSpSm))};
+		color: ${LightBlackColor};
+		font-family: Pretendard-Regular;
+		line-height: ${rem(FontSizeMdLg)};
+	}
+`;
+
+const AddressContainer = styled.div`
+	margin-top: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
+`;
+
+const AddressBoxWrap = styled.div`
+	display: flex;
+	justify-content: space-between;
+	background-color: ${InputBoxColor};
+	border: 1px solid ${InputBorderColor};
+	border-radius: 5px;
+	padding: ${(props) => (props.theme.isResponsive ? pxToRem('15px') : rem('15px'))};
+	margin-bottom: ${(props) => (props.theme.isResponsive ? pxToRem('10px') : rem('10px'))};
+	cursor: pointer;
+	-webkit-tap-highlight-color: transparent !important;
+
+	&:hover {
+		background-color: #efefef;
+	}
+`;
+
+const AddLeftWrap = styled.div`
+	margin-right: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
+`;
+
+const AddressBox = styled.div`
+	display: flex;
+	align-items: center;
+
+	&:first-child {
+		margin-bottom: ${(props) => (props.theme.isResponsive ? pxToRem('10px') : rem('10px'))};
+	}
+
+	p {
+		margin-left: ${(props) => (props.theme.isResponsive ? pxToRem('10px') : rem('10px'))};
+		font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeSpSm) : rem(FontSizeSpSm))};
+		font-family: Pretendard-Regular;
+		line-height: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeMd) : rem(FontSizeMd))};
+	}
+`;
+
+const AddRightWrap = styled.div`
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeMd) : rem(FontSizeMd))};
+	font-family: Pretendard-Regular;
+	color: ${BlackColor};
+`;
+
+const InputButtonBox = styled.div`
+	display: flex;
+	justify-content: space-between;
+	/* align-items: center; */
+
+	.input__InputBox-sc-7b0p27-0 {
+		flex-basis: ${(props) => (props.theme.isResponsive ? pxToRem('380px') : rem('380px'))};
+	}
+
+	.buttons__SquareButton-sc-1doc049-1 {
+		flex-basis: ${(props) => (props.theme.isResponsive ? pxToRem('180px') : rem('180px'))};
+		margin-top: ${(props) => (props.theme.isResponsive ? pxToRem('26px') : rem('26px'))};
+		margin-left: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
+	}
 `;
