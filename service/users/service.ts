@@ -15,10 +15,16 @@ const getUserAppliedData = () => {
 	return http.get('/api/users/my-page/applied');
 };
 
+// 알림 조회
+const getNotificationData = () => {
+	return http.get('/api/users/notifications');
+};
+
 const usersService = {
 	getUserInfo,
 	getUserHostedData,
 	getUserAppliedData,
+	getNotificationData,
 };
 
 export default usersService;
