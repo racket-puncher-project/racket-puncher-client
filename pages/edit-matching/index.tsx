@@ -399,9 +399,9 @@ export default function EditMatching(props: IEdtMatchingProps) {
 					<InputBox>
 						<label htmlFor='isCourtBooked'>경기장 예약 여부</label>
 						<ButtonStyleRadio
-							idString='isCourtBooked'
+							// idString='isCourtBooked'
 							setState={editMatchingSetValue}
-							defaultValue={editMatchingGetValues('isCourtBooked')}
+							// defaultValue={editMatchingGetValues('isCourtBooked')}
 							{...editMatchingResister('isCourtBooked')}
 						/>
 					</InputBox>

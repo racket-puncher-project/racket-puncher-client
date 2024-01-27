@@ -1,44 +1,23 @@
 import styled from 'styled-components';
 import { useEffect, useState } from 'react';
 import MatchingCard from '../card';
+import Service from '../../../../service/matches/service';
 import { v4 as uuidv4 } from 'uuid';
 import { prefix } from '../../../../constants/prefix';
 import { pxToRem } from '../../../../utils/formatter';
 import { rem } from 'polished';
-
-const positions = [
-	{
-		content: '<div>카카오</div>',
-		title: '카카오',
-		lat: 33.450705,
-		lng: 126.570677,
-	},
-	{
-		content: '<div>생태연못</div>',
-		title: '생태연못',
-		lat: 33.450936,
-		lng: 126.569477,
-	},
-	{
-		content: '<div>텃밭</div>',
-		title: '텃밭',
-		lat: 33.450879,
-		lng: 126.56994,
-	},
-	{
-		content: '<div>근린공원</div>',
-		title: '근린공원',
-		lat: 33.451393,
-		lng: 126.570738,
-	},
-];
+import NoResultBox from '../../../common/noResult';
+import useLoading from '../../../../utils/useLoading';
 
 export default function MyAroundMatching() {
 	const [map, setMap] = useState(null);
 	const [infowindows, setInfowindows] = useState([]);
 	const [selectedMarker, setSelectedMarker] = useState(null);
+	const [aroundPositions, setAroundPositions] = useState([]);
+	const { showLoading, hideLoading } = useLoading();
 
 	useEffect(() => {
+		showLoading();
 		const container = document.getElementById('kakao-map');
 
 		const customMarkerImageUrl = `${prefix}/images/map-pin.png`;
@@ -83,7 +62,7 @@ export default function MyAroundMatching() {
 					infowindows.push(userInfowindow);
 
 					// infoWindow ----------------------------------------------------------
-					const newInfowindows = positions.map((position) => {
+					const newInfowindows = aroundPositions.map((position) => {
 						const marker = new kakao.maps.Marker({
 							map: kakaoMap,
 							position: new kakao.maps.LatLng(position.lat, position.lng),
@@ -111,13 +90,14 @@ export default function MyAroundMatching() {
 					});
 
 					setInfowindows([...infowindows, ...newInfowindows]);
+					getMatchingList(lat, lng);
 				},
 				(error) => {
 					console.error('error: ' + error.message);
 				}
 			);
+			hideLoading();
 		} else {
-			console.log('이 브라우저에서는 지원되지 않음');
 			// Geolocation API 사용 불가능 시 기본 위치로 설정
 			const defaultOptions = {
 				center: new kakao.maps.LatLng(33.450705, 126.570677),
@@ -125,8 +105,30 @@ export default function MyAroundMatching() {
 			};
 			const kakaoMap = new kakao.maps.Map(container, defaultOptions);
 			setMap(kakaoMap);
+			hideLoading();
 		}
 	}, []);
+
+	const getMatchingList = async (lat: any, lng: any) => {
+		const payload = {
+			lat,
+			lon: lng,
+		};
+		try {
+			const res = await Service.getMapMatchingList(payload);
+			const processRes = res.data.response.content.map((maps) => {
+				return {
+					content: `<div>${maps.title}</div>`,
+					title: maps.title,
+					lat: maps.lat,
+					lng: maps.lng,
+				};
+			});
+			setAroundPositions(processRes);
+		} catch (e) {
+			console.log(e);
+		}
+	};
 
 	const handleButtonClick = (position, index) => {
 		if (map) {
@@ -149,11 +151,12 @@ export default function MyAroundMatching() {
 				<MapBox>
 					<div id={'kakao-map'} style={{ width: '100%', height: '400px' }}></div>
 				</MapBox>
-				{positions.map((position, index) => (
+				{aroundPositions.map((position, index) => (
 					<div key={uuidv4()}>
 						<MatchingCard onClick={() => handleButtonClick(position, index)}></MatchingCard>
 					</div>
 				))}
+				{aroundPositions.length === 0 && <NoResultBox />}
 			</MyAroundMatchingContainer>
 		</>
 	);

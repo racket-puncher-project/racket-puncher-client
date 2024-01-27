@@ -37,8 +37,8 @@ export default function MatchingList() {
 
 	const [filterParams, setFilterParams] = useState({
 		sort: '',
-		lat: 0,
-		lon: 0,
+		// lat: 0,
+		// lon: 0,
 		startDate: '',
 		endDate: '',
 		startTime: '',
@@ -50,7 +50,6 @@ export default function MatchingList() {
 	});
 
 	const getMatchingList = async () => {
-		console.log('api진입!!!');
 		const payload = {
 			params: {
 				page: params.page,
@@ -58,10 +57,6 @@ export default function MatchingList() {
 				sort: filterParams.sort,
 			},
 			body: {
-				location: {
-					lat: filterParams.sort === 'distance' ? filterParams.lat : 0,
-					lon: filterParams.sort === 'distance' ? filterParams.lon : 0,
-				},
 				filters: {
 					date: filterParams.startDate,
 					regions: filterParams.regions,
@@ -118,17 +113,17 @@ export default function MatchingList() {
 		filterParams.ntrps,
 	]);
 
-	useEffect(() => {
-		if ('geolocation' in navigator) {
-			navigator.geolocation.getCurrentPosition(function (position) {
-				const latitudeValue = position.coords.latitude;
-				const longitudeValue = position.coords.longitude;
-				setFilterParams((prev) => ({ ...prev, lat: latitudeValue, lon: longitudeValue }));
-			});
-		} else {
-			console.log('Geolocation을 지원하지 않는 브라우저입니다.');
-		}
-	}, []);
+	// useEffect(() => {
+	// 	if ('geolocation' in navigator) {
+	// 		navigator.geolocation.getCurrentPosition(function (position) {
+	// 			const latitudeValue = position.coords.latitude;
+	// 			const longitudeValue = position.coords.longitude;
+	// 			setFilterParams((prev) => ({ ...prev, lat: latitudeValue, lon: longitudeValue }));
+	// 		});
+	// 	} else {
+	// 		console.log('Geolocation을 지원하지 않는 브라우저입니다.');
+	// 	}
+	// }, []);
 
 	return (
 		<>

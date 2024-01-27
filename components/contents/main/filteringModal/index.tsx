@@ -203,7 +203,7 @@ export default function FilteringModal(props: IFilteringProps) {
 							setSortState(e.target.value);
 						}}>
 						<Radio.Button value='register'>등록순</Radio.Button>
-						<Radio.Button value='distance'>거리순</Radio.Button>
+						{/* <Radio.Button value='distance'>거리순</Radio.Button> */}
 						<Radio.Button value='due-date'>모집임박순</Radio.Button>
 					</Radio.Group>
 

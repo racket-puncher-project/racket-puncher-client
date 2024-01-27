@@ -3,23 +3,18 @@ import { rem } from 'polished';
 import { Radio as AntdRadio, ConfigProvider } from 'antd';
 import {
 	FontSizeSm,
-	FontSizeSpSm,
 	InputBorderColor,
 	InputBoxColor,
 	InputLabelColor,
 	PrimaryColor,
 } from '../../../styles/ts/common';
-import { useEffect } from 'react';
 import { pxToRem } from '../../../utils/formatter';
 
 interface IBtnRadioProps {
-	readonly idString?: string;
 	readonly setState: (stateName: string, value: boolean) => void;
-	readonly defaultValue?: boolean;
 }
 
 export default function ButtonStyleRadio(props: IBtnRadioProps) {
-	useEffect(() => props.setState('isCourtBooked', props.defaultValue), [props.defaultValue]);
 	return (
 		<ConfigProvider
 			theme={{
@@ -35,10 +30,7 @@ export default function ButtonStyleRadio(props: IBtnRadioProps) {
 					},
 				},
 			}}>
-			<RadioGroup
-				id={props.idString}
-				size='large'
-				onChange={(e) => props.setState('isCourtBooked', e.target.value)}>
+			<RadioGroup size='large' onChange={(e) => props.setState('isReserved', e.target.value)}>
 				<RadioButton value={true}>예약 O</RadioButton>
 				<RadioButton value={false}>예약 X</RadioButton>
 			</RadioGroup>
@@ -70,5 +62,7 @@ const RadioButton = styled(AntdRadio.Button)`
 		position: absolute;
 		left: 0;
 		right: 0;
+		top: 50%;
+		transform: translateY(-50%);
 	}
 `;
