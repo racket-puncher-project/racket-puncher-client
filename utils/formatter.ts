@@ -6,10 +6,10 @@ export const dateFormatter = (date: Date) => {
 };
 
 // 시간 포매터
-export const timeFormatter = (time: Date) => {
+export const timeFormatter = (time: Date, type?: string) => {
 	const hour = time.getHours() > 9 ? time.getHours() + '' : '0' + time.getHours() + '';
 	const minute = time.getMinutes() > 9 ? time.getMinutes() + '' : '0' + time.getMinutes() + '';
-	return hour + ':' + minute;
+	return type === 'HOUR' ? hour : hour + ':' + minute;
 };
 
 // 날짜 역 포매터 (DPicker)

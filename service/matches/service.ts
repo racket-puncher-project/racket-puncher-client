@@ -3,10 +3,11 @@ import {
 	reqGetMatchingListApiData,
 	reqModifyMatchingApiData,
 	reqGetMapMatchingListApiData,
+	reqRegMatchingApiData,
 } from './interface';
 
 // 매칭글 게시
-const regMatchingData = (data: any) => {
+const regMatchingData = (data: reqRegMatchingApiData) => {
 	return http.post('/api/matches', data);
 };
 
