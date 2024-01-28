@@ -1,29 +1,21 @@
 // 매칭글 게시
-import { array } from 'yup';
-
-// export interface reqRegMatchingApiData {
-// 	title: string; // 제목
-// 	ageGroup: string; // 연령대
-// 	matchingType: string; // 경기 유형
-// 	ntrp: string; // NTRP (e.g. developement)
-
-// 	location: string; // 장소 (문자열)
-// 	lat: string; // 위도
-// 	len: string; // 경도
-
-// 	matchingDate: string; // 경기 날짜
-// 	matchingStartTime: string; // 경기 시작 시간
-// 	matchingEndTime: string; // 경기 종료 시간
-// 	recruitDueDate: string; // 모집 종료 일(yyyy-mm-dd)
-// 	recruitDueTime: string; // 모집 종료 시간(hh)
-// 	recruitNum: number; // 모집 인원
-
-// 	cost: number; // 대여비
-// 	isReserved: boolean; // 예약 여부
-
-// 	locationImg: string; // 구장 이미지
-// 	content: string; // 본문
-// }
+export interface reqRegMatchingApiData {
+	title: string;
+	ageGroup: string;
+	matchingType: string;
+	ntrp: string;
+	location: string;
+	date: string;
+	startTime: string;
+	endTime: string;
+	recruitDueDate: string;
+	recruitDueTime: string;
+	recruitNum: number;
+	cost: number;
+	isReserved: boolean;
+	locationImg: string;
+	content: string;
+}
 
 // 매칭글 수정(알림, 패널티 부여)
 export interface reqModifyMatchingApiData {

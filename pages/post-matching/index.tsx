@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm, Controller } from 'react-hook-form';
@@ -29,6 +29,8 @@ import DrawerBox from '../../components/common/drawer';
 import { CustomBadge } from '../../styles/ts/components/badge';
 import { v4 as uuidv4 } from 'uuid';
 import AuthService from '../../service/auth/service';
+import { useRouter } from 'next/router';
+import useToast from '../../utils/useToast';
 
 const schema = yup.object().shape({
 	title: yup.string().required('제목을 입력해주세요.'),
@@ -36,12 +38,6 @@ const schema = yup.object().shape({
 	recruitNum: yup.number().required('모집 인원수를 선택해주세요.'),
 	ageGroup: yup.string().required('모집 연령대를 선택해주세요.'),
 	ntrp: yup.string().required('모집할 NTRP를 선택해주세요.'),
-	/** */
-	// matchDate: yup.string().required('경기 날짜를 선택해주세요.'),
-	// matchStartTime: yup.string().required('경기 시작 시간을 선택해주세요.'),
-	// matchEndTime: yup.string().required('경기 종료 시간을 선택해주세요.'),
-	// deadlineDate: yup.string().required('모집 마감일을 선택해주세요.'),
-	// deadlineTime: yup.string().required('모집 마감 시간을 선택해주세요.'),
 	location: yup.string().required('경기장 주소를 입력해주세요.'),
 	isReserved: yup.boolean().required('경기장 예약 여부를 선택해주세요.'),
 	cost: yup.string().required('경기장 대여료를 입력해주세요'),
@@ -52,6 +48,8 @@ export default function PostMatching() {
 	// To-do
 	// 프론트에서 모집 마감일 받을 때 등록일 이후~경기시작 시간 이전으로 모집 마감일 선택하도록 설정
 	// 이미지 api 붙이기
+	const router = useRouter();
+	const { setMessage } = useToast();
 
 	// 경기 일시 state
 	const [dateState, setDateState] = useState('');
@@ -138,6 +136,30 @@ export default function PostMatching() {
 		postMatchingSetValue('location', item.jibunAddr);
 	};
 
+	const checkValidation = () => {
+		const validationArr = [
+			postMatchingWatch('title'),
+			postMatchingWatch('matchingType'),
+			postMatchingWatch('recruitNum'),
+			postMatchingWatch('ageGroup'),
+			postMatchingWatch('ntrp'),
+			dateState,
+			startTimeState,
+			endTimeState,
+			recruitDueDateState,
+			recruitDueTimeState,
+			postMatchingWatch('isReserved'),
+			postMatchingWatch('cost'),
+			postMatchingWatch('location'),
+			virtualImgData,
+			postMatchingWatch('content'),
+		];
+		const checkValue = validationArr.every((item) => {
+			return item !== null && item !== undefined && item !== '';
+		});
+		return checkValue;
+	};
+
 	const onSubmit = async () => {
 		const params = {
 			title: postMatchingGetValues('title'),
@@ -163,9 +185,12 @@ export default function PostMatching() {
 
 			const res = await MatchesService.regMatchingData({
 				...params,
-				locatinImg: fileUrl.data.response,
+				locationImg: fileUrl.data.response,
 			});
-			console.log('res', res);
+			if (res.status === 200) {
+				setMessage('success', '매칭 등록에 성공하셨습니다');
+				router.push('/login');
+			}
 		} catch (e) {
 			console.log(e);
 		}
@@ -286,7 +311,11 @@ export default function PostMatching() {
 				{/* 모집마감시간 */}
 				<InputBox>
 					<label>모집마감시간</label>
-					<CustomTimePicker dateState={recruitDueTimeState} setDateState={setRecruitDueTimeState} />
+					<CustomTimePicker
+						type={'HOUR'}
+						dateState={recruitDueTimeState}
+						setDateState={setRecruitDueTimeState}
+					/>
 				</InputBox>
 				{/* 경기장 예약여부 */}
 				<InputBox>
@@ -321,7 +350,7 @@ export default function PostMatching() {
 				<InputBox>
 					<label>경기장 이미지</label>
 					<ImageSection onClick={clickImgFile}>
-						<ImageBox width={'620px'} height={'380px'}>
+						<ImageBox height={'380px'}>
 							<img
 								src={virtualImgData || '/images/add-image-rectangle-00.png'}
 								alt='경기장 이미지'
@@ -347,9 +376,11 @@ export default function PostMatching() {
 					/>
 				</InputBox>
 			</PostMatchingFormBox>
-			<div className={'btn-box'}>
-				<RoundButton onClick={onSubmit}>적용하기</RoundButton>
-			</div>
+			<SubmitBtnWrapper>
+				<RoundButton disabled={!checkValidation()} onClick={onSubmit}>
+					적용하기
+				</RoundButton>
+			</SubmitBtnWrapper>
 			<DrawerBox
 				title={'주소 검색'}
 				isOpen={addressDrawer}
@@ -429,23 +460,19 @@ const HalfBox = styled.div`
 `;
 
 const ImageSection = styled.div`
-	display: flex;
-	justify-content: center;
 	cursor: pointer;
-	width: 100%;
-	min-height: fit-content;
-	max-width: ${(props) => (props.theme.isResponsive ? pxToRem('620px') : rem('620px'))};
-	max-height: ${(props) => (props.theme.isResponsive ? pxToRem('400px') : rem('400px'))};
 	border: none;
 	margin-bottom: ${(props) => (props.theme.isResponsive ? pxToRem('30px') : rem('30px'))};
-
+	border-radius: 5px;
+	border: 1px solid ${InputBorderColor};
+	background: ${InputBoxColor};
+	overflow: hidden;
+	div.box__ImageBox-sc-1o0dgyy-0 {
+		width: auto !important;
+	}
 	img {
 		width: 100%;
-		border-radius: 5px;
-		border: 1px solid ${InputBorderColor};
-
-		background: ${InputBoxColor};
-		overflow: hidden;
+		display: block;
 	}
 `;
 
@@ -545,4 +572,8 @@ const InputButtonBox = styled.div`
 		margin-top: ${(props) => (props.theme.isResponsive ? pxToRem('26px') : rem('26px'))};
 		margin-left: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
 	}
+`;
+
+const SubmitBtnWrapper = styled.div`
+	margin-bottom: 50px;
 `;
