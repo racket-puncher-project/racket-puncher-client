@@ -22,7 +22,7 @@ export const ImageBox = styled.div.withConfig({
 			  ? pxToRem(props.height || '30px')
 			  : rem(props.height || '30px')};
 	img {
-		max-width: 100%;
+		width: 100%;
 		display: block;
 	}
 `;
