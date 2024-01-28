@@ -189,7 +189,7 @@ export default function PostMatching() {
 			});
 			if (res.status === 200) {
 				setMessage('success', '매칭 등록에 성공하셨습니다');
-				router.push('/login');
+				router.push('/');
 			}
 		} catch (e) {
 			console.log(e);
@@ -219,9 +219,9 @@ export default function PostMatching() {
 									{...field}
 									options={[
 										{ value: 'SINGLE', label: '단식' },
-										{ value: 'MIXED_SINGLE', label: '혼성 단식' },
 										{ value: 'DOUBLE', label: '복식' },
 										{ value: 'MIXED_DOUBLE', label: '혼성 복식' },
+										{ value: 'OTHER', label: '기타' },
 									]}
 								/>
 							)}
@@ -256,12 +256,10 @@ export default function PostMatching() {
 								<CustomSelect
 									{...field}
 									options={[
-										{ value: 'TEENAGER', label: '10대' },
 										{ value: 'TWENTIES', label: '20대' },
 										{ value: 'THIRTIES', label: '30대' },
 										{ value: 'FORTIES', label: '40대' },
-										{ value: 'FIFTIES', label: '50대' },
-										{ value: 'SIXTIES', label: '60대' },
+										{ value: 'SENIOR', label: '50대 이상' },
 									]}
 								/>
 							)}
@@ -279,7 +277,7 @@ export default function PostMatching() {
 										{ value: 'DEVELOPMENT', label: 'NewBie (1.0 ~ 2.0)' },
 										{ value: 'BEGINNER', label: 'Beginner (2.5 ~ 3.5)' },
 										{ value: 'INTERMEDIATE', label: 'Intermediate (4.0 ~ 4.5)' },
-										{ value: 'ADVANCED', label: 'Advanced (5.0 ~ 5.5)' },
+										{ value: 'ADVANCE', label: 'Advanced (5.0 ~ 5.5)' },
 										{ value: 'PRO', label: 'Pro (6.0 ~ 7.0)' },
 									]}
 								/>
