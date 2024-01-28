@@ -164,6 +164,7 @@ export default function MatchingList() {
 									ntrp={item.ntrp}
 									reserved={item.reserved}
 									title={item.title}
+									locationImg={item.locationImg}
 									onClick={() => moveDetailMatching(item)}
 								/>
 							</div>

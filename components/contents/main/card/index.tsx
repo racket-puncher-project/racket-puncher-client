@@ -21,6 +21,7 @@ interface IMatchingCardProps {
 	readonly ntrp?: string;
 	readonly reserved?: boolean;
 	readonly title?: string;
+	readonly locationImg?: string;
 	readonly onClick?: () => void;
 }
 
@@ -31,7 +32,7 @@ export default function MatchingCard(props: IMatchingCardProps) {
 				<ContentBox>
 					<LeftBox>
 						<ImageBox width={'128.205px'} height={'125px'}>
-							<img src={`${prefix}/images/main-img1.png`} alt='main-image1' />
+							<img src={props.locationImg} alt='card-image' />
 						</ImageBox>
 					</LeftBox>
 

@@ -13,7 +13,8 @@ export default function MyAroundMatching() {
 	const [map, setMap] = useState(null);
 	const [infowindows, setInfowindows] = useState([]);
 	const [selectedMarker, setSelectedMarker] = useState(null);
-	const [aroundPositions, setAroundPositions] = useState([]);
+	let aroundPositions = [];
+	const [matchingList, setMatchingList] = useState([]);
 	const { showLoading, hideLoading } = useLoading();
 
 	useEffect(() => {
@@ -35,9 +36,10 @@ export default function MyAroundMatching() {
 		// 내위치 핀찍기 ----------------------------------------------------------
 		if (navigator.geolocation) {
 			navigator.geolocation.getCurrentPosition(
-				(position) => {
+				async (position) => {
 					const lat = position.coords.latitude;
 					const lng = position.coords.longitude;
+					await getMatchingList(lat, lng);
 
 					const options = {
 						center: new kakao.maps.LatLng(lat, lng),
@@ -59,9 +61,7 @@ export default function MyAroundMatching() {
 						content: '<div class="custom-infowindow"">내 위치</div>',
 					});
 					userInfowindow.open(kakaoMap, userMarker);
-					infowindows.push(userInfowindow);
-
-					// infoWindow ----------------------------------------------------------
+					infowindows.push(userInfowindow); // infoWindow ----------------------------------------------------------
 					const newInfowindows = aroundPositions.map((position) => {
 						const marker = new kakao.maps.Marker({
 							map: kakaoMap,
@@ -88,9 +88,7 @@ export default function MyAroundMatching() {
 
 						return infowindow;
 					});
-
 					setInfowindows([...infowindows, ...newInfowindows]);
-					getMatchingList(lat, lng);
 				},
 				(error) => {
 					console.error('error: ' + error.message);
@@ -116,15 +114,17 @@ export default function MyAroundMatching() {
 		};
 		try {
 			const res = await Service.getMapMatchingList(payload);
+			setMatchingList(res.data.response.content);
 			const processRes = res.data.response.content.map((maps) => {
 				return {
 					content: `<div>${maps.title}</div>`,
 					title: maps.title,
 					lat: maps.lat,
-					lng: maps.lng,
+					lng: maps.lon,
 				};
 			});
-			setAroundPositions(processRes);
+			aroundPositions = processRes;
+			// setAroundPositions(processRes);
 		} catch (e) {
 			console.log(e);
 		}
@@ -151,9 +151,15 @@ export default function MyAroundMatching() {
 				<MapBox>
 					<div id={'kakao-map'} style={{ width: '100%', height: '400px' }}></div>
 				</MapBox>
-				{aroundPositions.map((position, index) => (
+				{matchingList.map((position, index) => (
 					<div key={uuidv4()}>
-						<MatchingCard onClick={() => handleButtonClick(position, index)}></MatchingCard>
+						<MatchingCard
+							matchingStartDateTime={position.matchingStartDateTime}
+							matchingType={position.matchingType}
+							ntrp={position.ntrp}
+							reserved={position.reserved}
+							title={position.title}
+							onClick={() => handleButtonClick(position, index)}></MatchingCard>
 					</div>
 				))}
 				{aroundPositions.length === 0 && <NoResultBox />}
