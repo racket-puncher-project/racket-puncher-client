@@ -25,39 +25,20 @@ import { array } from 'yup';
 // 	content: string; // 본문
 // }
 
-// 매칭글 상세 보기
-export interface reqGetDetailMatchingListApiData {
-	matchingId: number;
-	matching_id: string;
-}
-
-// 매칭글 수정(알림)
+// 매칭글 수정(알림, 패널티 부여)
 export interface reqModifyMatchingApiData {
-	title: string; // 제목
-	ageGroup: string; // 연령대
-	matchingType: string; // 경기 유형
-	ntrp: string; // 숙련도 (e.g. developer)
-
-	location: string; // 장소 (문자열)
-	lat: string; // 위도
-	len: string; // 경도
-
-	matchingDate: string; // 경기 날짜
-	matchingStartTime: string; // 경기 시작 시간
-	matchingEndTime: string; // 경기 종료 시간
-	recruitDueDate: string; // 모집 종료 시간
-
-	cost: number; // 대여비
-	isReserved: boolean; // 예약 여부
-
-	locationImg: string; // 구장 이미지
-	content: string; // 본문
-	matching_id: string;
-}
-
-// 매칭글 삭제(알림)
-export interface reqDeleteMatchingListApiData {
-	matching_id: string;
+	ntrp: string;
+	location: string; // 위경도 검색되지 않는 위치일 경우 에러 발생
+	date: string;
+	startTime: string;
+	endTime: string;
+	recruitDueDate: string;
+	recruitDueTime: string;
+	recruitNum: number;
+	cost: number;
+	isReserved: boolean;
+	locationImg: string;
+	content: string;
 }
 
 // 매칭 리스트 조회

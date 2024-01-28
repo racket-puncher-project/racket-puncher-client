@@ -1,9 +1,6 @@
 import http from '../../lib/http/httpInterceptor';
 import {
-	reqDeleteMatchingListApiData,
-	reqGetDetailMatchingListApiData,
 	reqGetMatchingListApiData,
-	reqMatchingApplyStateApiData,
 	reqModifyMatchingApiData,
 	reqGetMapMatchingListApiData,
 } from './interface';
@@ -14,18 +11,18 @@ const regMatchingData = (data: any) => {
 };
 
 // 매칭글 상세 보기
-const getDetailMatchingList = (data: reqGetDetailMatchingListApiData) => {
-	return http.get(`/api/matches/${data}`);
+const getDetailMatchingList = (matchingId) => {
+	return http.get(`/api/matches/detail/${matchingId}`);
 };
 
-// 매칭글 수정(알림)
-const modifyMatchingList = (matching_id, data: reqModifyMatchingApiData) => {
-	return http.patch(`/api/matches/${matching_id}`, data);
+// 매칭글 수정(알림, 패널티 부여)
+const modifyMatchingList = (matchingId, data: reqModifyMatchingApiData) => {
+	return http.patch(`/api/matches/${matchingId}`, data);
 };
 
-// 매칭글 삭제(알림)
-const deleteMatchingList = (data: reqDeleteMatchingListApiData) => {
-	return http.delete(`/api/matches/${data}`);
+// 매칭글 삭제(알림, 패널티 부여)
+const deleteMatchingList = (matchingId) => {
+	return http.delete(`/api/matches/${matchingId}`);
 };
 
 // 매칭리스트 조회
@@ -40,14 +37,9 @@ const getMapMatchingList = (data: reqGetMapMatchingListApiData) => {
 	return http.post('/api/matches/list/map', data);
 };
 
-// 지도
-// const getMatchingApplyState = (data: reqMatchingApplyStateApiData) => {
-// 	return http.get(`/api/matches/${data}/apply`);
-// };
-
 // 매칭별 신청 현황 조회
-const getMatchingApplyState = (data: reqMatchingApplyStateApiData) => {
-	return http.get(`/api/matches/${data}/apply`);
+const getMatchingApplyState = (matchingId) => {
+	return http.get(`/api/matches/${matchingId}/apply`);
 };
 
 // 주소 검색
