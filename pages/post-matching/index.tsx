@@ -360,7 +360,7 @@ export default function PostMatching() {
 							style={{ display: 'none' }}
 							ref={fileInputRef}
 							onChange={handleFileChange}
-							accept={'image/*'}
+							accept={'image/jpeg, image/png'}
 						/>
 					</ImageSection>
 				</InputBox>
