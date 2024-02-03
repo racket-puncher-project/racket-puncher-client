@@ -30,10 +30,7 @@ interface IUserInfoModalProps {
 }
 
 export default function UserInfoModal({
-	siteUserName,
 	nickname,
-	address,
-	zipCode,
 	ntrp,
 	gender,
 	mannerScore,
@@ -43,29 +40,56 @@ export default function UserInfoModal({
 	toggleModal,
 	onCancel,
 }: IUserInfoModalProps) {
+	const genderInfo = [
+		{
+			id: 'FEMALE',
+			label: '여',
+		},
+		{
+			id: 'MALE',
+			label: '남',
+		},
+	];
+	const ageGroupsInfo = [
+		{
+			id: 'TWENTIES',
+			label: '20대',
+		},
+		{
+			id: 'THIRTIES',
+			label: '30대',
+		},
+		{
+			id: 'FORTIES',
+			label: '40대',
+		},
+		{
+			id: 'SENIOR',
+			label: '50대',
+		},
+	];
+
 	return (
 		<>
 			<ModalBox isOpen={isOpen} toggleModal={toggleModal} onCancel={onCancel}>
 				<UserInfoContainer>
 					<ProfilePicArea>
-						<ImageBox width={'150px'} height={'190px'}>
+						<ImageBox width={'150px'} height={'150px'}>
 							<img src={profileImg} alt='프로필 이미지' />
 						</ImageBox>
 					</ProfilePicArea>
 					<UserInfoList>
 						<NickNameArea>
-							<span>{nickname}</span> / <span>{gender}</span>
-							<Badge>{ntrp}</Badge>
+							<span>{nickname}</span> /
+							<span>{genderInfo.find((el) => el.id === gender)?.label}</span>
 						</NickNameArea>
 						<UserInfoItem>
-							<ItemName>지역: </ItemName>
-							<ItemContent>
-								{address} ({zipCode})
-							</ItemContent>
+							<ItemName>NTRP: </ItemName>
+							<ItemContent>{ntrp}</ItemContent>
 						</UserInfoItem>
 						<UserInfoItem>
 							<ItemName>연령: </ItemName>
-							<ItemContent>{ageGroup}</ItemContent>
+							<ItemContent>{ageGroupsInfo.find((el) => el.id === ageGroup)?.label}</ItemContent>
 						</UserInfoItem>
 						<UserInfoItem>
 							<ItemName>매너: </ItemName>
@@ -80,14 +104,13 @@ export default function UserInfoModal({
 
 const UserInfoContainer = styled.div`
 	display: flex;
-	justify-content: space-between;
+	justify-content: space-around;
 `;
 
 const ProfilePicArea = styled.div`
-	max-width: ${(props) => (props.theme.isResponsive ? pxToRem('220px') : rem('220px'))};
-	max-height: ${(props) => (props.theme.isResponsive ? pxToRem('220px') : rem('220px'))};
+	display: flex;
+	align-items: center;
 	border-radius: 20px;
-	overflow: hidden;
 `;
 
 const UserInfoList = styled.ul`
