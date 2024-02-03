@@ -15,6 +15,8 @@ import {
 import { ImageBox } from '../../../../styles/ts/components/box';
 import PlayerCard from '../../../common/playerCard';
 import { RoundButton } from '../../../../styles/ts/components/buttons';
+import useToast from '../../../../utils/useToast';
+import usersService from '../../../../service/users/service';
 
 interface IUser {
 	readonly id: number; // 유저 아이디
@@ -80,8 +82,9 @@ export default function MyListItem({ postInfo }: IMyListItemProps) {
 											{info.otherUsers.map((user) => (
 												<PlayerCard
 													key={user.id}
-													userNickName={user.nickname}
-													profilePicURL={user.profileImg}
+													nickname={user.nickname}
+													profileImg={user.profileImg}
+													userId={user.id}
 												/>
 											))}
 											<RoundButton

@@ -5,6 +5,7 @@ import MyListItem, { IPostInfo } from '../collapse';
 
 import { pxToRem } from '../../../../utils/formatter';
 import usersService from '../../../../service/users/service';
+import useToast from '../../../../utils/useToast';
 
 interface IMyMatchingListProps {
 	listType: 'hosted' | 'applied';
