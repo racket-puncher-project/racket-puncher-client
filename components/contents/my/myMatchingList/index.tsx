@@ -45,11 +45,13 @@ export default function MyMatchingList(props: IMyMatchingListProps) {
 
 	return (
 		<>
-			{listType === 'hosted' && hostedData.length > 0 ? (
-				<MyListItem postInfo={hostedData[0]} />
-			) : listType === 'applied' && appliedData.length > 0 ? (
-				<MyListItem postInfo={appliedData[0]} />
-			) : null}
+			<MyListContainer>
+				{listType === 'hosted' && hostedData.length > 0 ? (
+					<MyListItem postInfo={hostedData} />
+				) : listType === 'applied' && appliedData.length > 0 ? (
+					<MyListItem postInfo={appliedData} />
+				) : null}
+			</MyListContainer>
 		</>
 	);
 }
