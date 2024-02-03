@@ -22,19 +22,6 @@ const MyPage = () => {
 	// To-do
 	// userInfos get 요청
 
-	const userInfos = {
-		userNickName: '왕자',
-		age: 30,
-		gender: '남',
-		userAddress: '서울시 성동구',
-		ntrp: 'Pro',
-		winningRate: [1, 3],
-		mannerPoint: 85,
-		realName: '김개발',
-		email: 'princeofracket@gmail.com',
-		imageURL: '',
-	};
-
 	const items: TabsProps['items'] = [
 		{
 			key: 'submittedMatchingList',

@@ -38,78 +38,71 @@ export interface IPostInfo {
 }
 
 interface IMyListItemProps {
-	postInfo: IPostInfo;
+	postInfo: IPostInfo[];
 }
 
-export default function MyListItem(props: IMyListItemProps) {
-	const { id, date, title, location, matchingType, otherUsers } = props.postInfo;
-
-	const items: IAntdCollapseProps['items'] = [
-		{
-			key: id,
-			label: (
-				<Header>
-					<DateNDay id='dataNDay'>{date}</DateNDay>
-					<TitleLink id='title'>
-						{title} / {location} / {matchingType}
-					</TitleLink>
-					<IconImageBox id='collapseIcon' width='24px' height='24px'>
-						<img src='/svg/arrow.svg' />
-					</IconImageBox>
-				</Header>
-			),
-			children: (
-				<PlayerCardContainer>
-					<>
-						{otherUsers?.map((otherUsersItem) => {
-							return (
-								<PlayerCard
-									key={otherUsersItem.id}
-									userNickName={otherUsersItem.nickname}
-									profilePicURL={otherUsersItem.profileImg}
-								/>
-							);
-						})}
-						<RoundButton
-							onClick={() => {
-								console.log('클릭');
-							}}
-							colorstyle={'is-black'}
-							aria-label='평가하기 페이지로 이동'>
-							평가하기
-						</RoundButton>
-					</>
-				</PlayerCardContainer>
-			),
-			showArrow: false,
-		},
-	];
-
+export default function MyListItem({ postInfo }: IMyListItemProps) {
 	return (
 		<>
-			{otherUsers && (
-				<>
-					<ConfigProvider
-						theme={{
-							components: {
-								Collapse: {
-									borderRadiusLG: 20,
-									headerBg: `${PrimaryColor}`,
-									headerPadding: '10px 20px',
-									colorTextHeading: `${WhiteColor}`,
-									fontFamily: `${FontFamilyMedium}`,
-								},
+			{postInfo.map((info) => (
+				<ConfigProvider
+					key={info.id}
+					theme={{
+						components: {
+							Collapse: {
+								borderRadiusLG: 20,
+								headerBg: `${PrimaryColor}`,
+								headerPadding: '10px 20px',
+								colorTextHeading: `${WhiteColor}`,
+								fontFamily: `${FontFamilyMedium}`,
 							},
-						}}>
-						<MyListItemContainer
-							aria-role='listitem'
-							items={items}
-							defaultActiveKey={['1']}
-							bordered={false}
-						/>
-					</ConfigProvider>
-				</>
-			)}
+						},
+					}}>
+					<MyListItemContainer
+						aria-role='listitem'
+						items={[
+							{
+								key: info.id,
+								label: (
+									<Header>
+										<DateNDay id='dataNDay'>{info.date}</DateNDay>
+										<TitleLink id='title'>
+											{info.title} / {info.location} / {info.matchingType}
+										</TitleLink>
+										<IconImageBox id='collapseIcon' width='24px' height='24px'>
+											<img src='/svg/arrow.svg' />
+										</IconImageBox>
+									</Header>
+								),
+								children: (
+									<PlayerCardContainer>
+										<>
+											{info.otherUsers.map((user) => (
+												<PlayerCard
+													key={user.id}
+													userNickName={user.nickname}
+													profilePicURL={user.profileImg}
+												/>
+											))}
+											<RoundButton
+												onClick={() => {
+													console.log('클릭');
+												}}
+												colorstyle={'is-black'}
+												aria-label='평가하기 페이지로 이동'>
+												평가하기
+											</RoundButton>
+										</>
+									</PlayerCardContainer>
+								),
+								showArrow: false,
+							},
+						]}
+						defaultActiveKey={['1']}
+						bordered={false}
+					/>
+				</ConfigProvider>
+			))}
 		</>
 	);
 }
@@ -125,12 +118,8 @@ const MyListItemContainer = styled(AntdCollapse)`
 `;
 
 const Header = styled.div`
-	display: grid;
-	grid-template-columns: ${(props) =>
-		props.theme.isResponsive
-			? `${pxToRem('75px')} auto ${pxToRem('25px')}`
-			: `${rem('75px')} auto ${rem('25px')}`};
-	grid-template-areas: 'dateNDay title collapseIcon';
+	display: flex;
+	justify-content: space-between;
 	gap: ${(props) => (props.theme.isResponsive ? pxToRem('15px') : rem('15px'))};
 
 	height: ${(props) => (props.theme.isResponsive ? pxToRem('30px') : rem('30px'))};
@@ -138,8 +127,8 @@ const Header = styled.div`
 `;
 
 const DateNDay = styled.span`
-	grid-area: 'dateNDay';
-	text-align: left;
+	flex-shrink: 0;
+	margin-right: 5px;
 `;
 
 const TitleLink = styled.a`
@@ -166,5 +155,5 @@ const PlayerCardContainer = styled.div`
 			: `16px ${rem('4px')} 4px ${rem('4px')}`};
 	display: flex;
 	flex-direction: column;
-	gap: ${(props) => (props.theme.isResponsive ? pxToRem('10px') : rem('10px'))};
+	gap: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
 `;
