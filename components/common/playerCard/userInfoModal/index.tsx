@@ -15,66 +15,61 @@ import {
 import { pxToRem } from '../../../../utils/formatter';
 
 interface IUserInfoModalProps {
-	readonly userNickName: string;
-	readonly profilePicURL: string;
+	readonly siteUserName: string;
+	readonly nickname: string;
+	readonly address: string;
+	readonly zipCode: string;
+	readonly ntrp: string;
+	readonly gender: string;
+	readonly mannerScore: number;
+	readonly ageGroup: string;
+	readonly profileImg: string;
 	readonly isOpen: boolean;
 	readonly toggleModal: () => void;
 	readonly onCancel: () => void;
 }
 
-const userInfo = {
-	registeredDate: '2023/05/15',
-	userName: '최연희',
-	phoneNumber: '01000000000',
-	userAddress: '서울 마포구',
-	userNickName: '뿡뿡이',
-	profilePicURL:
-		'https://contents.sixshop.com/thumbnails/uploadedFiles/56465/post/image_1694838481851_1000.jpeg',
-	ageGroup: '20대',
-	gender: '여',
-	NTRP: 'Beginner',
-	winningRate: [5, 4, 1],
-	mannerPoint: '90',
-};
-
-export default function UserInfoModal(props: IUserInfoModalProps) {
-	const { userNickName, profilePicURL, isOpen, toggleModal, onCancel } = props;
-	// userEmail로 회원정보(userInfo) 불러오기
-	// useEffect(()=> userEmail)
-	const { userAddress, gender, NTRP, winningRate, mannerPoint } = userInfo;
+export default function UserInfoModal({
+	siteUserName,
+	nickname,
+	address,
+	zipCode,
+	ntrp,
+	gender,
+	mannerScore,
+	ageGroup,
+	profileImg,
+	isOpen,
+	toggleModal,
+	onCancel,
+}: IUserInfoModalProps) {
 	return (
 		<>
 			<ModalBox isOpen={isOpen} toggleModal={toggleModal} onCancel={onCancel}>
 				<UserInfoContainer>
 					<ProfilePicArea>
-						<ImageBox width='220px' height='220px'>
-							<img
-								src={
-									profilePicURL ||
-									'https://contents.sixshop.com/thumbnails/uploadedFiles/56465/post/image_1697976551262_750.jpeg'
-								}
-								alt='프로필 이미지'
-							/>
+						<ImageBox width={'150px'} height={'190px'}>
+							<img src={profileImg} alt='프로필 이미지' />
 						</ImageBox>
 					</ProfilePicArea>
 					<UserInfoList>
 						<NickNameArea>
-							<span>{`${userNickName}`}</span> / <span>{`${gender}`}</span>
-							<Badge>{`${NTRP}`}</Badge>
+							<span>{nickname}</span> / <span>{gender}</span>
+							<Badge>{ntrp}</Badge>
 						</NickNameArea>
 						<UserInfoItem>
 							<ItemName>지역: </ItemName>
-							<ItemContent>{`${userAddress}`}</ItemContent>
-						</UserInfoItem>
-						<UserInfoItem>
-							<ItemName>승률: </ItemName>
 							<ItemContent>
-								{`${winningRate[0]}`}승 {`${winningRate[1]}`}패 {`${winningRate[2]}`}무
+								{address} ({zipCode})
 							</ItemContent>
 						</UserInfoItem>
 						<UserInfoItem>
+							<ItemName>연령: </ItemName>
+							<ItemContent>{ageGroup}</ItemContent>
+						</UserInfoItem>
+						<UserInfoItem>
 							<ItemName>매너: </ItemName>
-							<ItemContent>{`${mannerPoint}`} 점</ItemContent>
+							<ItemContent>{mannerScore} 점</ItemContent>
 						</UserInfoItem>
 					</UserInfoList>
 				</UserInfoContainer>
@@ -85,8 +80,7 @@ export default function UserInfoModal(props: IUserInfoModalProps) {
 
 const UserInfoContainer = styled.div`
 	display: flex;
-	flex-direction: row;
-	gap: ${(props) => (props.theme.isResponsive ? pxToRem('40px') : rem('40px'))};
+	justify-content: space-between;
 `;
 
 const ProfilePicArea = styled.div`

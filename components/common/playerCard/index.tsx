@@ -13,37 +13,56 @@ import {
 import UserInfoModal from './userInfoModal';
 import ReportUserModal from './reportUserModal';
 import { pxToRem } from '../../../utils/formatter';
+import usersService from '../../../service/users/service';
+import useToast from '../../../utils/useToast';
 
 interface IPlayerCardProps {
-	userNickName: string;
-	profilePicURL: string;
+	nickname: string;
+	profileImg: string;
+	userId: number;
 }
 
 export default function PlayerCard(props: IPlayerCardProps) {
-	// To do
-	// iphoneSE 최적화
-	// 정보, 신고 기능 구현
+	const { setMessage } = useToast();
+
 	const [isUserInfoModalOpen, setIsUserInfoModalOpen] = useState(false);
 	const toggleUserInfoModal = () => setIsUserInfoModalOpen(!isUserInfoModalOpen);
 	const [isReportUserModalOpen, setIsReportUserModalOpen] = useState(false);
 	const toggleReportUserModal = () => setIsReportUserModalOpen(!isReportUserModalOpen);
+	const [userInfo, setUserInfo] = useState(null);
 
-	const { userNickName, profilePicURL } = props;
+	const { nickname, profileImg, userId } = props;
+
+	// 회원 정보 열람
+	const getUserProfileData = async (userId: number) => {
+		try {
+			const res = await usersService.getUserProfileData(userId);
+			console.log('getUserProfileData', res.data.response);
+			setUserInfo(res.data.response);
+			setIsUserInfoModalOpen(true);
+		} catch (e) {
+			console.log(e);
+			if (e.response.data.code === 404) {
+				setMessage('error', e.response.data.message);
+			}
+		}
+	};
+
 	return (
 		<>
 			<PlayerCardContainer>
 				<PlayerPicture>
 					<ImageBox width='80px' height='80px'>
-						<img src={profilePicURL || '-'} alt='프로필 이미지' />
+						<img src={profileImg} alt='프로필 이미지' />
 					</ImageBox>
 				</PlayerPicture>
-				<PlayerName>{userNickName || '라켓왕자'}</PlayerName>
+				<PlayerName>{nickname || '라켓왕자'}</PlayerName>
 				<ButtonArea>
 					<SquareButton
 						width='80px'
 						height='40px'
 						colorstyle='is-black'
-						onClick={() => setIsUserInfoModalOpen(true)}>
+						onClick={() => getUserProfileData(userId)}>
 						정보
 					</SquareButton>
 					<SquareButton
@@ -56,16 +75,17 @@ export default function PlayerCard(props: IPlayerCardProps) {
 					</SquareButton>
 				</ButtonArea>
 			</PlayerCardContainer>
-			<UserInfoModal
-				userNickName={userNickName}
-				profilePicURL={profilePicURL}
-				isOpen={isUserInfoModalOpen}
-				toggleModal={toggleUserInfoModal}
-				onCancel={() => setIsUserInfoModalOpen(false)}
-			/>
+			{isUserInfoModalOpen && userInfo && (
+				<UserInfoModal
+					{...userInfo}
+					isOpen={isUserInfoModalOpen}
+					toggleModal={() => setIsUserInfoModalOpen(!isUserInfoModalOpen)}
+					onCancel={() => setIsUserInfoModalOpen(false)}
+				/>
+			)}
 			<ReportUserModal
-				userNickName={userNickName}
-				profilePicURL={profilePicURL}
+				userNickName={nickname}
+				profilePicURL={profileImg}
 				isOpen={isReportUserModalOpen}
 				toggleModal={toggleReportUserModal}
 				onCancel={() => setIsReportUserModalOpen(false)}
