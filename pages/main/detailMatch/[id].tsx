@@ -20,6 +20,9 @@ import { RoundButton } from '../../../styles/ts/components/buttons';
 import ModalBox from '../../../components/common/modal';
 import { prefix } from '../../../constants/prefix';
 import { pxToRem } from '../../../utils/formatter';
+import Service from '../../../service/matches/service';
+import { useRouter } from 'next/router';
+import UserInfoModal from '../../../components/common/playerCard/userInfoModal';
 
 const testItems = [
 	{ id: '0', title: '타이틀 1', index: 1 },
@@ -34,11 +37,58 @@ interface DetailMatchContentProps {
 }
 
 export default function DetailMatching() {
+	const router = useRouter();
+
+	const ageGroupsInfo = [
+		{
+			id: 'TWENTIES',
+			label: '20대',
+		},
+		{
+			id: 'THIRTIES',
+			label: '30대',
+		},
+		{
+			id: 'FORTIES',
+			label: '40대',
+		},
+		{
+			id: 'SENIOR',
+			label: '50대',
+		},
+	];
+
+	const matchingTypeInfo = [
+		{
+			id: 'SINGLE',
+			label: '단식',
+		},
+		{
+			id: 'DOUBLE',
+			label: '복식',
+		},
+		{
+			id: 'MIXED_DOUBLE',
+			label: '혼성 복식',
+		},
+		{
+			id: 'OTHER',
+			label: '기타',
+		},
+	];
+
+	const [isUserInfoModalOpen, setIsUserInfoModalOpen] = useState(false);
+
+	const [detailInfo, setDetailInfo] = useState<any>();
 	const [recruitStatusModalVisible, setRecruitStatusModalVisible] = useState(false);
 	const [recruitList, setRecruitList] = useState({
 		beforeList: [],
 		afterList: [],
 	});
+
+	const toggleUserInfoModal = () => {
+		setIsUserInfoModalOpen(!isUserInfoModalOpen);
+	};
 
 	const toggleModal = () => {
 		setRecruitStatusModalVisible((prev) => !prev);
@@ -60,6 +110,29 @@ export default function DetailMatching() {
 		setRecruitList(processArr);
 	};
 
+	// 상세 조회
+	const getDetailInfo = async (id: any) => {
+		try {
+			const res: any = await Service.getDetailMatchingList(id);
+			setDetailInfo(res.data.response);
+			console.log('res.data.response', res.data.response);
+			const staticMapContainer = document.getElementById('staticMap');
+			const markerPosition = new kakao.maps.LatLng(res.data.response.lat, res.data.response.lon);
+			const marker = {
+				position: markerPosition,
+			};
+			const staticMapOption = {
+				center: new kakao.maps.LatLng(res.data.response.lat, res.data.response.lon),
+				level: 2,
+				marker,
+			};
+
+			const staticMap = new kakao.maps.StaticMap(staticMapContainer, staticMapOption);
+		} catch (e) {
+			console.log('e', e);
+		}
+	};
+
 	useEffect(() => {
 		const exampleData = {
 			beforeList: testItems,
@@ -69,19 +142,10 @@ export default function DetailMatching() {
 	}, []);
 
 	useEffect(() => {
-		const staticMapContainer = document.getElementById('staticMap');
-		const markerPosition = new kakao.maps.LatLng(33.450701, 126.570667);
-		const marker = {
-			position: markerPosition,
-		};
-		const staticMapOption = {
-			center: new kakao.maps.LatLng(33.450705, 126.570677),
-			level: 2,
-			marker,
-		};
-
-		const staticMap = new kakao.maps.StaticMap(staticMapContainer, staticMapOption);
-	}, []);
+		if (router.isReady) {
+			getDetailInfo(router.query.id);
+		}
+	}, [router.query]);
 
 	return (
 		<>
@@ -90,13 +154,15 @@ export default function DetailMatching() {
 					<ProfileBox>
 						<ImageWrap>
 							<ImageBox width={'140px'} height={'140px'}>
-								<img src={`${prefix}/images/profile-img.png`} alt='profile-image' />
+								<img src={detailInfo?.creatorInfo?.profileImg} alt='profile-image' />
 							</ImageBox>
-							<p>고숭이</p>
+							<p>{detailInfo?.creatorInfo?.nickname}</p>
 						</ImageWrap>
 
 						<ButtonBox>
-							<RoundButton colorstyle={'is-green'}>등록자 정보</RoundButton>
+							<RoundButton colorstyle={'is-green'} onClick={() => setIsUserInfoModalOpen(true)}>
+								등록자 정보
+							</RoundButton>
 						</ButtonBox>
 					</ProfileBox>
 				</ProfileContainer>
@@ -116,28 +182,32 @@ export default function DetailMatching() {
 				<ContentContainer>
 					<DetailMatchItemBox>
 						<label htmlFor='detailMatchTitle'>제목</label>
-						<DetailMatchContent></DetailMatchContent>
+						<DetailMatchContent>{detailInfo?.title}</DetailMatchContent>
 					</DetailMatchItemBox>
 
 					<FlexBox>
 						<DetailMatchItemBox>
 							<label htmlFor='detailMatchAge'>연령대</label>
-							<DetailMatchContent></DetailMatchContent>
+							<DetailMatchContent>
+								{ageGroupsInfo.find((el) => el.id === detailInfo?.ageGroup)?.label}
+							</DetailMatchContent>
 						</DetailMatchItemBox>
 						<DetailMatchItemBox>
 							<label htmlFor='detailMatchNTRP'>NTRP</label>
-							<DetailMatchContent></DetailMatchContent>
+							<DetailMatchContent>{detailInfo?.ntrp}</DetailMatchContent>
 						</DetailMatchItemBox>
 					</FlexBox>
 
 					<DetailMatchItemBox>
 						<label htmlFor='detailMatchItem'>매칭 항목</label>
-						<DetailMatchContent></DetailMatchContent>
+						<DetailMatchContent>
+							{matchingTypeInfo.find((el) => el.id === detailInfo?.matchingType)?.label}
+						</DetailMatchContent>
 					</DetailMatchItemBox>
 
 					<DetailMatchItemBox>
 						<label htmlFor='detailMatchAddree'>주소</label>
-						<DetailMatchContent></DetailMatchContent>
+						<DetailMatchContent>{detailInfo?.location}</DetailMatchContent>
 					</DetailMatchItemBox>
 
 					<DetailMatchItemBox>
@@ -149,12 +219,16 @@ export default function DetailMatching() {
 
 					<DetailMatchItemBox>
 						<label htmlFor='detailMatchInfo'>구장 이미지</label>
-						<DetailMatchContent height={'300px'}></DetailMatchContent>
+						<DetailMatchContent height={'300px'}>
+							<div
+								className='img-box'
+								style={{ backgroundImage: `url(${detailInfo?.locationImg})` }}></div>
+						</DetailMatchContent>
 					</DetailMatchItemBox>
 
 					<DetailMatchItemBox>
 						<label htmlFor='detailMatchInfo'>본문 내용</label>
-						<DetailMatchContent height={'300px'}></DetailMatchContent>
+						<DetailMatchContentArea height={'300px'}>{detailInfo?.content}</DetailMatchContentArea>
 					</DetailMatchItemBox>
 				</ContentContainer>
 
@@ -162,6 +236,21 @@ export default function DetailMatching() {
 					<RoundButton onClick={() => setRecruitStatusModalVisible(true)}>모집 현황</RoundButton>
 				</FloatBox>
 
+				{/* 등록자 정보 modal --------------------------------- */}
+				<UserInfoModal
+					siteUserName={detailInfo?.creatorInfo?.siteUserName}
+					nickname={detailInfo?.creatorInfo?.nickname}
+					address={detailInfo?.creatorInfo?.address}
+					zipCode={detailInfo?.creatorInfo?.zipCode}
+					ntrp={detailInfo?.creatorInfo?.ntrp}
+					gender={detailInfo?.creatorInfo?.gender}
+					mannerScore={detailInfo?.creatorInfo?.mannerScore}
+					ageGroup={detailInfo?.creatorInfo?.ageGroup}
+					profileImg={detailInfo?.creatorInfo?.profileImg}
+					isOpen={isUserInfoModalOpen}
+					toggleModal={toggleUserInfoModal}
+					onCancel={() => setIsUserInfoModalOpen(false)}
+				/>
 				{/* 모집현황 modal --------------------------------- */}
 				<ModalBox
 					isOpen={recruitStatusModalVisible}
@@ -298,12 +387,47 @@ const DetailMatchContent = styled.div<DetailMatchContentProps>`
 				? pxToRem(props.height)
 				: pxToRem('50px')
 			: props.height
-				? rem(props.height)
-				: rem('50px')};
+			  ? rem(props.height)
+			  : rem('50px')};
+	line-height: ${(props) =>
+		props.theme.isResponsive
+			? props.height
+				? pxToRem(props.height)
+				: pxToRem('50px')
+			: props.height
+			  ? rem(props.height)
+			  : rem('50px')};
 	border: 1px solid ${InputBorderColor};
 	background: ${InputBoxColor};
 	border-radius: 5px;
 	padding: ${(props) => (props.theme.isResponsive ? `0 ${pxToRem('15px')}` : `0 ${rem('15px')}`)};
+	overflow: hidden;
+	div.img-box {
+		height: 100%;
+		background-position: center;
+		background-repeat: no-repeat;
+		background-size: 100% 100%;
+	}
+
+	&:focus {
+		border: 1px solid ${PrimaryColor};
+	}
+`;
+
+const DetailMatchContentArea = styled.div<DetailMatchContentProps>`
+	height: ${(props) =>
+		props.theme.isResponsive
+			? props.height
+				? pxToRem(props.height)
+				: pxToRem('50px')
+			: props.height
+			  ? rem(props.height)
+			  : rem('50px')};
+	border: 1px solid ${InputBorderColor};
+	background: ${InputBoxColor};
+	border-radius: 5px;
+	padding: ${(props) => (props.theme.isResponsive ? `0 ${pxToRem('15px')}` : `0 ${rem('15px')}`)};
+	padding-top: 10px;
 
 	&:focus {
 		border: 1px solid ${PrimaryColor};

@@ -31,7 +31,7 @@ export default function MatchingList() {
 	const [hasMoreData, setHasMoreData] = useState(true);
 
 	const [params, setParams] = useState({
-		page: 1,
+		page: 0,
 		size: 10,
 	});
 
@@ -165,7 +165,7 @@ export default function MatchingList() {
 									reserved={item.reserved}
 									title={item.title}
 									locationImg={item.locationImg}
-									onClick={() => moveDetailMatching(item)}
+									onClick={() => moveDetailMatching(item.id)}
 								/>
 							</div>
 						);
