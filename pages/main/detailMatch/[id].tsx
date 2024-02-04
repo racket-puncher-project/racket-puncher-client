@@ -19,18 +19,13 @@ import {
 import { RoundButton } from '../../../styles/ts/components/buttons';
 import ModalBox from '../../../components/common/modal';
 import { prefix } from '../../../constants/prefix';
-import { pxToRem } from '../../../utils/formatter';
+import { dateFormatter, pxToRem } from '../../../utils/formatter';
 import Service from '../../../service/matches/service';
 import { useRouter } from 'next/router';
 import UserInfoModal from '../../../components/common/playerCard/userInfoModal';
-
-const testItems = [
-	{ id: '0', title: '타이틀 1', index: 1 },
-	{ id: '1', title: '타이틀 2', index: 2 },
-	{ id: '2', title: '타이틀 3', index: 3 },
-	{ id: '3', title: '타이틀 4', index: 4 },
-	{ id: '4', title: '타이틀 5', index: 5 },
-];
+import moment from 'moment';
+import useCookies from '../../../utils/useCookies';
+import usersService from '../../../service/users/service';
 
 interface DetailMatchContentProps {
 	height?: string;
@@ -38,7 +33,9 @@ interface DetailMatchContentProps {
 
 export default function DetailMatching() {
 	const router = useRouter();
+	const { checkLogin } = useCookies();
 
+	// 모집연령 enum
 	const ageGroupsInfo = [
 		{
 			id: 'TWENTIES',
@@ -58,6 +55,7 @@ export default function DetailMatching() {
 		},
 	];
 
+	// 매칭타입 enum
 	const matchingTypeInfo = [
 		{
 			id: 'SINGLE',
@@ -77,10 +75,23 @@ export default function DetailMatching() {
 		},
 	];
 
+	// 유저 모달 활성화 visible
 	const [isUserInfoModalOpen, setIsUserInfoModalOpen] = useState(false);
-
-	const [detailInfo, setDetailInfo] = useState<any>();
+	// 모집 현황 모달 활성화 visible
 	const [recruitStatusModalVisible, setRecruitStatusModalVisible] = useState(false);
+	// 매칭 상세에 진입한 사용자 권한
+	const [authorityValue, setAuthorityValue] = useState<any>();
+
+	// 유저정보
+	const [userInfo, setUserInfo] = useState<any>();
+	// 상세정보
+	const [detailInfo, setDetailInfo] = useState<any>();
+	// 모집 종료까지 남은 일
+	const [recruitDays, setRecruitDays] = useState<any>();
+	// 모집 종료까지 남은 시간
+	const [recruitHour, setRecruitHour] = useState<any>();
+	// 모집 종료까지 남은 시간 퍼센트
+	const [recruitPercentage, setRecruitPercentage] = useState<any>();
 	const [recruitList, setRecruitList] = useState({
 		beforeList: [],
 		afterList: [],
@@ -110,12 +121,25 @@ export default function DetailMatching() {
 		setRecruitList(processArr);
 	};
 
-	// 상세 조회
+	// 상세 조회 api
 	const getDetailInfo = async (id: any) => {
 		try {
 			const res: any = await Service.getDetailMatchingList(id);
 			setDetailInfo(res.data.response);
-			console.log('res.data.response', res.data.response);
+			setUserInfo({ ...res.data.response.creatorInfo });
+			checkRecruitDate(res.data.response.createTime, res.data.response.recruitDueDateTime);
+			convertRecruitPercentage(res.data.response.createTime, res.data.response.recruitDueDateTime);
+			// 로그인 체크
+			if (checkLogin()) {
+				// 유저 정보 조회
+				getMyInfoData(res.data.response.creatorInfo.id);
+				// 모집 현황 조회
+				getRecruitListInfo(router.query.id);
+			} else {
+				setAuthorityValue('NON_MEMBER');
+			}
+
+			// 카카오 맵 관련
 			const staticMapContainer = document.getElementById('staticMap');
 			const markerPosition = new kakao.maps.LatLng(res.data.response.lat, res.data.response.lon);
 			const marker = {
@@ -133,16 +157,91 @@ export default function DetailMatching() {
 		}
 	};
 
-	useEffect(() => {
-		const exampleData = {
-			beforeList: testItems,
-			afterList: [],
-		};
-		setRecruitList(exampleData);
-	}, []);
+	// 모집 현황 조회 api
+	const getRecruitListInfo = async (id: any) => {
+		try {
+			const res = await Service.getMatchingApplyState(id);
+			const processData = {
+				beforeList: res.data.response.appliedMembers,
+				afterList: res.data.response.confirmedMembers,
+			};
+			console.log('processData', processData);
+			setRecruitList(processData);
+		} catch (e) {
+			console.log('e', e);
+		}
+	};
+
+	// 모집 시간을 뿌려주기 위한 메서드
+	const checkRecruitDate = (startDate: any, endDate: any) => {
+		const recruitDateStart = moment(startDate);
+		const recruitDateEnd = moment(endDate);
+
+		const duration = moment.duration(recruitDateEnd.diff(recruitDateStart));
+
+		setRecruitDays(duration.days());
+		setRecruitHour(duration.hours());
+	};
+
+	// 종료 일자를 퍼센트 변환
+	const convertRecruitPercentage = (startDate: any, endDate: any) => {
+		// 모든 날짜를 moment 객체로 변환
+		const startMoment = moment(startDate);
+		const endMoment = moment(endDate);
+		const nowMoment = moment();
+
+		// 전체 기간과 현재까지 경과한 기간을 계산
+		const totalDuration = moment.duration(endMoment.diff(startMoment));
+		const elapsedDuration = moment.duration(nowMoment.diff(startMoment));
+
+		// 전체 기간과 경과 기간을 분으로 변환하여 퍼센트 계산
+		const totalMinutes = totalDuration.asMinutes();
+		const elapsedMinutes = elapsedDuration.asMinutes();
+		const percentageLeft = ((totalMinutes - elapsedMinutes) / totalMinutes) * 100;
+
+		// 남은 시간의 퍼센트 반환
+		setRecruitPercentage(percentageLeft.toFixed(0));
+	};
+
+	// 유저 조회(본인)
+	const getMyInfoData = async (matchingId: any) => {
+		try {
+			const res = await usersService.getUserInfo();
+			// 권한 체크
+			checkAuthorityValue(matchingId, res.data.response.id);
+		} catch (e) {
+			console.log('e', e);
+		}
+	};
+
+	// 유저 조회(다른 사람)
+	const getUserInfoData = async (id: any) => {
+		try {
+			const res = await usersService.getUserProfileData(id);
+			setUserInfo({ ...res.data.response });
+			setTimeout(() => {
+				setIsUserInfoModalOpen(true);
+			}, 100);
+		} catch (e) {
+			console.log('e', e);
+		}
+	};
+
+	// 권한 체크
+	const checkAuthorityValue = (matchingId: any, userId: any) => {
+		// 회원인데 게시물 등록자가 본인인경우
+		if (checkLogin() && matchingId === userId) {
+			setAuthorityValue('MEMBER_MY');
+		} else {
+			// 회원인데 게시물 등록자가 본인이 아닌 경우
+			setAuthorityValue('MEMBER_CUSTOMER');
+		}
+	};
 
 	useEffect(() => {
+		// router 객체가 준비가 되었을때
 		if (router.isReady) {
+			// 상세 정보 호출
 			getDetailInfo(router.query.id);
 		}
 	}, [router.query]);
@@ -169,11 +268,11 @@ export default function DetailMatching() {
 
 				<ProgressBarContainer>
 					<p>
-						“모집 기간이 <span>2</span>일 <span>7</span>시간 남았습니다.“
+						“모집 기간이 <span>{recruitDays}</span>일 <span>{recruitHour}</span>시간 남았습니다.“
 					</p>
 					<Progress
 						strokeLinecap='round'
-						percent={75}
+						percent={recruitPercentage}
 						showInfo={false}
 						strokeColor={PrimaryColor}
 					/>
@@ -233,20 +332,16 @@ export default function DetailMatching() {
 				</ContentContainer>
 
 				<FloatBox>
-					<RoundButton onClick={() => setRecruitStatusModalVisible(true)}>모집 현황</RoundButton>
+					<RoundButton onClick={() => setRecruitStatusModalVisible(true)}>
+						{authorityValue === 'NON_MEMBER' || authorityValue === 'MEMBER_CUSTOMER'
+							? '모집 신청'
+							: '모집 현황'}
+					</RoundButton>
 				</FloatBox>
 
 				{/* 등록자 정보 modal --------------------------------- */}
 				<UserInfoModal
-					siteUserName={detailInfo?.creatorInfo?.siteUserName}
-					nickname={detailInfo?.creatorInfo?.nickname}
-					address={detailInfo?.creatorInfo?.address}
-					zipCode={detailInfo?.creatorInfo?.zipCode}
-					ntrp={detailInfo?.creatorInfo?.ntrp}
-					gender={detailInfo?.creatorInfo?.gender}
-					mannerScore={detailInfo?.creatorInfo?.mannerScore}
-					ageGroup={detailInfo?.creatorInfo?.ageGroup}
-					profileImg={detailInfo?.creatorInfo?.profileImg}
+					{...userInfo}
 					isOpen={isUserInfoModalOpen}
 					toggleModal={toggleUserInfoModal}
 					onCancel={() => setIsUserInfoModalOpen(false)}
@@ -263,8 +358,8 @@ export default function DetailMatching() {
 								{Object.keys(recruitList).map((key) => (
 									<ModalWrapBox key={key}>
 										<div className='is-modal-wrap-header'>
-											<p>신청인원</p>
-											<p>10명</p>
+											<p>{key === 'beforeList' ? '신청인원' : '참여인원'}</p>
+											<p>{recruitList[key].length}명</p>
 										</div>
 										<Droppable key={key} droppableId={key}>
 											{(provided) => (
@@ -273,7 +368,10 @@ export default function DetailMatching() {
 													{...provided.droppableProps}
 													ref={provided.innerRef}>
 													{recruitList[key].map((item, index) => (
-														<Draggable key={item.id} draggableId={item.id} index={index}>
+														<Draggable
+															key={item.applyId}
+															draggableId={String(item.applyId)}
+															index={index}>
 															{(provided) => (
 																<div
 																	ref={provided.innerRef}
@@ -284,10 +382,14 @@ export default function DetailMatching() {
 																			<ImageBox width='80px' height='80px'>
 																				<img src='/images/main-img1.png' alt='image' />
 																			</ImageBox>
-																			<p>뿡뿡이 {item.index}</p>
+																			<p>뿡뿡이 {authorityValue}</p>
 																		</div>
 																		<div className='box-footer'>
-																			<div className='is-btn black'>정보</div>
+																			<div
+																				className='is-btn black'
+																				onClick={() => getUserInfoData(item.siteUserId)}>
+																				정보
+																			</div>
 																		</div>
 																	</ModalWrapItem>
 																</div>
@@ -343,11 +445,6 @@ const ImageWrap = styled.div`
 		font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeLg) : rem(FontSizeLg))};
 		color: ${BlackColor};
 	}
-`;
-const ControlBox = styled.div`
-	display: flex;
-	justify-content: space-between;
-	margin: ${(props) => (props.theme.isResponsive ? `${pxToRem('30px')} 0` : `${rem('30px')} 0`)};
 `;
 const ProgressBarContainer = styled.div`
 	p {
