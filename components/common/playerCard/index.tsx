@@ -65,14 +65,6 @@ export default function PlayerCard(props: IPlayerCardProps) {
 						onClick={() => getUserProfileData(userId)}>
 						정보
 					</SquareButton>
-					<SquareButton
-						width='80px'
-						height='40px'
-						colorstyle='is-white'
-						bordercolor='is-lightGray'
-						onClick={() => setIsReportUserModalOpen(true)}>
-						신고
-					</SquareButton>
 				</ButtonArea>
 			</PlayerCardContainer>
 			{isUserInfoModalOpen && userInfo && (
@@ -126,5 +118,6 @@ const ButtonArea = styled.div`
 	display: flex;
 	flex-direction: row;
 	align-items: center;
+	margin-right: ${(props) => (props.theme.isResponsive ? pxToRem('10px') : rem('10px'))};
 	gap: ${(props) => (props.theme.isResponsive ? pxToRem('10px') : rem('10px'))};
 `;

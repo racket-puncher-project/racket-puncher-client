@@ -288,7 +288,6 @@ export default function DetailMatching() {
 																		</div>
 																		<div className='box-footer'>
 																			<div className='is-btn black'>정보</div>
-																			<div className='is-btn gray'>신고</div>
 																		</div>
 																	</ModalWrapItem>
 																</div>

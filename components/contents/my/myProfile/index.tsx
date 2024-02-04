@@ -22,7 +22,7 @@ export interface IProfileProps {
 		readonly ntrp: string;
 		readonly phoneNumber: string;
 		readonly mannerScore: number;
-		readonly gender: number;
+		readonly gender: string;
 		readonly address: string;
 		readonly zipCode: string;
 		readonly ageGroup: string;
@@ -46,6 +46,35 @@ export default function MyProfile(props: IProfileProps) {
 		profileImg,
 	} = props.userInfos;
 
+	const genderInfo = [
+		{
+			id: 'FEMALE',
+			label: '여',
+		},
+		{
+			id: 'MALE',
+			label: '남',
+		},
+	];
+	const ageGroupsInfo = [
+		{
+			id: 'TWENTIES',
+			label: '20대',
+		},
+		{
+			id: 'THIRTIES',
+			label: '30대',
+		},
+		{
+			id: 'FORTIES',
+			label: '40대',
+		},
+		{
+			id: 'SENIOR',
+			label: '50대',
+		},
+	];
+
 	return (
 		<>
 			<MyProfileContainer>
@@ -62,7 +91,8 @@ export default function MyProfile(props: IProfileProps) {
 						<ProfileInfoItem>
 							<ItemName>연령/성별 :</ItemName>
 							<ItemContent>
-								{ageGroup} / {gender}
+								{ageGroupsInfo.find((el) => el.id === ageGroup)?.label} /
+								{genderInfo.find((el) => el.id === gender)?.label}
 							</ItemContent>
 						</ProfileInfoItem>
 						<ProfileInfoItem>
