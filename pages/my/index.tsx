@@ -12,6 +12,8 @@ import useCookies from '../../utils/useCookies';
 import useToast from '../../utils/useToast';
 import { pxToRem } from '../../utils/formatter';
 import usersService from '../../service/users/service';
+import { useSetRecoilState } from 'recoil';
+import { myProfileInfoState } from '../../lib/store/my';
 
 const MyPage = () => {
 	const { checkLogin } = useCookies();
@@ -19,6 +21,7 @@ const MyPage = () => {
 	const router = useRouter();
 
 	const [profileData, setProfileData] = useState<IProfileProps['userInfos'] | null>(null);
+	const setMyProfileVal = useSetRecoilState(myProfileInfoState);
 	// To-do
 	// userInfos get 요청
 
@@ -40,6 +43,8 @@ const MyPage = () => {
 			const res = await usersService.getUserInfo();
 			console.log('userInfo', res.data.response);
 			setProfileData(res.data.response);
+			setMyProfileVal(res.data.response);
+
 			console.log('profileData', profileData);
 		} catch (e) {
 			console.log(e);
@@ -62,7 +67,10 @@ const MyPage = () => {
 		<>
 			<MyPageAlign>
 				{profileData && <MyProfile userInfos={profileData} />}
-				<RoundButton colorstyle='is-black' aria-label='프로필 수정페이지로 이동'>
+				<RoundButton
+					colorstyle='is-black'
+					aria-label='프로필 수정페이지로 이동'
+					onClick={() => router.push(`/editMyInfo/${profileData.id}`)}>
 					프로필 수정
 				</RoundButton>
 				<ListArea>
