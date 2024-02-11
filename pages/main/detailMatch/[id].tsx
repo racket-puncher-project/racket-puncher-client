@@ -321,6 +321,25 @@ export default function DetailMatching() {
 					</ProfileBox>
 				</ProfileContainer>
 
+				{authorityValue === 'MEMBER_MY' && (
+					<>
+						<DetailActionBtnContainer>
+							<RoundButton
+								onClick={() => {
+									console.log('11');
+								}}>
+								수정
+							</RoundButton>
+							<RoundButton
+								onClick={() => {
+									console.log('11');
+								}}>
+								삭제
+							</RoundButton>
+						</DetailActionBtnContainer>
+					</>
+				)}
+
 				<ProgressBarContainer>
 					<p>
 						“모집 기간이 <span>{recruitDays}</span>일 <span>{recruitHour}</span>시간 남았습니다.“
@@ -340,16 +359,16 @@ export default function DetailMatching() {
 					</DetailMatchItemBox>
 
 					<FlexBox>
-						<DetailMatchItemBox>
+						<DetailMatchItemBoxHalf>
 							<label htmlFor='detailMatchAge'>연령대</label>
 							<DetailMatchContent>
 								{ageGroupsInfo.find((el) => el.id === detailInfo?.ageGroup)?.label}
 							</DetailMatchContent>
-						</DetailMatchItemBox>
-						<DetailMatchItemBox>
+						</DetailMatchItemBoxHalf>
+						<DetailMatchItemBoxHalf>
 							<label htmlFor='detailMatchNTRP'>NTRP</label>
 							<DetailMatchContent>{detailInfo?.ntrp}</DetailMatchContent>
-						</DetailMatchItemBox>
+						</DetailMatchItemBoxHalf>
 					</FlexBox>
 
 					<DetailMatchItemBox>
@@ -470,6 +489,35 @@ export default function DetailMatching() {
 		</>
 	);
 }
+
+const DetailActionBtnContainer = styled.div`
+	width: 100%;
+	display: flex;
+	justify-content: flex-end;
+	margin-bottom: ${(props) => (props.theme.isResponsive ? pxToRem('30px') : rem('30px'))};
+	button {
+		width: ${(props) => (props.theme.isResponsive ? pxToRem('128px') : rem('128px'))}!important;
+		&:first-child {
+			margin-right: ${(props) =>
+				props.theme.isResponsive ? pxToRem('5px') : rem('5px')}!important;
+		}
+	}
+`;
+
+const DetailMatchItemBoxHalf = styled.div`
+	display: flex;
+	width: 49%;
+	flex-direction: column;
+	padding-bottom: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
+
+	label {
+		display: block;
+		font-family: Pretendard-Regular;
+		font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeSpSm) : rem(FontSizeSpSm))};
+		margin-bottom: ${(props) => (props.theme.isResponsive ? pxToRem('10px') : rem('10px'))};
+		color: ${InputLabelColor};
+	}
+`;
 
 const DetailMatchingContainer = styled.div`
 	margin-top: ${(props) => (props.theme.isResponsive ? pxToRem('38px') : rem('38px'))};
