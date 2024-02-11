@@ -179,10 +179,17 @@ export default function DetailMatching() {
 	const getRecruitListInfo = async (id: any) => {
 		try {
 			const res = await Service.getMatchingApplyState(id);
-			const processData = {
-				beforeList: res.data.response.appliedMembers,
-				afterList: res.data.response.acceptedMembers,
-			};
+			let processData = null;
+			if (res.data.response.appliedMembers) {
+				processData = {
+					beforeList: res.data.response.appliedMembers ? res.data.response.appliedMembers : [],
+					afterList: res.data.response.acceptedMembers ? res.data.response.acceptedMembers : [],
+				};
+			} else {
+				processData = {
+					afterList: res.data.response.acceptedMembers ? res.data.response.acceptedMembers : [],
+				};
+			}
 			setRecruitList(processData);
 		} catch (e) {
 			console.log('e', e);
@@ -437,7 +444,7 @@ export default function DetailMatching() {
 				{/* 모집현황 modal --------------------------------- */}
 				<ModalBox
 					isOpen={recruitStatusModalVisible}
-					heightType={true}
+					heightType={false}
 					toggleModal={toggleModal}
 					onCancel={closeRecruitStatusModal}>
 					<ModalAlignContainer>
