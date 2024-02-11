@@ -26,6 +26,8 @@ import UserInfoModal from '../../../components/common/playerCard/userInfoModal';
 import moment from 'moment';
 import useCookies from '../../../utils/useCookies';
 import usersService from '../../../service/users/service';
+import ApplyService from '../../../service/apply/service';
+import useToast from '../../../utils/useToast';
 
 interface DetailMatchContentProps {
 	height?: string;
@@ -33,6 +35,7 @@ interface DetailMatchContentProps {
 
 export default function DetailMatching() {
 	const router = useRouter();
+	const { setMessage } = useToast();
 	const { checkLogin } = useCookies();
 
 	// 모집연령 enum
@@ -110,7 +113,9 @@ export default function DetailMatching() {
 	};
 
 	const onDragEnd = ({ source, destination }) => {
-		if (!destination) return;
+		console.log('시작', source);
+		console.log('끝', destination);
+		if (!destination || destination.droppableId === null) return;
 
 		const scourceKey = source.droppableId;
 		const destinationKey = destination.droppableId;
@@ -119,6 +124,19 @@ export default function DetailMatching() {
 		const [targetItem] = processArr[scourceKey].splice(source.index, 1);
 		processArr[destinationKey].splice(destination.index, 0, targetItem);
 		setRecruitList(processArr);
+
+		// 이동하지 않았을 때
+		if (source.droppableId === destination.droppableId) {
+			return;
+		}
+
+		// 참가신청 취소
+		if (source.droppableId === 'afterList') {
+			cancelMatchingApplication();
+		} else {
+			// 참가 신청 수락
+			acceptMatchingApplication();
+		}
 	};
 
 	// 상세 조회 api
@@ -157,15 +175,14 @@ export default function DetailMatching() {
 		}
 	};
 
-	// 모집 현황 조회 api
+	// 매칭별 신청 현황 조회 (모집 현황)
 	const getRecruitListInfo = async (id: any) => {
 		try {
 			const res = await Service.getMatchingApplyState(id);
 			const processData = {
 				beforeList: res.data.response.appliedMembers,
-				afterList: res.data.response.confirmedMembers,
+				afterList: res.data.response.acceptedMembers,
 			};
-			console.log('processData', processData);
 			setRecruitList(processData);
 		} catch (e) {
 			console.log('e', e);
@@ -211,6 +228,9 @@ export default function DetailMatching() {
 			checkAuthorityValue(matchingId, res.data.response.id);
 		} catch (e) {
 			console.log('e', e);
+			if (e.response.data.code === 404) {
+				setMessage('error', e.response.data.message);
+			}
 		}
 	};
 
@@ -224,6 +244,9 @@ export default function DetailMatching() {
 			}, 100);
 		} catch (e) {
 			console.log('e', e);
+			if (e.response.data.code === 404) {
+				setMessage('error', e.response.data.message);
+			}
 		}
 	};
 
@@ -235,6 +258,38 @@ export default function DetailMatching() {
 		} else {
 			// 회원인데 게시물 등록자가 본인이 아닌 경우
 			setAuthorityValue('MEMBER_CUSTOMER');
+		}
+	};
+
+	// 참가 신청 취소
+	// (매칭상태가 FULL인 경기일 경우, 경기 매칭 확정 상태 변경 및 패널티 부여, 알림)
+	const cancelMatchingApplication = async () => {
+		try {
+			const res = await ApplyService.getDetailMatchingList(router.query.id);
+			console.log(res.data.response);
+		} catch (e) {
+			console.log(e);
+			if (e.response.data.code === 400 || e.response.data.code === 404) {
+				setMessage('error', e.response.data.message);
+			}
+		}
+	};
+
+	// 참가 신청 수락(알림)
+	const acceptMatchingApplication = async () => {
+		const payload = {
+			pendingApplies: recruitList.beforeList,
+			acceptedApplies: recruitList.afterList,
+		};
+
+		try {
+			const res = await ApplyService.applyMatches(router.query.id, payload);
+			console.log(res.data.response);
+		} catch (e) {
+			console.log(e);
+			if (e.response.data.code === 400 || e.response.data.code === 404) {
+				setMessage('error', e.response.data.message);
+			}
 		}
 	};
 
@@ -371,6 +426,9 @@ export default function DetailMatching() {
 														<Draggable
 															key={item.applyId}
 															draggableId={String(item.applyId)}
+															isDragDisabled={
+																authorityValue !== 'MEMBER_MY' || item.siteUserId === userInfo.id
+															}
 															index={index}>
 															{(provided) => (
 																<div
@@ -382,7 +440,7 @@ export default function DetailMatching() {
 																			<ImageBox width='80px' height='80px'>
 																				<img src='/images/main-img1.png' alt='image' />
 																			</ImageBox>
-																			<p>뿡뿡이 {authorityValue}</p>
+																			<p>{item.nickname}</p>
 																		</div>
 																		<div className='box-footer'>
 																			<div
