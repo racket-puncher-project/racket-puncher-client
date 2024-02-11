@@ -47,13 +47,6 @@ const createValidationSchema = (authType) =>
 				'휴대폰 번호 형식을 확인해주세요'
 			),
 		certifyNumber: yup.string().required('인증번호는 필수입니다.'),
-		email: yup
-			.string()
-			.required('이메일은 필수입니다.')
-			.matches(
-				/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-				'이메일 형식이 올바르지 않습니다.'
-			),
 		nickName: yup.string().required('닉네임은 필수입니다.'),
 		address: yup.string().required('우편번호는 필수입니다.'),
 		detailAddress: yup.string().required('상세주소는 필수입니다.'),
@@ -107,7 +100,6 @@ export default function register() {
 
 	// CheckComplete
 	const [checkNicknameComplete, setCheckNicknameComplete] = useState(false);
-	const [checkEmailComplete, setCheckEmailComplete] = useState(false);
 	const [checkPhoneCertifyComplete, setCheckPhoneCertifyComplete] = useState(false);
 
 	const profileImgStyle = {
@@ -155,12 +147,10 @@ export default function register() {
 			updateProfileWatch('gender'),
 			updateProfileWatch('age'),
 			updateProfileWatch('NTRP'),
-			updateProfileWatch('email'),
 			updateProfileWatch('nickName'),
 			updateProfileWatch('address'),
 			updateProfileWatch('detailAddress'),
 			checkPhoneCertifyComplete,
-			checkEmailComplete,
 			checkNicknameComplete,
 		];
 
@@ -328,13 +318,6 @@ export default function register() {
 		};
 
 		try {
-			// 이메일 중복 체크
-			const emailRes = await AuthService.checkEmail({
-				email: updateProfileGetValue('email'),
-			});
-			console.log(emailRes);
-			setCheckEmailComplete(true);
-
 			// 이미지 등록
 			const formData = new FormData();
 			formData.append('imageFile', fileData);
@@ -352,7 +335,6 @@ export default function register() {
 			console.log(e);
 			if (e.response.data.code === 400 || e.response.data.code === 404) {
 				setMessage('error', e.response.data.message);
-				setCheckEmailComplete(false);
 			}
 		}
 	};
@@ -377,7 +359,7 @@ export default function register() {
 						style={{ display: 'none' }}
 						ref={fileInputRef}
 						onChange={handleFileChange}
-						accept={'image/*'}
+						accept={'image/jpeg, image/png'}
 					/>
 				</ImageSection>
 
@@ -475,20 +457,6 @@ export default function register() {
 							control={updateProfileControl}
 							render={({ field }) => <CustomSelect {...field} options={NTRPOptions} />}
 						/>
-					</InputBox>
-					<InputBox>
-						<label htmlFor='registerEmail'>이메일</label>
-						<input
-							id='registerEmail'
-							{...updateProfileRegister('email')}
-							value={existingEmail}
-							onChange={(e) => {
-								setExistingEmail(e.target.value);
-							}}
-						/>
-						{updateProfileErrors.email?.message && (
-							<InputErrorText>{updateProfileErrors.email.message}</InputErrorText>
-						)}
 					</InputBox>
 
 					{getMyProfileInfo.authType === 'GENERAL' && (
