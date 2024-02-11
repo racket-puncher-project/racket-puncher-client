@@ -293,6 +293,20 @@ export default function DetailMatching() {
 		}
 	};
 
+	// 매칭 글 삭제
+	const onClickDeleteMatching = () => {
+		try {
+			Service.deleteMatchingList(router.query.id);
+			setMessage('success', '해당 매칭이 삭제되었습니다.');
+			router.push('/main');
+		} catch (e) {
+			console.log('e', e);
+			if (e.response.data.code === 404) {
+				setMessage('error', e.response.data.message);
+			}
+		}
+	};
+
 	useEffect(() => {
 		// router 객체가 준비가 되었을때
 		if (router.isReady) {
@@ -332,7 +346,7 @@ export default function DetailMatching() {
 							</RoundButton>
 							<RoundButton
 								onClick={() => {
-									console.log('11');
+									onClickDeleteMatching();
 								}}>
 								삭제
 							</RoundButton>
