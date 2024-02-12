@@ -100,6 +100,8 @@ export default function DetailMatching() {
 		afterList: [],
 	});
 
+	const [isReqMatching, setIsReqMatching] = useState<boolean>(false);
+
 	const toggleUserInfoModal = () => {
 		setIsUserInfoModalOpen(!isUserInfoModalOpen);
 	};
@@ -268,12 +270,36 @@ export default function DetailMatching() {
 		}
 	};
 
+	// 신청 여부에 따라 컨트롤
+	const handleMatchingApplication = () => {
+		if (isReqMatching) {
+			cancelMatchingApplication();
+		} else {
+			requestMatching();
+		}
+	};
+
+	// 참가 신청 (알림)
+	const requestMatching = async () => {
+		try {
+			const res = await ApplyService.regMatchingData(router.query.id);
+			console.log(res.data.response);
+			setIsReqMatching(true);
+		} catch (e) {
+			console.log(e);
+			if (e.response.data.code === 400 || e.response.data.code === 404) {
+				setMessage('error', e.response.data.message);
+			}
+		}
+	};
+
 	// 참가 신청 취소
 	// (매칭상태가 FULL인 경기일 경우, 경기 매칭 확정 상태 변경 및 패널티 부여, 알림)
 	const cancelMatchingApplication = async () => {
 		try {
 			const res = await ApplyService.getDetailMatchingList(router.query.id);
 			console.log(res.data.response);
+			setIsReqMatching(false);
 		} catch (e) {
 			console.log(e);
 			if (e.response.data.code === 400 || e.response.data.code === 404) {
@@ -511,9 +537,21 @@ export default function DetailMatching() {
 								))}
 							</DragDropContext>
 						</div>
-						<ButtonBox>
-							<RoundButton colorstyle={'is-black'}>모집완료</RoundButton>
-						</ButtonBox>
+						{authorityValue === 'MEMBER_MY' ? (
+							<>
+								<ButtonBox>
+									<RoundButton colorstyle={'is-black'}>모집완료</RoundButton>
+								</ButtonBox>
+							</>
+						) : (
+							<>
+								<ButtonBox onClick={handleMatchingApplication}>
+									<RoundButton colorstyle={'is-black'}>
+										{isReqMatching ? '신청 취소' : '신청하기'}
+									</RoundButton>
+								</ButtonBox>
+							</>
+						)}
 					</ModalAlignContainer>
 				</ModalBox>
 			</DetailMatchingContainer>
