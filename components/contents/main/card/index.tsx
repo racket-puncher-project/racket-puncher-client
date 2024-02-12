@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { GrayLine, ImageBox } from '../../../../styles/ts/components/box';
+import { BackgroundImageBox, GrayLine, ImageBox } from '../../../../styles/ts/components/box';
 import { CustomBadge } from '../../../../styles/ts/components/badge';
 import React from 'react';
 import { rem } from 'polished';
@@ -13,7 +13,6 @@ import {
 	ReportColor,
 	YellowBgColor,
 } from '../../../../styles/ts/common';
-import { prefix } from '../../../../constants/prefix';
 
 interface IMatchingCardProps {
 	readonly matchingStartDateTime?: string;
@@ -31,9 +30,11 @@ export default function MatchingCard(props: IMatchingCardProps) {
 			<CardContainer onClick={props.onClick}>
 				<ContentBox>
 					<LeftBox>
-						<ImageBox width={'128.205px'} height={'125px'}>
-							<img src={props.locationImg} alt='card-image' />
-						</ImageBox>
+						<BackgroundImageBox
+							width={'128.205px'}
+							height={'125px'}
+							backgroundImage={props.locationImg}
+						/>
 					</LeftBox>
 
 					<RightBox>

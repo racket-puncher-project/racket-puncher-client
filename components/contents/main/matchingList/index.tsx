@@ -95,7 +95,7 @@ export default function MatchingList() {
 			setMessage('error', '로그인이 필요한 서비스입니다.');
 			router.replace('/login');
 		} else {
-			movePage('/post-matching');
+			movePage('/postMatching');
 		}
 	};
 

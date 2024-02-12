@@ -4,7 +4,7 @@ import { rem } from 'polished';
 import { Progress } from 'antd';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 
-import { ImageBox } from '../../../styles/ts/components/box';
+import { BackgroundImageBox, ImageBox } from '../../../styles/ts/components/box';
 import {
 	BlackColor,
 	FontSizeLg,
@@ -328,9 +328,11 @@ export default function DetailMatching() {
 				<ProfileContainer>
 					<ProfileBox>
 						<ImageWrap>
-							<ImageBox width={'140px'} height={'140px'}>
-								<img src={detailInfo?.creatorInfo?.profileImg} alt='profile-image' />
-							</ImageBox>
+							<BackgroundImageBox
+								width={'140px'}
+								height={'140px'}
+								backgroundImage={detailInfo?.creatorInfo?.profileImg}
+							/>
 							<p>{detailInfo?.creatorInfo?.nickname}</p>
 						</ImageWrap>
 
@@ -413,11 +415,19 @@ export default function DetailMatching() {
 
 					<DetailMatchItemBox>
 						<label htmlFor='detailMatchInfo'>구장 이미지</label>
-						<DetailMatchContent height={'300px'}>
-							<div
-								className='img-box'
-								style={{ backgroundImage: `url(${detailInfo?.locationImg})` }}></div>
-						</DetailMatchContent>
+						{detailInfo?.locationImg ? (
+							<>
+								<BackgroundImageBox
+									widthInit={true}
+									height={'300px'}
+									backgroundImage={detailInfo?.locationImg}
+								/>
+							</>
+						) : (
+							<>
+								<DetailMatchContent height={'300px'}></DetailMatchContent>
+							</>
+						)}
 					</DetailMatchItemBox>
 
 					<DetailMatchItemBox>

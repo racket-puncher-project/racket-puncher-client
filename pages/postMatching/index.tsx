@@ -12,7 +12,7 @@ import { RoundButton, SquareButton } from '../../styles/ts/components/buttons';
 import CustomDatePicker from '../../components/common/datePicker';
 import CustomTimePicker from '../../components/common/timePicker';
 import ButtonStyleRadio from '../../components/common/buttonRadio';
-import { GrayLine, ImageBox } from '../../styles/ts/components/box';
+import { BackgroundImageBox, GrayLine, ImageBox } from '../../styles/ts/components/box';
 import {
 	BlackColor,
 	FontSizeMd,
@@ -347,22 +347,34 @@ export default function PostMatching() {
 				{/* 구장 이미지 */}
 				<InputBox>
 					<label>경기장 이미지</label>
-					<ImageSection onClick={clickImgFile}>
-						<ImageBox height={'380px'}>
-							<img
-								src={virtualImgData || '/images/add-image-rectangle-00.png'}
-								alt='경기장 이미지'
+					{virtualImgData ? (
+						<>
+							<BackgroundImageBox
+								widthInit={true}
+								height={'380px'}
+								backgroundImage={virtualImgData}
 							/>
-						</ImageBox>
-						<input
-							id='courtPhoto'
-							type='file'
-							style={{ display: 'none' }}
-							ref={fileInputRef}
-							onChange={handleFileChange}
-							accept={'image/jpeg, image/png'}
-						/>
-					</ImageSection>
+						</>
+					) : (
+						<>
+							<ImageSection onClick={clickImgFile}>
+								<ImageBox height={'380px'}>
+									<img
+										src={virtualImgData || '/images/add-image-rectangle-00.png'}
+										alt='경기장 이미지'
+									/>
+								</ImageBox>
+							</ImageSection>
+						</>
+					)}
+					<input
+						id='courtPhoto'
+						type='file'
+						style={{ display: 'none' }}
+						ref={fileInputRef}
+						onChange={handleFileChange}
+						accept={'image/jpeg, image/png'}
+					/>
 				</InputBox>
 				{/* 내용 */}
 				<InputBox>
