@@ -12,16 +12,6 @@ import { prefix } from '../../constants/prefix';
 import { pxToRem } from '../../utils/formatter';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
-const settings = {
-	arrows: false,
-	dots: false,
-	infinite: true,
-	speed: 500,
-	autoplay: true,
-	slidesToShow: 1,
-	slidesToScroll: 1,
-};
-
 const items: TabsProps['items'] = [
 	{
 		key: 'matchingList',
@@ -36,8 +26,6 @@ const items: TabsProps['items'] = [
 ];
 
 export default function MainPage() {
-	const { movePage } = useRouterHook();
-
 	return (
 		<>
 			<MainViewContainer>

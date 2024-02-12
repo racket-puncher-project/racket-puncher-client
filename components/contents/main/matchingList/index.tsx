@@ -49,6 +49,14 @@ export default function MatchingList() {
 		ntrps: [],
 	});
 
+	const disableScroll = () => {
+		document.body.style.overflow = 'hidden';
+	};
+
+	const enableScroll = () => {
+		document.body.style.overflow = '';
+	};
+
 	const getMatchingList = async () => {
 		const payload = {
 			params: {
@@ -67,6 +75,7 @@ export default function MatchingList() {
 			},
 		};
 
+		disableScroll();
 		try {
 			const res = await Service.getMatchingList(payload);
 			if (res.data.response.content.length > 0) {
@@ -79,6 +88,8 @@ export default function MatchingList() {
 		} catch (e) {
 			setHasMoreData(false);
 			console.log(e);
+		} finally {
+			enableScroll();
 		}
 	};
 
@@ -112,18 +123,6 @@ export default function MatchingList() {
 		filterParams.ageGroups,
 		filterParams.ntrps,
 	]);
-
-	// useEffect(() => {
-	// 	if ('geolocation' in navigator) {
-	// 		navigator.geolocation.getCurrentPosition(function (position) {
-	// 			const latitudeValue = position.coords.latitude;
-	// 			const longitudeValue = position.coords.longitude;
-	// 			setFilterParams((prev) => ({ ...prev, lat: latitudeValue, lon: longitudeValue }));
-	// 		});
-	// 	} else {
-	// 		console.log('Geolocation을 지원하지 않는 브라우저입니다.');
-	// 	}
-	// }, []);
 
 	return (
 		<>
