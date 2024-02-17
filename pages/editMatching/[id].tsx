@@ -179,7 +179,6 @@ export default function EditMatching() {
 			postMatchingSetValue('location', res.data.response.location);
 			postMatchingSetValue('content', res.data.response.content);
 			setVirtualImgData(res.data.response.locationImg);
-			console.log('res', res);
 		} catch (e) {
 			console.log('e', e);
 		}
@@ -202,16 +201,17 @@ export default function EditMatching() {
 			content: postMatchingGetValues('content'),
 			location: postMatchingGetValues('location'),
 		};
-		console.log('params', params);
 		try {
+			let fileUrl = null;
 			// 이미지 등록
-			const formData = new FormData();
-			formData.append('imageFile', fileData);
-			const fileUrl = await AuthService.uploadImgSignup(formData);
-
+			if (fileData) {
+				const formData = new FormData();
+				formData.append('imageFile', fileData);
+				fileUrl = await AuthService.uploadImgSignup(formData);
+			}
 			const res = await MatchesService.modifyMatchingList(router.query.id, {
 				...params,
-				locationImg: fileUrl.data.response,
+				locationImg: fileUrl ? fileUrl.data.response : virtualImgData,
 			});
 			if (res.status === 200) {
 				setMessage('success', '매칭 수정에 성공하셨습니다');
@@ -233,7 +233,7 @@ export default function EditMatching() {
 	return (
 		<>
 			<PageTitleArea>
-				<PageMainTitle>매칭 글 등록</PageMainTitle>
+				<PageMainTitle>매칭 글 수정</PageMainTitle>
 			</PageTitleArea>
 			<PostMatchingFormBox>
 				{/* 제목 */}
@@ -435,7 +435,7 @@ export default function EditMatching() {
 			</PostMatchingFormBox>
 			<SubmitBtnWrapper>
 				<RoundButton disabled={!checkValidation()} onClick={onSubmit}>
-					적용하기
+					수정하기
 				</RoundButton>
 			</SubmitBtnWrapper>
 			<DrawerBox
