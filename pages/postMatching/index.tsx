@@ -44,6 +44,7 @@ const schema = yup.object().shape({
 	locationImg: yup.string(),
 	content: yup.string().required('본문 내용을 입력해주세요.'),
 });
+
 export default function PostMatching() {
 	// To-do
 	// 프론트에서 모집 마감일 받을 때 등록일 이후~경기시작 시간 이전으로 모집 마감일 선택하도록 설정

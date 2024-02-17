@@ -33,6 +33,10 @@ interface DetailMatchContentProps {
 	height?: string;
 }
 
+interface ModalWrapBoxProps {
+	clickFinishRecruit: boolean;
+}
+
 export default function DetailMatching() {
 	const router = useRouter();
 	const { setMessage } = useToast();
@@ -100,6 +104,8 @@ export default function DetailMatching() {
 		afterList: [],
 	});
 
+	const [clickFinishRecruit, setClickFinishRecruit] = useState<boolean>(false);
+
 	const [isReqMatching, setIsReqMatching] = useState<boolean>(false);
 
 	const toggleUserInfoModal = () => {
@@ -122,8 +128,11 @@ export default function DetailMatching() {
 		const scourceKey = source.droppableId;
 		const destinationKey = destination.droppableId;
 
+		// recruitList 깊은 복사본 생성
 		const processArr = JSON.parse(JSON.stringify(recruitList));
+		// 드래그된 아이템 추출 + 원본 위치에서 제거
 		const [targetItem] = processArr[scourceKey].splice(source.index, 1);
+		// 아이템을 새 위치에 삽입
 		processArr[destinationKey].splice(destination.index, 0, targetItem);
 		setRecruitList(processArr);
 
@@ -137,7 +146,8 @@ export default function DetailMatching() {
 			cancelMatchingApplication();
 		} else {
 			// 참가 신청 수락
-			acceptMatchingApplication();
+			acceptMatchingApplication(processArr);
+			console.log('processArr', processArr);
 		}
 	};
 
@@ -309,12 +319,13 @@ export default function DetailMatching() {
 	};
 
 	// 참가 신청 수락(알림)
-	const acceptMatchingApplication = async () => {
+	const acceptMatchingApplication = async (updatedLists: any) => {
 		const payload = {
-			pendingApplies: recruitList.beforeList,
-			acceptedApplies: recruitList.afterList,
+			pendingApplies: updatedLists.beforeList.map((item: any) => item.applyId),
+			acceptedApplies: updatedLists.afterList.map((item: any) => item.applyId),
 		};
 
+		console.log('payload', payload);
 		try {
 			const res = await ApplyService.applyMatches(router.query.id, payload);
 			console.log(res.data.response);
@@ -326,6 +337,15 @@ export default function DetailMatching() {
 		}
 	};
 
+	// 모집 완료 버튼 클릭
+	const finishRecruitBtn = () => {
+		setClickFinishRecruit(true);
+	};
+
+	// 모집 완료 버튼 클릭
+	const cancelRecruitBtn = () => {
+		setClickFinishRecruit(false);
+	};
 	// 매칭 글 삭제
 	const onClickDeleteMatching = () => {
 		try {
@@ -484,10 +504,10 @@ export default function DetailMatching() {
 					toggleModal={toggleModal}
 					onCancel={closeRecruitStatusModal}>
 					<ModalAlignContainer>
-						<div className='modalBoxes'>
+						<ModalBoxes>
 							<DragDropContext onDragEnd={onDragEnd}>
 								{Object.keys(recruitList).map((key) => (
-									<ModalWrapBox key={key}>
+									<ModalWrapBox key={key} clickFinishRecruit={clickFinishRecruit}>
 										<div className='is-modal-wrap-header'>
 											<p>{key === 'beforeList' ? '신청인원' : '참여인원'}</p>
 											<p>{recruitList[key].length}명</p>
@@ -503,7 +523,9 @@ export default function DetailMatching() {
 															key={item.applyId}
 															draggableId={String(item.applyId)}
 															isDragDisabled={
-																authorityValue !== 'MEMBER_MY' || item.siteUserId === userInfo.id
+																authorityValue !== 'MEMBER_MY' ||
+																item.siteUserId === userInfo.id ||
+																clickFinishRecruit
 															}
 															index={index}>
 															{(provided) => (
@@ -536,20 +558,38 @@ export default function DetailMatching() {
 									</ModalWrapBox>
 								))}
 							</DragDropContext>
-						</div>
-						{authorityValue === 'MEMBER_MY' ? (
+						</ModalBoxes>
+
+						{/* 모집 완료 O --------------------------------- */}
+						{clickFinishRecruit ? (
 							<>
+								<FirstButtonBox>
+									<RoundButton colorstyle={'is-black'}>채팅방 입장</RoundButton>
+								</FirstButtonBox>
 								<ButtonBox>
-									<RoundButton colorstyle={'is-black'}>모집완료</RoundButton>
+									<RoundButton colorstyle={'is-black'} onClick={cancelRecruitBtn}>
+										확정 취소
+									</RoundButton>
 								</ButtonBox>
 							</>
 						) : (
+							// 모집완료 X ---------------------------------
 							<>
-								<ButtonBox onClick={handleMatchingApplication}>
-									<RoundButton colorstyle={'is-black'}>
-										{isReqMatching ? '신청 취소' : '신청하기'}
-									</RoundButton>
-								</ButtonBox>
+								{authorityValue === 'MEMBER_MY' ? (
+									<>
+										<ButtonBox onClick={finishRecruitBtn}>
+											<RoundButton colorstyle={'is-black'}>모집완료</RoundButton>
+										</ButtonBox>
+									</>
+								) : (
+									<>
+										<ButtonBox onClick={handleMatchingApplication}>
+											<RoundButton colorstyle={'is-black'}>
+												{isReqMatching ? '신청 취소' : '신청하기'}
+											</RoundButton>
+										</ButtonBox>
+									</>
+								)}
 							</>
 						)}
 					</ModalAlignContainer>
@@ -718,6 +758,9 @@ const FlexBox = styled.div`
 	}
 `;
 const ButtonBox = styled.div``;
+const FirstButtonBox = styled.div`
+	margin-bottom: ${(props) => (props.theme.isResponsive ? pxToRem('15px') : rem('15px'))};
+`;
 
 const FloatBox = styled.div`
 	max-width: ${(props) => (props.theme.isResponsive ? pxToRem('640px') : rem('640px'))};
@@ -732,7 +775,7 @@ const FloatBox = styled.div`
 
 // 모집현황 모달 --------------------------------------------------------------------
 
-const ModalWrapBox = styled.div`
+const ModalWrapBox = styled.div<ModalWrapBoxProps>`
 	position: relative;
 	width: 100%;
 	height: ${(props) => (props.theme.isResponsive ? pxToRem('410px') : rem('410px'))};
@@ -741,6 +784,22 @@ const ModalWrapBox = styled.div`
 	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
 	overflow-y: scroll;
 	margin-bottom: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
+
+	&.id__ModalWrapBox-sc-11oq75o-16 {
+		${({ clickFinishRecruit }) =>
+			clickFinishRecruit &&
+			`overflow: hidden;
+            &:after {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: rgba(0, 0, 0, 0.2); // 투명한 레이어
+          z-index: 2; // 적절한 z-index 설정
+        }`}
+	}
 
 	&::-webkit-scrollbar {
 		display: none;
@@ -833,3 +892,5 @@ const ModalAlignContainer = styled.div`
 	justify-content: space-between;
 	flex-direction: column;
 `;
+
+const ModalBoxes = styled.div``;
