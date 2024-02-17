@@ -104,6 +104,7 @@ export default function DetailMatching() {
 		afterList: [],
 	});
 
+	const [isAppliedData, setIsAppliedData] = useState<boolean>(false);
 	const [clickFinishRecruit, setClickFinishRecruit] = useState<boolean>(false);
 
 	const [isReqMatching, setIsReqMatching] = useState<boolean>(false);
@@ -203,6 +204,7 @@ export default function DetailMatching() {
 				};
 			}
 			setRecruitList(processData);
+			setIsAppliedData(res.data.response.isApplied);
 		} catch (e) {
 			console.log('e', e);
 		}
@@ -583,11 +585,21 @@ export default function DetailMatching() {
 									</>
 								) : (
 									<>
-										<ButtonBox onClick={handleMatchingApplication}>
-											<RoundButton colorstyle={'is-black'}>
-												{isReqMatching ? '신청 취소' : '신청하기'}
-											</RoundButton>
-										</ButtonBox>
+										{isReqMatching ? (
+											<>
+												<ButtonBox onClick={handleMatchingApplication}>
+													<RoundButton colorstyle={isAppliedData ? 'is-black' : 'is-disabled'}>
+														신청하기
+													</RoundButton>
+												</ButtonBox>
+											</>
+										) : (
+											<>
+												<ButtonBox onClick={handleMatchingApplication}>
+													<RoundButton colorstyle={'is-black'}>신청 취소</RoundButton>
+												</ButtonBox>
+											</>
+										)}
 									</>
 								)}
 							</>
