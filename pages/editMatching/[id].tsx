@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm, Controller } from 'react-hook-form';
@@ -31,6 +31,7 @@ import { v4 as uuidv4 } from 'uuid';
 import AuthService from '../../service/auth/service';
 import { useRouter } from 'next/router';
 import useToast from '../../utils/useToast';
+import moment from 'moment';
 
 const schema = yup.object().shape({
 	title: yup.string().required('제목을 입력해주세요.'),
@@ -44,7 +45,7 @@ const schema = yup.object().shape({
 	locationImg: yup.string(),
 	content: yup.string().required('본문 내용을 입력해주세요.'),
 });
-export default function PostMatching() {
+export default function EditMatching() {
 	// To-do
 	// 프론트에서 모집 마감일 받을 때 등록일 이후~경기시작 시간 이전으로 모집 마감일 선택하도록 설정
 	// 이미지 api 붙이기
@@ -160,6 +161,30 @@ export default function PostMatching() {
 		return checkValue;
 	};
 
+	const getMatchingInfo = async (id: any) => {
+		try {
+			const res: any = await MatchesService.getDetailMatchingList(id);
+			postMatchingSetValue('title', res.data.response.title);
+			postMatchingSetValue('matchingType', res.data.response.matchingType);
+			postMatchingSetValue('recruitNum', res.data.response.recruitNum);
+			postMatchingSetValue('ageGroup', res.data.response.ageGroup);
+			postMatchingSetValue('ntrp', res.data.response.ntrp);
+			setDateState(res.data.response.date);
+			setStartTimeState(res.data.response.startTime);
+			setEndTimeState(res.data.response.endTime);
+			setRecruitDueDateState(moment(res.data.response.recruitDueDateTime).format('YYYY-MM-DD'));
+			setRecruitDueTimeState(moment(res.data.response.recruitDueDateTime).format('HH:mm'));
+			postMatchingSetValue('isReserved', res.data.response.isReserved);
+			postMatchingSetValue('cost', res.data.response.cost);
+			postMatchingSetValue('location', res.data.response.location);
+			postMatchingSetValue('content', res.data.response.content);
+			setVirtualImgData(res.data.response.locationImg);
+			console.log('res', res);
+		} catch (e) {
+			console.log('e', e);
+		}
+	};
+
 	const onSubmit = async () => {
 		const params = {
 			title: postMatchingGetValues('title'),
@@ -177,24 +202,33 @@ export default function PostMatching() {
 			content: postMatchingGetValues('content'),
 			location: postMatchingGetValues('location'),
 		};
+		console.log('params', params);
 		try {
 			// 이미지 등록
 			const formData = new FormData();
 			formData.append('imageFile', fileData);
 			const fileUrl = await AuthService.uploadImgSignup(formData);
 
-			const res = await MatchesService.regMatchingData({
+			const res = await MatchesService.modifyMatchingList(router.query.id, {
 				...params,
 				locationImg: fileUrl.data.response,
 			});
 			if (res.status === 200) {
-				setMessage('success', '매칭 등록에 성공하셨습니다');
+				setMessage('success', '매칭 수정에 성공하셨습니다');
 				router.push('/');
 			}
 		} catch (e) {
 			console.log(e);
 		}
 	};
+
+	useEffect(() => {
+		// router 객체가 준비가 되었을때
+		if (router.isReady) {
+			// 상세 정보 호출
+			getMatchingInfo(router.query.id);
+		}
+	}, [router.query]);
 
 	return (
 		<>
@@ -294,11 +328,19 @@ export default function PostMatching() {
 				<HalfBox>
 					<InputBox>
 						<label>시작 시간</label>
-						<CustomTimePicker dateState={startTimeState} setDateState={setStartTimeState} />
+						<CustomTimePicker
+							dateState={startTimeState}
+							setDateState={setStartTimeState}
+							isUpdate={true}
+						/>
 					</InputBox>
 					<InputBox>
 						<label>종료 시간</label>
-						<CustomTimePicker dateState={endTimeState} setDateState={setEndTimeState} />
+						<CustomTimePicker
+							dateState={endTimeState}
+							setDateState={setEndTimeState}
+							isUpdate={true}
+						/>
 					</InputBox>
 				</HalfBox>
 				{/* 모집마감일 */}
@@ -313,12 +355,15 @@ export default function PostMatching() {
 						type={'HOUR'}
 						dateState={recruitDueTimeState}
 						setDateState={setRecruitDueTimeState}
+						isUpdate={true}
 					/>
 				</InputBox>
 				{/* 경기장 예약여부 */}
 				<InputBox>
 					<label>경기장 예약 여부</label>
 					<ButtonStyleRadio
+						isUpdate={true}
+						state={postMatchingGetValues('isReserved')}
 						setState={postMatchingSetValue}
 						{...postMatchingResister('isReserved')}
 					/>

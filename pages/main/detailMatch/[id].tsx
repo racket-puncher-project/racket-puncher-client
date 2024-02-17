@@ -188,6 +188,11 @@ export default function DetailMatching() {
 		}
 	};
 
+	// 매칭 수정 이동
+	const onClickMoveEdit = () => {
+		router.push(`/editMatching/${router.query.id}`);
+	};
+
 	// 매칭별 신청 현황 조회 (모집 현황)
 	const getRecruitListInfo = async (id: any) => {
 		try {
@@ -397,7 +402,7 @@ export default function DetailMatching() {
 						<DetailActionBtnContainer>
 							<RoundButton
 								onClick={() => {
-									console.log('11');
+									onClickMoveEdit();
 								}}>
 								수정
 							</RoundButton>
