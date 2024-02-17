@@ -1,15 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import DatePicker from 'react-mobile-datepicker';
 import styled from 'styled-components';
 import { ImageBox } from '../../../styles/ts/components/box';
 import { FontSizeSpSm, LightGrayColor } from '../../../styles/ts/common';
 import { rem } from 'polished';
 import { pxToRem, timeFormatter } from '../../../utils/formatter';
+import moment from 'moment';
 
 interface ITimePickerProps {
 	readonly dateState: string;
 	readonly setDateState: any;
 	readonly type?: string;
+	readonly isUpdate?: boolean;
 }
 
 export default function CustomTimePicker(props: ITimePickerProps) {
@@ -59,6 +61,25 @@ export default function CustomTimePicker(props: ITimePickerProps) {
 		props.setDateState(timeFormatter(selected));
 		setIsOpen(false);
 	};
+
+	const parseDateStateToDate = (dateState: string): Date => {
+		const timeParts = dateState.split(':');
+		const hours = parseInt(timeParts[0], 10);
+		const minutes = parseInt(timeParts[1], 10);
+
+		// 현재 날짜에 대한 moment 객체를 생성하고, 시간과 분을 설정합니다.
+		// 이 예시에서는 날짜 정보가 중요하지 않으므로 현재 날짜를 사용합니다.
+		const date = moment().hours(hours).minutes(minutes).toDate();
+
+		return date;
+	};
+
+	useEffect(() => {
+		if (props.isUpdate) {
+			const newTime = parseDateStateToDate(props.dateState);
+			setTimeState(newTime);
+		}
+	});
 
 	return (
 		<>
