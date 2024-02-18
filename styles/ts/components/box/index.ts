@@ -34,7 +34,9 @@ export const ImageBox = styled.div.withConfig({
 	}
 `;
 
-export const BackgroundImageBox = styled.div<IBackgroundImageProps>`
+export const BackgroundImageBox = styled.div.withConfig({
+	shouldForwardProp: (props) => props !== 'backgroundImage',
+})<IBackgroundImageProps>`
 	width: ${(props) =>
 		props.widthInit
 			? ''

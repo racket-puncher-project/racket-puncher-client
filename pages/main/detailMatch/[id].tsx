@@ -593,15 +593,15 @@ export default function DetailMatching() {
 										{isReqMatching ? (
 											<>
 												<ButtonBox onClick={handleMatchingApplication}>
-													<RoundButton colorstyle={isAppliedData ? 'is-black' : 'is-disabled'}>
-														신청하기
-													</RoundButton>
+													<RoundButton colorstyle={'is-black'}>신청하기</RoundButton>
 												</ButtonBox>
 											</>
 										) : (
 											<>
 												<ButtonBox onClick={handleMatchingApplication}>
-													<RoundButton colorstyle={'is-black'}>신청 취소</RoundButton>
+													<RoundButton colorstyle={isAppliedData ? 'is-black' : 'is-disabled'}>
+														신청 취소
+													</RoundButton>
 												</ButtonBox>
 											</>
 										)}
