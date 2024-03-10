@@ -527,55 +527,60 @@ export default function DetailMatching() {
 						<ModalBoxes>
 							<DragDropContext onDragEnd={onDragEnd}>
 								{Object.keys(recruitList).map((key) => (
-									<ModalWrapBox key={key} clickFinishRecruit={clickFinishRecruit}>
-										<div className='is-modal-wrap-header'>
-											<p>{key === 'beforeList' ? '신청인원' : '참여인원'}</p>
-											<p>{recruitList[key].length}명</p>
-										</div>
-										<Droppable key={key} droppableId={key}>
-											{(provided) => (
-												<div
-													className='is-modal-wrap-body'
-													{...provided.droppableProps}
-													ref={provided.innerRef}>
-													{recruitList[key].map((item, index) => (
-														<Draggable
-															key={item.applyId}
-															draggableId={String(item.applyId)}
-															isDragDisabled={
-																authorityValue !== 'MEMBER_MY' ||
-																item.siteUserId === userInfo.id ||
-																clickFinishRecruit
-															}
-															index={index}>
-															{(provided) => (
-																<div
-																	ref={provided.innerRef}
-																	{...provided.draggableProps}
-																	{...provided.dragHandleProps}>
-																	<ModalWrapItem>
-																		<div className='box-top'>
-																			<ImageBox width='80px' height='80px'>
-																				<img src='/images/main-img1.png' alt='image' />
-																			</ImageBox>
-																			<p>{item.nickname}</p>
-																		</div>
-																		<div className='box-footer'>
-																			<div
-																				className='is-btn black'
-																				onClick={() => getUserInfoData(item.siteUserId)}>
-																				정보
-																			</div>
-																		</div>
-																	</ModalWrapItem>
-																</div>
-															)}
-														</Draggable>
-													))}
+									<>
+										<ModalWrapBoxContainer key={key} clickFinishRecruit={clickFinishRecruit}>
+											<ModalWrapBox>
+												<div className='is-modal-wrap-header'>
+													<p>{key === 'beforeList' ? '신청인원' : '참여인원'}</p>
+													<p>{recruitList[key].length}명</p>
 												</div>
-											)}
-										</Droppable>
-									</ModalWrapBox>
+												<Droppable key={key} droppableId={key}>
+													{(provided) => (
+														<div
+															className={'is-modal-wrap-body'}
+															{...provided.droppableProps}
+															ref={provided.innerRef}>
+															{recruitList[key].map((item, index) => (
+																<Draggable
+																	key={item.applyId}
+																	draggableId={String(item.applyId)}
+																	isDragDisabled={
+																		authorityValue !== 'MEMBER_MY' ||
+																		item.siteUserId === userInfo.id ||
+																		clickFinishRecruit
+																	}
+																	index={index}>
+																	{(provided) => (
+																		<div
+																			ref={provided.innerRef}
+																			{...provided.draggableProps}
+																			{...provided.dragHandleProps}>
+																			<ModalWrapItem>
+																				<div className='box-top'>
+																					<ImageBox width='80px' height='80px'>
+																						<img src='/images/main-img1.png' alt='image' />
+																					</ImageBox>
+																					<p>{item.nickname}</p>
+																				</div>
+																				<div className='box-footer'>
+																					<div
+																						className='is-btn black'
+																						onClick={() => getUserInfoData(item.siteUserId)}>
+																						정보
+																					</div>
+																				</div>
+																			</ModalWrapItem>
+																		</div>
+																	)}
+																</Draggable>
+															))}
+														</div>
+													)}
+												</Droppable>
+											</ModalWrapBox>
+											{clickFinishRecruit && <div className={'finish-dim'}></div>}
+										</ModalWrapBoxContainer>
+									</>
 								))}
 							</DragDropContext>
 						</ModalBoxes>
@@ -805,7 +810,22 @@ const FloatBox = styled.div`
 
 // 모집현황 모달 --------------------------------------------------------------------
 
-const ModalWrapBox = styled.div<ModalWrapBoxProps>`
+const ModalWrapBoxContainer = styled.div<ModalWrapBoxProps>`
+	position: relative;
+	div.finish-dim {
+		border-radius: 20px;
+		overflow: hidden;
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-color: rgba(0, 0, 0, 0.2); // 투명한 레이어
+		z-index: 2; // 적절한 z-index 설정
+	}
+`;
+
+const ModalWrapBox = styled.div`
 	position: relative;
 	width: 100%;
 	height: ${(props) => (props.theme.isResponsive ? pxToRem('410px') : rem('410px'))};
@@ -814,22 +834,6 @@ const ModalWrapBox = styled.div<ModalWrapBoxProps>`
 	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
 	overflow-y: scroll;
 	margin-bottom: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
-
-	&.id__ModalWrapBox-sc-11oq75o-16 {
-		${({ clickFinishRecruit }) =>
-			clickFinishRecruit &&
-			`overflow: hidden;
-            &:after {
-          content: "";
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background-color: rgba(0, 0, 0, 0.2); // 투명한 레이어
-          z-index: 2; // 적절한 z-index 설정
-        }`}
-	}
 
 	&::-webkit-scrollbar {
 		display: none;
@@ -841,7 +845,7 @@ const ModalWrapBox = styled.div<ModalWrapBoxProps>`
 	div.is-modal-wrap-header {
 		position: sticky;
 		top: 0;
-		max-width: ${(props) => (props.theme.isResponsive ? pxToRem('540px') : rem('540px'))};
+		// max-width: ${(props) => (props.theme.isResponsive ? pxToRem('540px') : rem('540px'))};
 		width: 100%;
 		display: flex;
 		align-items: center;
