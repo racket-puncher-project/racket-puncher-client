@@ -166,7 +166,7 @@ export default function DetailMatching() {
 			// 로그인 체크
 			if (checkLogin()) {
 				// 유저 정보 조회
-				getMyInfoData(res.data.response.creatorInfo.id);
+				await getMyInfoData(res.data.response.creatorInfo.id);
 				// 모집 현황 조회
 				getRecruitListInfo(router.query.id);
 			} else {
@@ -220,7 +220,7 @@ export default function DetailMatching() {
 			const myAppliedData = res.data.response.acceptedMembers.filter(
 				(item) => item.siteUserId === userIdData
 			);
-			setApplyIdData(myAppliedData.applyId);
+			setApplyIdData(myAppliedData[0].applyId);
 			console.log('userIdData', userIdData);
 			console.log('myAppliedData', myAppliedData);
 		} catch (e) {
@@ -266,6 +266,8 @@ export default function DetailMatching() {
 			// 권한 체크
 			checkAuthorityValue(matchingId, res.data.response.id);
 			setUserIdData(res.data.response.id);
+
+			return res.data.response.id;
 		} catch (e) {
 			console.log('e', e);
 			if (e.response.data.code === 404) {
@@ -331,6 +333,7 @@ export default function DetailMatching() {
 		try {
 			const res = await ApplyService.getDetailMatchingList(applyIdData);
 			console.log(res.data.response);
+
 			setIsReqMatching(false);
 		} catch (e) {
 			console.log(e);
@@ -388,7 +391,24 @@ export default function DetailMatching() {
 			// 상세 정보 호출
 			getDetailInfo(router.query.id);
 		}
-	}, [router.query]);
+	}, [router.isReady, router.query.id]);
+
+	useEffect(() => {
+		// userIdData 상태가 설정된 후에만 실행
+		if (userIdData) {
+			const fetchRecruitListInfo = async () => {
+				await getRecruitListInfo(router.query.id);
+				const myAppliedData = recruitList.afterList.filter(
+					(item) => item.siteUserId === userIdData
+				);
+				if (myAppliedData.length > 0) {
+					setApplyIdData(myAppliedData[0].applyId);
+				}
+			};
+
+			fetchRecruitListInfo();
+		}
+	}, [userIdData, router.query.id]);
 
 	return (
 		<>
