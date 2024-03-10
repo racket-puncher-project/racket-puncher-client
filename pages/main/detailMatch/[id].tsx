@@ -18,8 +18,7 @@ import {
 } from '../../../styles/ts/common';
 import { RoundButton } from '../../../styles/ts/components/buttons';
 import ModalBox from '../../../components/common/modal';
-import { prefix } from '../../../constants/prefix';
-import { dateFormatter, pxToRem } from '../../../utils/formatter';
+import { pxToRem } from '../../../utils/formatter';
 import Service from '../../../service/matches/service';
 import { useRouter } from 'next/router';
 import UserInfoModal from '../../../components/common/playerCard/userInfoModal';
@@ -108,6 +107,10 @@ export default function DetailMatching() {
 
 	// 참가 신청 여부
 	const [isReqMatching, setIsReqMatching] = useState<boolean>(false);
+	// 신청자 아이디
+	const [applyIdData, setApplyIdData] = useState<string>('');
+	// 유저 아이디
+	const [userIdData, setUserIdData] = useState<string>('');
 
 	const toggleUserInfoModal = () => {
 		setIsUserInfoModalOpen(!isUserInfoModalOpen);
@@ -212,6 +215,12 @@ export default function DetailMatching() {
 			}
 			setRecruitList(processData);
 			setIsReqMatching(res.data.response.isApplied);
+
+			// 내 신청 데이터 내역 가공
+			const myAppliedData = res.data.response.acceptedMembers.filter(
+				(item) => item.siteUserId === userIdData
+			);
+			setApplyIdData(myAppliedData.applyId);
 		} catch (e) {
 			console.log('e', e);
 		}
@@ -254,6 +263,7 @@ export default function DetailMatching() {
 			const res = await usersService.getUserInfo();
 			// 권한 체크
 			checkAuthorityValue(matchingId, res.data.response.id);
+			setUserIdData(res.data.response.id);
 		} catch (e) {
 			console.log('e', e);
 			if (e.response.data.code === 404) {
@@ -317,7 +327,7 @@ export default function DetailMatching() {
 	// (매칭상태가 FULL인 경기일 경우, 경기 매칭 확정 상태 변경 및 패널티 부여, 알림)
 	const cancelMatchingApplication = async () => {
 		try {
-			const res = await ApplyService.getDetailMatchingList(router.query.id);
+			const res = await ApplyService.getDetailMatchingList(applyIdData);
 			console.log(res.data.response);
 			setIsReqMatching(false);
 		} catch (e) {
