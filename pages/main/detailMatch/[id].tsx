@@ -221,6 +221,8 @@ export default function DetailMatching() {
 				(item) => item.siteUserId === userIdData
 			);
 			setApplyIdData(myAppliedData.applyId);
+			console.log('userIdData', userIdData);
+			console.log('myAppliedData', myAppliedData);
 		} catch (e) {
 			console.log('e', e);
 		}
