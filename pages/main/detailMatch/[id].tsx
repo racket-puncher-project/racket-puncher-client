@@ -104,9 +104,9 @@ export default function DetailMatching() {
 		afterList: [],
 	});
 
-	const [isAppliedData, setIsAppliedData] = useState<boolean>(false);
 	const [clickFinishRecruit, setClickFinishRecruit] = useState<boolean>(false);
 
+	// 참가 신청 여부
 	const [isReqMatching, setIsReqMatching] = useState<boolean>(false);
 
 	const toggleUserInfoModal = () => {
@@ -197,6 +197,8 @@ export default function DetailMatching() {
 	const getRecruitListInfo = async (id: any) => {
 		try {
 			const res = await Service.getMatchingApplyState(id);
+
+			console.log('매칭별 신청 현황 조회', res.data.response);
 			let processData = null;
 			if (res.data.response.appliedMembers) {
 				processData = {
@@ -209,7 +211,7 @@ export default function DetailMatching() {
 				};
 			}
 			setRecruitList(processData);
-			setIsAppliedData(res.data.response.isApplied);
+			setIsReqMatching(res.data.response.isApplied);
 		} catch (e) {
 			console.log('e', e);
 		}
@@ -289,6 +291,7 @@ export default function DetailMatching() {
 
 	// 신청 여부에 따라 컨트롤
 	const handleMatchingApplication = () => {
+		console.log('isReqMatching', isReqMatching);
 		if (isReqMatching) {
 			cancelMatchingApplication();
 		} else {
@@ -300,7 +303,7 @@ export default function DetailMatching() {
 	const requestMatching = async () => {
 		try {
 			const res = await ApplyService.regMatchingData(router.query.id);
-			console.log(res.data.response);
+			console.log('참가 신청', res.data.response);
 			setIsReqMatching(true);
 		} catch (e) {
 			console.log(e);
@@ -593,15 +596,15 @@ export default function DetailMatching() {
 										{isReqMatching ? (
 											<>
 												<ButtonBox onClick={handleMatchingApplication}>
-													<RoundButton colorstyle={'is-black'}>신청하기</RoundButton>
+													<RoundButton colorstyle={isReqMatching ? 'is-black' : 'is-disabled'}>
+														신청 취소
+													</RoundButton>
 												</ButtonBox>
 											</>
 										) : (
 											<>
 												<ButtonBox onClick={handleMatchingApplication}>
-													<RoundButton colorstyle={isAppliedData ? 'is-black' : 'is-disabled'}>
-														신청 취소
-													</RoundButton>
+													<RoundButton colorstyle={'is-black'}>신청하기</RoundButton>
 												</ButtonBox>
 											</>
 										)}
