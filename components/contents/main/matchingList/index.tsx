@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { rem } from 'polished';
 import InfiniteScroll from 'react-infinite-scroller';
 import { v4 as uuidv4 } from 'uuid';
-
+import { debounce } from 'lodash';
 import { RoundButton } from '../../../../styles/ts/components/buttons';
 import { GrayLine, ImageBox } from '../../../../styles/ts/components/box';
 import { FontSizeSm } from '../../../../styles/ts/common';
@@ -74,7 +74,6 @@ export default function MatchingList() {
 				},
 			},
 		};
-
 		disableScroll();
 		try {
 			const res = await Service.getMatchingList(payload);
@@ -110,8 +109,10 @@ export default function MatchingList() {
 		}
 	};
 
+	const getMatchingListDebounced = debounce(getMatchingList, 200);
+
 	useEffect(() => {
-		getMatchingList();
+		getMatchingListDebounced();
 	}, [
 		filterParams.sort,
 		filterParams.startDate,
@@ -147,7 +148,9 @@ export default function MatchingList() {
 				<InfiniteScroll
 					initialLoad={false}
 					pageStart={0}
-					loadMore={getMatchingList}
+					loadMore={() => {
+						if (hasMoreData) getMatchingListDebounced();
+					}}
 					hasMore={hasMoreData}
 					loader={
 						<div className='loader' key={uuidv4()}>
