@@ -29,6 +29,7 @@ import ApplyService from '../../../service/apply/service';
 import useToast from '../../../utils/useToast';
 import SockJs from 'sockjs-client';
 import Stomp from 'stompjs';
+import ChatService from '../../../service/chat/service';
 
 interface DetailMatchContentProps {
 	height?: string;
@@ -37,6 +38,8 @@ interface DetailMatchContentProps {
 interface ModalWrapBoxProps {
 	clickFinishRecruit: boolean;
 }
+
+let stompClient = null;
 
 export default function DetailMatching() {
 	const router = useRouter();
@@ -113,6 +116,11 @@ export default function DetailMatching() {
 	const [applyIdData, setApplyIdData] = useState<string>('');
 	// 유저 아이디
 	const [userIdData, setUserIdData] = useState<string>('');
+	const [userNickNameData, setUserNickNameDate] = useState<string>('');
+
+	const [chatRoomVisible, setChatRoomVisible] = useState(false);
+	const [chatList, setChatList] = useState([]);
+	const [messageValue, setMessageValue] = useState('');
 
 	const toggleUserInfoModal = () => {
 		setIsUserInfoModalOpen(!isUserInfoModalOpen);
@@ -122,8 +130,22 @@ export default function DetailMatching() {
 		setRecruitStatusModalVisible((prev) => !prev);
 	};
 
+	const chatToggleModal = () => {
+		setChatRoomVisible(!isUserInfoModalOpen);
+		if (stompClient !== null) {
+			stompClient.disconnect();
+		}
+	};
+
 	const closeRecruitStatusModal = () => {
 		setRecruitStatusModalVisible(false);
+	};
+
+	const closeChatModal = () => {
+		setChatRoomVisible(false);
+		if (stompClient !== null) {
+			stompClient.disconnect();
+		}
 	};
 
 	const onDragEnd = ({ source, destination }) => {
@@ -268,6 +290,8 @@ export default function DetailMatching() {
 			// 권한 체크
 			checkAuthorityValue(matchingId, res.data.response.id);
 			setUserIdData(res.data.response.id);
+			setUserNickNameDate(res.data.response.nickname);
+			console.log('res.data', res.data.response);
 
 			return res.data.response.id;
 		} catch (e) {
@@ -394,23 +418,48 @@ export default function DetailMatching() {
 			matchingId: router.query.id,
 			connectType: 'room',
 		};
-		const socket = new SockJs(`http://43.203.25.186:8081/topic/${router.query.id}`);
-		const stompClient = Stomp.over(socket);
+		const socket = new SockJs(`http://43.203.25.186:8081/ws`);
+		stompClient = Stomp.over(socket);
 
 		stompClient.connect(
 			headers,
-			function (frame) {
+			async (frame) => {
 				console.log('Connected: ' + frame);
-				// stompClient.subscribe(`/topic/${matchingId}`, function(messageOutput) {
-				// 		showMessageOutput(JSON.parse(messageOutput.body));
-				// 		markMessageAsRead(matchingId);
-				// });
-				// fetchPreviousMessages(matchingId, accessToken);
+				setChatRoomVisible(true);
+				getPreviousMessage();
+				await stompClient.subscribe(
+					`/topic/${router.query.id}`,
+					(messageOutput) => {
+						if (messageOutput.command === 'MESSAGE') {
+							getPreviousMessage();
+						}
+					},
+					(error) => {
+						console.log('subscribe error', error);
+					}
+				);
 			},
-			function (error) {
+			(error) => {
 				console.log('Connection error: ' + error);
 			}
 		);
+	};
+
+	const getPreviousMessage = async () => {
+		const payload = {
+			matchingId: router.query.id,
+		};
+		try {
+			const res = await ChatService.getPreviousMessageData(payload);
+			setChatList(res.data.response);
+			console.log('res', res);
+		} catch (e) {
+			console.log('e', e);
+		}
+	};
+
+	const sendMessage = async () => {
+		stompClient.send(`/app/chat/${router.query.id}`, {}, JSON.stringify({ content: messageValue }));
 	};
 
 	useEffect(() => {
@@ -680,6 +729,47 @@ export default function DetailMatching() {
 							</>
 						)}
 					</ModalAlignContainer>
+				</ModalBox>
+				<ModalBox
+					isOpen={chatRoomVisible}
+					heightType={false}
+					toggleModal={chatToggleModal}
+					onCancel={closeChatModal}>
+					<ChatBoxes>
+						<input
+							value={messageValue}
+							type='text'
+							onChange={(e) => {
+								setMessageValue(e.target.value);
+							}}
+						/>
+						<button onClick={sendMessage}>보내기</button>
+						<div className='chat-list-wrap'>
+							{chatList.map((item) => {
+								return (
+									<>
+										{item.senderNickname === 'admin' && (
+											<>
+												<p className='center-title'>{item.content}</p>
+											</>
+										)}
+										{item.senderNickname !== 'admin' &&
+											item.senderNickname === userNickNameData && (
+												<>
+													<p className='right-title'>{item.content}</p>
+												</>
+											)}
+										{item.senderNickname !== 'admin' &&
+											item.senderNickname !== userNickNameData && (
+												<>
+													<p className='left-title'>{item.content}</p>
+												</>
+											)}
+									</>
+								);
+							})}
+						</div>
+					</ChatBoxes>
 				</ModalBox>
 			</DetailMatchingContainer>
 		</>
@@ -980,3 +1070,20 @@ const ModalAlignContainer = styled.div`
 `;
 
 const ModalBoxes = styled.div``;
+
+const ChatBoxes = styled.div`
+	background-color: yellow;
+	div.chat-list-wrap {
+		p {
+			&.center-title {
+				text-align: center;
+			}
+			&.left-title {
+				text-align: left;
+			}
+			&.right-title {
+				text-align: right;
+			}
+		}
+	}
+`;
