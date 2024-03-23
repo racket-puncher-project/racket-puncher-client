@@ -27,6 +27,8 @@ import useCookies from '../../../utils/useCookies';
 import usersService from '../../../service/users/service';
 import ApplyService from '../../../service/apply/service';
 import useToast from '../../../utils/useToast';
+import SockJs from 'sockjs-client';
+import Stomp from 'stompjs';
 
 interface DetailMatchContentProps {
 	height?: string;
@@ -39,7 +41,7 @@ interface ModalWrapBoxProps {
 export default function DetailMatching() {
 	const router = useRouter();
 	const { setMessage } = useToast();
-	const { checkLogin } = useCookies();
+	const { getCookie, checkLogin } = useCookies();
 
 	// 모집연령 enum
 	const ageGroupsInfo = [
@@ -385,6 +387,32 @@ export default function DetailMatching() {
 		}
 	};
 
+	// 채팅방 입장
+	const onConnectChat = () => {
+		const headers = {
+			Authorization: 'Bearer ' + getCookie('accessToken'),
+			matchingId: router.query.id,
+			connectType: 'room',
+		};
+		const socket = new SockJs(`http://43.203.25.186:8081/topic/${router.query.id}`);
+		const stompClient = Stomp.over(socket);
+
+		stompClient.connect(
+			headers,
+			function (frame) {
+				console.log('Connected: ' + frame);
+				// stompClient.subscribe(`/topic/${matchingId}`, function(messageOutput) {
+				// 		showMessageOutput(JSON.parse(messageOutput.body));
+				// 		markMessageAsRead(matchingId);
+				// });
+				// fetchPreviousMessages(matchingId, accessToken);
+			},
+			function (error) {
+				console.log('Connection error: ' + error);
+			}
+		);
+	};
+
 	useEffect(() => {
 		// router 객체가 준비가 되었을때
 		if (router.isReady) {
@@ -611,7 +639,9 @@ export default function DetailMatching() {
 						{clickFinishRecruit ? (
 							<>
 								<FirstButtonBox>
-									<RoundButton colorstyle={'is-black'}>채팅방 입장</RoundButton>
+									<RoundButton colorstyle={'is-black'} onClick={onConnectChat}>
+										채팅방 입장
+									</RoundButton>
 								</FirstButtonBox>
 								<ButtonBox>
 									<RoundButton colorstyle={'is-black'} onClick={cancelRecruitBtn}>
