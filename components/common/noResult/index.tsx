@@ -4,13 +4,14 @@ import { ImageBox } from '../../../styles/ts/components/box';
 import { BlackColor, FontSizeLg } from '../../../styles/ts/common';
 import { pxToRem } from '../../../utils/formatter';
 import { rem } from 'polished';
+import { prefix } from '../../../constants/prefix';
 
 export default function NoResultBox() {
 	return (
 		<>
 			<NoResultContainer>
 				<ImageBox width='100px' height='100px'>
-					<img src='/images/no-result.png' alt='검색결과없음' />
+					<img src={`${prefix}/images/no-result.png`} alt='검색결과없음' />
 				</ImageBox>
 				<p>조회 결과가 없습니다</p>
 			</NoResultContainer>

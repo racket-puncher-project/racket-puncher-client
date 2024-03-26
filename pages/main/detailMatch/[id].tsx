@@ -30,6 +30,7 @@ import useToast from '../../../utils/useToast';
 import SockJs from 'sockjs-client';
 import Stomp from 'stompjs';
 import ChatService from '../../../service/chat/service';
+import { prefix } from '../../../constants/prefix';
 
 interface DetailMatchContentProps {
 	height?: string;
@@ -657,7 +658,10 @@ export default function DetailMatching() {
 																			<ModalWrapItem>
 																				<div className='box-top'>
 																					<ImageBox width='80px' height='80px'>
-																						<img src='/images/main-img1.png' alt='image' />
+																						<img
+																							src={`${prefix}/images/main-img1.png`}
+																							alt='image'
+																						/>
 																					</ImageBox>
 																					<p>{item.nickname}</p>
 																				</div>

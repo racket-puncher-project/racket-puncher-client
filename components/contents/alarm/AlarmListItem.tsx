@@ -12,6 +12,7 @@ import {
 
 import { ImageBox } from '../../../styles/ts/components/box';
 import { pxToRem } from '../../../utils/formatter';
+import { prefix } from '../../../constants/prefix';
 
 interface IAlarmListItemProps {
 	alarmTestData: {
@@ -38,7 +39,7 @@ export default function AlarmListItem(props: IAlarmListItemProps) {
 			</AlarmDataArea>
 			<IconArea>
 				<ImageBox width='40px' height='40px'>
-					<img src='./svg/bell-icon.svg' alt='종모양 아이콘' />
+					<img src={`${prefix}/svg/bell-icon.svg`} alt='종모양 아이콘' />
 				</ImageBox>
 			</IconArea>
 		</AlarmListItemContainer>

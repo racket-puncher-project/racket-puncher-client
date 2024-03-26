@@ -17,6 +17,7 @@ import PlayerCard from '../../../common/playerCard';
 import { RoundButton } from '../../../../styles/ts/components/buttons';
 import useToast from '../../../../utils/useToast';
 import usersService from '../../../../service/users/service';
+import { prefix } from '../../../../constants/prefix';
 
 interface IUser {
 	readonly id: number; // 유저 아이디
@@ -72,7 +73,7 @@ export default function MyListItem({ postInfo }: IMyListItemProps) {
 											{info.title} / {info.location} / {info.matchingType}
 										</TitleLink>
 										<IconImageBox id='collapseIcon' width='24px' height='24px'>
-											<img src='/svg/arrow.svg' />
+											<img src={`${prefix}/svg/arrow.svg`} />
 										</IconImageBox>
 									</Header>
 								),

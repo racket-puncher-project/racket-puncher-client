@@ -6,6 +6,7 @@ import { FontSizeSpSm, LightGrayColor } from '../../../styles/ts/common';
 import { rem } from 'polished';
 import { pxToRem, timeFormatter } from '../../../utils/formatter';
 import moment from 'moment';
+import { prefix } from '../../../constants/prefix';
 
 interface ITimePickerProps {
 	readonly dateState: string;
@@ -100,7 +101,7 @@ export default function CustomTimePicker(props: ITimePickerProps) {
 					</>
 				)}
 				<ImageBox width={'24px'} height={'24px'}>
-					<img src='/svg/clock-icon.svg' alt='시계' color={LightGrayColor} />
+					<img src={`${prefix}/svg/clock-icon.svg`} alt='시계' color={LightGrayColor} />
 				</ImageBox>
 			</CustomDatePickerBox>
 			<DatePicker

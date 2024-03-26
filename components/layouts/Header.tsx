@@ -45,7 +45,7 @@ export default function Header() {
 					aria-label='이전 페이지로 이동'
 					style={{ display: isBackBtnVisible === true ? 'block' : 'none' }}>
 					<ImageBox width={'34px'} height={'34px'}>
-						<img src='/svg/back-ico.svg' alt='뒤로가기 아이콘' />
+						<img src={`${prefix}/svg/back-ico.svg`} alt='뒤로가기 아이콘' />
 					</ImageBox>
 				</ImgButton>
 				<LogoButton onClick={() => movePage('/main')} aria-label='메인으로 이동'>
@@ -55,7 +55,7 @@ export default function Header() {
 				</LogoButton>
 				<ImgButton onClick={showDrawer} aria-label='메뉴'>
 					<ImageBox width={'34px'} height={'34px'}>
-						<img src='/svg/menu-ico.svg' alt='메뉴 아이콘' />
+						<img src={`${prefix}/svg/menu-ico.svg`} alt='메뉴 아이콘' />
 					</ImageBox>
 				</ImgButton>
 			</HeaderContainer>

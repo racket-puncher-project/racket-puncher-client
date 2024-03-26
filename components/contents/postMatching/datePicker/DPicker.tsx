@@ -4,11 +4,8 @@ import { rem } from 'polished';
 import { ImageBox } from '../../../../styles/ts/components/box';
 import { FontFamilyRegular, FontSizeSpSm } from '../../../../styles/ts/common';
 import DatePicker from 'react-mobile-datepicker';
-import {
-	dateFormatter,
-	pxToRem,
-	stringToDateFormatter
-} from '../../../../utils/formatter';
+import { dateFormatter, pxToRem, stringToDateFormatter } from '../../../../utils/formatter';
+import { prefix } from '../../../../constants/prefix';
 
 interface IPickerProps {
 	readonly name: string;
@@ -81,7 +78,7 @@ export default function DPicker(props: IPickerProps) {
 					{`${dateState.getDate()}`}일 {`${days[dateState.getDay()]}`}요일
 				</p>
 				<ImageBox width={'24px'} height={'24px'}>
-					<img src='/images/calendar.png' alt='calendar' />
+					<img src={`${prefix}/images/calendar.png`} alt='calendar' />
 				</ImageBox>
 			</CustomDatePickerBox>
 
@@ -97,10 +94,11 @@ export default function DPicker(props: IPickerProps) {
 	);
 }
 
-const CustomDatePickerBox = styled.div`	
+const CustomDatePickerBox = styled.div`
 	width: 100%;
-	height: ${(props) => props.theme.isResponsive ? pxToRem('50px') : rem('50px')};
-	padding:  ${(props) => props.theme.isResponsive ? `17px ${pxToRem('14px')}` :`17px ${rem('14px')}`};
+	height: ${(props) => (props.theme.isResponsive ? pxToRem('50px') : rem('50px'))};
+	padding: ${(props) =>
+		props.theme.isResponsive ? `17px ${pxToRem('14px')}` : `17px ${rem('14px')}`};
 	border-radius: 10px;
 	border: 1px solid #dcdcdc;
 	background: #f9f9f9;
@@ -110,7 +108,7 @@ const CustomDatePickerBox = styled.div`
 	cursor: pointer;
 	p {
 		flex: 1;
-		font-size: ${(props) => props.theme.isResponsive ? pxToRem(FontSizeSpSm) : rem(FontSizeSpSm)};
+		font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeSpSm) : rem(FontSizeSpSm))};
 		font-family: ${FontFamilyRegular};
 	}
 `;
