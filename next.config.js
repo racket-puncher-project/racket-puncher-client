@@ -1,8 +1,6 @@
 /** @type {import('next').NextConfig} */
 
 module.exports = {
-	// basePath: '/racket-puncher-client',
-	// assetPrefix: 'https://racket-puncher-project.github.io/racket-puncher-client/',
 	basePath: process.env.NODE_ENV === 'production' ? '/racket-puncher-client' : '',
 	assetPrefix: process.env.NODE_ENV === 'production' ? '/racket-puncher-client/' : '',
 	env: {
@@ -10,7 +8,6 @@ module.exports = {
 		ASSET_PREFIX: 'https://racket-puncher-project.github.io/racket-puncher-client',
 	},
 	webpack: (config) => {
-		// `net` 모듈이 요구되는 경우 빈 객체로 대체
 		config.resolve.fallback = { net: false, ...config.resolve.fallback };
 		return config;
 	},
@@ -23,6 +20,5 @@ module.exports = {
 			},
 		];
 	},
-	// assetPrefix: process.env.NODE_ENV === 'production' ? '/racket-puncher-client/' : '',
 	trailingSlash: true,
 };
