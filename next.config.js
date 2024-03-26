@@ -1,6 +1,8 @@
 /** @type {import('next').NextConfig} */
 
 module.exports = {
+	basePath: '/racket-puncher-client',
+	assetPrefix: 'https://racket-puncher-project.github.io/racket-puncher-client/',
 	env: {
 		KAKAO_MAPS_APP_KEY: '20bd45f114aff9ec8fee730fe2453f5c',
 	},
