@@ -34,12 +34,7 @@ export default function LayoutContainer(props: ILayoutProps) {
 				<MessageBox />
 				<LayoutWrapper>
 					<Header />
-					<LayoutAlign isPadding={isPadding}>
-						<>
-							{props.children}
-							<Chat />
-						</>
-					</LayoutAlign>
+					<LayoutAlign isPadding={isPadding}>{props.children}</LayoutAlign>
 				</LayoutWrapper>
 			</LoadingSpin>
 			{/* <Chat /> */}

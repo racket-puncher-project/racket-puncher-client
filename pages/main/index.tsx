@@ -11,6 +11,7 @@ import useRouterHook from '../../utils/useRouterHook';
 import { prefix } from '../../constants/prefix';
 import { pxToRem } from '../../utils/formatter';
 import { Swiper, SwiperSlide } from 'swiper/react';
+import Chat from '../../components/layouts/Chat';
 
 const items: TabsProps['items'] = [
 	{
@@ -52,6 +53,7 @@ export default function MainPage() {
 				</Swiper>
 				<MainContainer>
 					<CustomTab defaultActiveKey='1' items={items} />
+					<Chat />
 				</MainContainer>
 			</MainViewContainer>
 		</>

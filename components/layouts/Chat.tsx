@@ -19,6 +19,7 @@ export default function Chat() {
 
 const ChatButtonContainer = styled.div`
 	position: fixed;
+	z-index: 99;
 	bottom: ${(props) => (props.theme.isResponsive ? pxToRem('30px') : rem('30px'))};
 	right: ${(props) => (props.theme.isResponsive ? pxToRem('30px') : `calc(50% - ${rem('340px')})`)};
 `;
