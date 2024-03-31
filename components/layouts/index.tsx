@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 import Header from './Header';
 import LoadingSpin from '../common/loading/spin';
 import MessageBox from '../common/message';
+import Chat from './Chat';
 
 interface ILayoutProps {
 	readonly children: ReactNode;
@@ -33,9 +34,15 @@ export default function LayoutContainer(props: ILayoutProps) {
 				<MessageBox />
 				<LayoutWrapper>
 					<Header />
-					<LayoutAlign isPadding={isPadding}>{props.children}</LayoutAlign>
+					<LayoutAlign isPadding={isPadding}>
+						<>
+							{props.children}
+							<Chat />
+						</>
+					</LayoutAlign>
 				</LayoutWrapper>
 			</LoadingSpin>
+			{/* <Chat /> */}
 		</>
 	);
 }
@@ -49,6 +56,7 @@ const LayoutWrapper = styled.div`
 const LayoutAlign = styled.div.withConfig({
 	shouldForwardProp: (props) => props !== 'isPadding',
 })<ILayoutAlignProps>`
+	position: relative;
 	min-height: 100vh;
 	display: flex;
 	flex-direction: column;
