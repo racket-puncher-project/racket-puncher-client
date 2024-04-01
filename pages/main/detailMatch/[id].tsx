@@ -419,7 +419,7 @@ export default function DetailMatching() {
 			matchingId: router.query.id,
 			connectType: 'room',
 		};
-		const socket = new SockJs(`http://43.203.25.186:8081/ws`);
+		const socket = new SockJs(`https://racket-puncher.store/ws`);
 		stompClient = Stomp.over(socket);
 
 		stompClient.connect(

@@ -21,16 +21,16 @@ export const RoundButton = styled.button<IButtonProps>`
 				? pxToRem(props.width)
 				: '100%'
 			: props.width
-				? rem(props.width)
-				: '100%'};
+			  ? rem(props.width)
+			  : '100%'};
 	height: ${(props) =>
 		props.theme.isResponsive
 			? props.height
 				? pxToRem(props.height)
 				: pxToRem('60px')
 			: props.height
-				? rem(props.height)
-				: rem('60px')};
+			  ? rem(props.height)
+			  : rem('60px')};
 	font-family: Pretendard-Medium;
 	font-size: ${(props) =>
 		props.theme.isResponsive ? pxToRem(common.FontSizeSm) : rem(common.FontSizeSm)};
@@ -40,6 +40,8 @@ export const RoundButton = styled.button<IButtonProps>`
 				return common.KakaoFontColor;
 			case 'is-white':
 				return common.LightBlackColor;
+			case 'is-white-green':
+				return common.PrimaryColor;
 			default:
 				return common.WhiteColor;
 		}
@@ -59,6 +61,8 @@ export const RoundButton = styled.button<IButtonProps>`
 			case 'is-yellow':
 				return common.KakaoBgColor;
 			case 'is-white':
+				return common.WhiteColor;
+			case 'is-white-green':
 				return common.WhiteColor;
 			default:
 				return common.BlackColor;
@@ -85,16 +89,16 @@ export const SquareButton = styled.button<IButtonProps>`
 				? pxToRem(props.width)
 				: '100%'
 			: props.width
-				? rem(props.width)
-				: '100%'};
+			  ? rem(props.width)
+			  : '100%'};
 	height: ${(props) =>
 		props.theme.isResponsive
 			? props.height
 				? pxToRem(props.height)
 				: pxToRem('60px')
 			: props.height
-				? rem(props.height)
-				: rem('60px')};
+			  ? rem(props.height)
+			  : rem('60px')};
 	font-family: Pretendard-Medium;
 	font-size: ${(props) =>
 		props.theme.isResponsive ? pxToRem(common.FontSizeSm) : rem(common.FontSizeSm)};
@@ -111,16 +115,16 @@ export const SquareButton = styled.button<IButtonProps>`
 		}
 	}};
 	border: 1px solid
-	${(props) => {
-		switch (props.bordercolor) {
-			case 'is-lightGray':
-				return common.LightGrayColor;
-			case 'is-whiteBlack':
-				return common.BlackColor;
-			default:
-				return 'transparent';
-		}
-	}};
+		${(props) => {
+			switch (props.bordercolor) {
+				case 'is-lightGray':
+					return common.LightGrayColor;
+				case 'is-whiteBlack':
+					return common.BlackColor;
+				default:
+					return 'transparent';
+			}
+		}};
 	border-radius: 5px;
 	cursor: pointer;
 	-webkit-tap-highlight-color: transparent !important;

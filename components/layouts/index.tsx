@@ -6,7 +6,7 @@ import { useRouter } from 'next/router';
 import Header from './Header';
 import LoadingSpin from '../common/loading/spin';
 import MessageBox from '../common/message';
-import Chat from './Chat';
+import ChatRoom from '../contents/chat/ChatRoom';
 
 interface ILayoutProps {
 	readonly children: ReactNode;
@@ -37,7 +37,7 @@ export default function LayoutContainer(props: ILayoutProps) {
 					<LayoutAlign isPadding={isPadding}>{props.children}</LayoutAlign>
 				</LayoutWrapper>
 			</LoadingSpin>
-			{/* <Chat /> */}
+			{/* <ChatRoom /> */}
 		</>
 	);
 }
