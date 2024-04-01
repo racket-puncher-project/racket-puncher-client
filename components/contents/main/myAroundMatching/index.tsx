@@ -21,6 +21,7 @@ export default function MyAroundMatching() {
 		showLoading();
 		const container = document.getElementById('kakao-map');
 
+		const customMyMarkerImageUrl = `${prefix}/svg/map-my-pin.svg`;
 		const customMarkerImageUrl = `${prefix}/images/map-pin.png`;
 		const imageSize = new kakao.maps.Size(28, 40);
 		// 마커의 끝점을 기준으로 이미지가 표시
@@ -29,6 +30,12 @@ export default function MyAroundMatching() {
 		// 커스텀 마커 이미지 생성
 		const customMarkerImage = new kakao.maps.MarkerImage(
 			customMarkerImageUrl,
+			imageSize,
+			imageOption
+		);
+
+		const customMyMarkerImage = new kakao.maps.MarkerImage(
+			customMyMarkerImageUrl,
 			imageSize,
 			imageOption
 		);
@@ -54,14 +61,14 @@ export default function MyAroundMatching() {
 					const userMarker = new kakao.maps.Marker({
 						map: kakaoMap,
 						position: new kakao.maps.LatLng(lat, lng),
-						image: customMarkerImage,
+						image: customMyMarkerImage,
 					});
 
-					const userInfowindow = new kakao.maps.InfoWindow({
-						content: '<div class="custom-infowindow"">내 위치</div>',
-					});
-					userInfowindow.open(kakaoMap, userMarker);
-					infowindows.push(userInfowindow); // infoWindow ----------------------------------------------------------
+					// const userInfowindow = new kakao.maps.InfoWindow({
+					// 	content: '<div class="custom-infowindow"">내 위치</div>',
+					// });
+					// userInfowindow.open(kakaoMap, userMarker);
+					// infowindows.push(userInfowindow); // infoWindow ----------------------------------------------------------
 					const newInfowindows = aroundPositions.map((position) => {
 						const marker = new kakao.maps.Marker({
 							map: kakaoMap,
@@ -69,24 +76,25 @@ export default function MyAroundMatching() {
 							image: customMarkerImage,
 						});
 
-						const infowindow = new kakao.maps.InfoWindow({
-							content: `
-								<div class="custom-infowindow">
-									<h4>${position.title}</h4>
-									<p>${position.content}</p>
-								</div>
-							`,
-							removable: true,
-						});
+						// const infowindow = new kakao.maps.InfoWindow({
+						// 	content: `
+						// 		<div class="custom-infowindow">
+						// 			<h4>${position.title}</h4>
+						// 		</div>
+						// 	`,
+						// 	removable: true,
+						// });
 
-						kakao.maps.event.addListener(marker, 'click', () => {
-							infowindows.forEach((iw) => iw.close());
-							infowindow.open(kakaoMap, marker);
-							setSelectedMarker(marker); // 선택된 마커 업데이트
-							kakaoMap.setCenter(marker.getPosition());
-						});
+						// kakao.maps.event.addListener(marker, 'click', () => {
+						// 	infowindows.forEach((iw, idx) => {
+						// 		if (idx !== 0) iw.close();
+						// 	});
+						// 	infowindow.open(kakaoMap, marker);
+						// 	setSelectedMarker(marker); // 선택된 마커 업데이트
+						// 	kakaoMap.setCenter(marker.getPosition());
+						// });
 
-						return infowindow;
+						return marker;
 					});
 					setInfowindows([...infowindows, ...newInfowindows]);
 				},
@@ -170,11 +178,11 @@ export default function MyAroundMatching() {
 
 const MyAroundMatchingContainer = styled.div`
 	.custom-infowindow {
-		padding: ${(props) => (props.theme.isResponsive ? pxToRem('10px') : rem('10px'))};
-		border: 1px solid #ccc;
-		background-color: white;
-		border-radius: 5px;
-		font-size: ${(props) => (props.theme.isResponsive ? pxToRem('14px') : rem('14px'))};
+		width: ${(props) => (props.theme.isResponsive ? `${pxToRem('150px')}` : `${rem('150px')}`)};
+		height: ${(props) => (props.theme.isResponsive ? `${pxToRem('23px')}` : `${rem('23px')}`)};
+		text-align: center;
+		line-height: ${(props) => (props.theme.isResponsive ? `${pxToRem('23px')}` : `${rem('23px')}`)};
+		margin: ${(props) => (props.theme.isResponsive ? `${pxToRem('20px')} 0` : `${rem('20px')} 0`)};
 	}
 `;
 

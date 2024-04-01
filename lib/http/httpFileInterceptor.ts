@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const http = axios.create({
-	baseURL: 'http://43.203.25.186:8081',
+	baseURL: 'https://racket-puncher.store',
 	timeout: 10000,
 	headers: {
 		'Content-Type': 'multipart/form-data',
