@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { rem } from 'polished';
 import type { TabsProps } from 'antd';
@@ -11,7 +11,9 @@ import useRouterHook from '../../utils/useRouterHook';
 import { prefix } from '../../constants/prefix';
 import { pxToRem } from '../../utils/formatter';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import Chat from '../../components/layouts/Chat';
+import ChatRoom from '../../components/contents/chat/ChatRoom';
+import MenuDrawer from '../../components/layouts/MenuDrawer';
+import ChatListModal from '../../components/contents/chat/ChatListModal';
 
 const items: TabsProps['items'] = [
 	{
@@ -53,7 +55,7 @@ export default function MainPage() {
 				</Swiper>
 				<MainContainer>
 					<CustomTab defaultActiveKey='1' items={items} />
-					<Chat />
+					<ChatRoom />
 				</MainContainer>
 			</MainViewContainer>
 		</>
