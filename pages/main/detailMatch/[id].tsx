@@ -36,10 +36,6 @@ interface DetailMatchContentProps {
 	height?: string;
 }
 
-interface ModalWrapBoxProps {
-	clickFinishRecruit: boolean;
-}
-
 let stompClient = null;
 
 export default function DetailMatching() {
@@ -109,15 +105,8 @@ export default function DetailMatching() {
 		afterList: [],
 	});
 
-	const [clickFinishRecruit, setClickFinishRecruit] = useState<boolean>(false);
-
 	// 참가 신청 여부
 	const [isReqMatching, setIsReqMatching] = useState<boolean>(false);
-	// 참가 신청 수락 배열
-	const [processAcceptMatching, setProcessAcceptMatching] = useState([]);
-
-	// 참여 수락 여부
-	const [isAcceptRecruit, setIsAcceptRecruit] = useState([]);
 	// 신청자 아이디
 	const [applyIdData, setApplyIdData] = useState<string>('');
 	// 유저 아이디
@@ -159,32 +148,17 @@ export default function DetailMatching() {
 		console.log('끝', destination);
 		if (!destination || destination.droppableId === null) return;
 
-		const sourceKey = source.droppableId;
+		const scourceKey = source.droppableId;
 		const destinationKey = destination.droppableId;
 
 		// recruitList 깊은 복사본 생성
 		const processArr = JSON.parse(JSON.stringify(recruitList));
 		// 드래그된 아이템 추출 + 원본 위치에서 제거
-		const [targetItem] = processArr[sourceKey].splice(source.index, 1);
+		const [targetItem] = processArr[scourceKey].splice(source.index, 1);
 		// 아이템을 새 위치에 삽입
 		processArr[destinationKey].splice(destination.index, 0, targetItem);
 		setRecruitList(processArr);
-
-		// 이동하지 않았을 때
-		if (source.droppableId === destination.droppableId) {
-			return;
-		}
-
-		// 참가신청 취소
-		if (source.droppableId === 'afterList') {
-			cancelMatchingApplication();
-		} else {
-			// 참가 신청 수락
-			setProcessAcceptMatching(processArr);
-			// acceptMatchingApplication(processArr);
-			// console.log('processArr', processArr);
-			console.log('processAcceptMatching', processAcceptMatching);
-		}
+		acceptMatchingApplication(processArr);
 	};
 
 	// 상세 조회 api
@@ -380,8 +354,8 @@ export default function DetailMatching() {
 	// 참가 신청 수락(알림)
 	const acceptMatchingApplication = async (updatedLists: any) => {
 		const payload = {
-			pendingApplies: updatedLists.beforeList?.map((item: any) => item.applyId),
-			acceptedApplies: updatedLists.afterList?.map((item: any) => item.applyId),
+			pendingApplies: updatedLists.beforeList.map((item: any) => item.applyId),
+			acceptedApplies: updatedLists.afterList.map((item: any) => item.applyId),
 		};
 
 		console.log('payload', payload);
@@ -395,18 +369,6 @@ export default function DetailMatching() {
 			}
 		}
 	};
-
-	// 참여 수락
-	const acceptRecruitBtn = () => {
-		acceptMatchingApplication(processAcceptMatching);
-		setClickFinishRecruit(true);
-	};
-
-	// 참여 수정
-	const modifyRecruitBtn = () => {
-		setClickFinishRecruit(false);
-	};
-
 	// 매칭 글 삭제
 	const onClickDeleteMatching = () => {
 		try {
@@ -637,7 +599,7 @@ export default function DetailMatching() {
 							<DragDropContext onDragEnd={onDragEnd}>
 								{Object.keys(recruitList).map((key) => (
 									<>
-										<ModalWrapBoxContainer key={key} clickFinishRecruit={clickFinishRecruit}>
+										<ModalWrapBoxContainer key={key}>
 											<ModalWrapBox>
 												<div className='is-modal-wrap-header'>
 													<p>{key === 'beforeList' ? '신청인원' : '참여인원'}</p>
@@ -655,8 +617,7 @@ export default function DetailMatching() {
 																	draggableId={String(item.applyId)}
 																	isDragDisabled={
 																		authorityValue !== 'MEMBER_MY' ||
-																		item.siteUserId === userInfo.id ||
-																		clickFinishRecruit
+																		item.siteUserId === userInfo.id
 																	}
 																	index={index}>
 																	{(provided) => (
@@ -690,57 +651,36 @@ export default function DetailMatching() {
 													)}
 												</Droppable>
 											</ModalWrapBox>
-											{clickFinishRecruit && <div className={'finish-dim'}></div>}
 										</ModalWrapBoxContainer>
 									</>
 								))}
 							</DragDropContext>
 						</ModalBoxes>
 
-						{/* 참여 수락 O --------------------------------- */}
-						{clickFinishRecruit ? (
-							<>
-								{/* <FirstButtonBox> */}
-								{/*	<RoundButton colorstyle={'is-black'} onClick={onConnectChat}> */}
-								{/*		채팅방 입장 */}
-								{/*	</RoundButton> */}
-								{/* </FirstButtonBox> */}
-								<ButtonBox>
-									<RoundButton colorstyle={'is-black'} onClick={modifyRecruitBtn}>
-										참여 수정
-									</RoundButton>
-								</ButtonBox>
-							</>
-						) : (
-							// 참여 수락 X ---------------------------------
-							<>
-								{authorityValue === 'MEMBER_MY' ? (
-									<>
-										<ButtonBox onClick={acceptRecruitBtn}>
-											<RoundButton colorstyle={'is-black'}>참여 수락</RoundButton>
-										</ButtonBox>
-									</>
-								) : (
-									<>
-										{isReqMatching ? (
-											<>
-												<ButtonBox onClick={handleMatchingApplication}>
-													<RoundButton colorstyle={isReqMatching ? 'is-black' : 'is-disabled'}>
-														신청 취소
-													</RoundButton>
-												</ButtonBox>
-											</>
-										) : (
-											<>
-												<ButtonBox onClick={handleMatchingApplication}>
-													<RoundButton colorstyle={'is-black'}>신청하기</RoundButton>
-												</ButtonBox>
-											</>
-										)}
-									</>
-								)}
-							</>
-						)}
+						{/* 모집 완료 O --------------------------------- */}
+						<>
+							{authorityValue === 'MEMBER_MY' ? (
+								<></>
+							) : (
+								<>
+									{isReqMatching ? (
+										<>
+											<ButtonBox onClick={handleMatchingApplication}>
+												<RoundButton colorstyle={isReqMatching ? 'is-black' : 'is-disabled'}>
+													신청 취소
+												</RoundButton>
+											</ButtonBox>
+										</>
+									) : (
+										<>
+											<ButtonBox onClick={handleMatchingApplication}>
+												<RoundButton colorstyle={'is-black'}>신청하기</RoundButton>
+											</ButtonBox>
+										</>
+									)}
+								</>
+							)}
+						</>
 					</ModalAlignContainer>
 				</ModalBox>
 				<ModalBox
@@ -965,7 +905,7 @@ const FloatBox = styled.div`
 
 // 모집현황 모달 --------------------------------------------------------------------
 
-const ModalWrapBoxContainer = styled.div<ModalWrapBoxProps>`
+const ModalWrapBoxContainer = styled.div`
 	position: relative;
 	div.finish-dim {
 		border-radius: 20px;
