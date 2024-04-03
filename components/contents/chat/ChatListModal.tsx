@@ -34,6 +34,7 @@ export default function ChatListModal(props: ChatListDrawerProps) {
 	const [chatRoomVisible, setChatRoomVisible] = useState(false);
 	const [chatList, setChatList] = useState([]);
 	const [messageValue, setMessageValue] = useState('');
+	const [chatRoomId, setChatRoomId] = useState('');
 
 	const chatToggleModal = () => {
 		// setChatRoomVisible(!isUserInfoModalOpen);
@@ -61,26 +62,27 @@ export default function ChatListModal(props: ChatListDrawerProps) {
 	};
 
 	// 채팅방 입장
-	const onConnectChat = () => {
+	const onConnectChat = (matchingId) => {
 		const headers = {
 			Authorization: 'Bearer ' + getCookie('accessToken'),
-			matchingId: router.query.id,
+			matchingId,
 			connectType: 'room',
 		};
 		const socket = new SockJs(`https://racket-puncher.store/ws`);
 		stompClient = Stomp.over(socket);
 
+		setChatRoomId(matchingId);
 		stompClient.connect(
 			headers,
 			async (frame) => {
 				console.log('Connected: ' + frame);
 				setChatRoomVisible(true);
-				getPreviousMessage();
+				getPreviousMessage(matchingId);
 				await stompClient.subscribe(
-					`/topic/${router.query.id}`,
+					`/topic/${matchingId}`,
 					(messageOutput) => {
 						if (messageOutput.command === 'MESSAGE') {
-							getPreviousMessage();
+							getPreviousMessage(matchingId);
 						}
 					},
 					(error) => {
@@ -95,9 +97,9 @@ export default function ChatListModal(props: ChatListDrawerProps) {
 	};
 
 	// 지난 채팅 내역 불러오기
-	const getPreviousMessage = async () => {
+	const getPreviousMessage = async (matchingId) => {
 		const payload = {
-			matchingId: router.query.id,
+			matchingId,
 		};
 		try {
 			const res = await ChatService.getPreviousMessageData(payload);
@@ -109,8 +111,8 @@ export default function ChatListModal(props: ChatListDrawerProps) {
 	};
 
 	// 메시지 보내기
-	const sendMessage = async () => {
-		stompClient.send(`/app/chat/${router.query.id}`, {}, JSON.stringify({ content: messageValue }));
+	const sendMessage = async (chatRoomId) => {
+		stompClient.send(`/app/chat/${chatRoomId}`, {}, JSON.stringify({ content: messageValue }));
 	};
 
 	useEffect(() => {
@@ -133,7 +135,9 @@ export default function ChatListModal(props: ChatListDrawerProps) {
 									width={'100px'}
 									height={'50px'}
 									colorstyle={'is-white-green'}
-									onClick={onConnectChat}>
+									onClick={() => {
+										onConnectChat(item.matchingId);
+									}}>
 									입장
 								</RoundButton>
 							</ChatListContainer>
@@ -154,7 +158,12 @@ export default function ChatListModal(props: ChatListDrawerProps) {
 							setMessageValue(e.target.value);
 						}}
 					/>
-					<button onClick={sendMessage}>보내기</button>
+					<button
+						onClick={() => {
+							sendMessage(chatRoomId);
+						}}>
+						보내기
+					</button>
 					<div className='chat-list-wrap'>
 						{chatList.map((item) => {
 							return (
