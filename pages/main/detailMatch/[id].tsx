@@ -115,6 +115,9 @@ export default function DetailMatching() {
 	const [isReqMatching, setIsReqMatching] = useState<boolean>(false);
 	// 참가 신청 수락 배열
 	const [processAcceptMatching, setProcessAcceptMatching] = useState([]);
+
+	// 참여 수락 여부
+	const [isAcceptRecruit, setIsAcceptRecruit] = useState([]);
 	// 신청자 아이디
 	const [applyIdData, setApplyIdData] = useState<string>('');
 	// 유저 아이디
@@ -156,13 +159,13 @@ export default function DetailMatching() {
 		console.log('끝', destination);
 		if (!destination || destination.droppableId === null) return;
 
-		const scourceKey = source.droppableId;
+		const sourceKey = source.droppableId;
 		const destinationKey = destination.droppableId;
 
 		// recruitList 깊은 복사본 생성
 		const processArr = JSON.parse(JSON.stringify(recruitList));
 		// 드래그된 아이템 추출 + 원본 위치에서 제거
-		const [targetItem] = processArr[scourceKey].splice(source.index, 1);
+		const [targetItem] = processArr[sourceKey].splice(source.index, 1);
 		// 아이템을 새 위치에 삽입
 		processArr[destinationKey].splice(destination.index, 0, targetItem);
 		setRecruitList(processArr);
@@ -179,7 +182,8 @@ export default function DetailMatching() {
 			// 참가 신청 수락
 			setProcessAcceptMatching(processArr);
 			// acceptMatchingApplication(processArr);
-			console.log('processArr', processArr);
+			// console.log('processArr', processArr);
+			console.log('processAcceptMatching', processAcceptMatching);
 		}
 	};
 
@@ -376,8 +380,8 @@ export default function DetailMatching() {
 	// 참가 신청 수락(알림)
 	const acceptMatchingApplication = async (updatedLists: any) => {
 		const payload = {
-			pendingApplies: updatedLists.beforeList.map((item: any) => item.applyId),
-			acceptedApplies: updatedLists.afterList.map((item: any) => item.applyId),
+			pendingApplies: updatedLists.beforeList?.map((item: any) => item.applyId),
+			acceptedApplies: updatedLists.afterList?.map((item: any) => item.applyId),
 		};
 
 		console.log('payload', payload);
@@ -392,16 +396,17 @@ export default function DetailMatching() {
 		}
 	};
 
-	// 참여 수락 버튼 클릭
-	const finishRecruitBtn = () => {
+	// 참여 수락
+	const acceptRecruitBtn = () => {
 		acceptMatchingApplication(processAcceptMatching);
 		setClickFinishRecruit(true);
 	};
 
-	// 모집 완료 버튼 클릭
-	const cancelRecruitBtn = () => {
+	// 참여 수정
+	const modifyRecruitBtn = () => {
 		setClickFinishRecruit(false);
 	};
+
 	// 매칭 글 삭제
 	const onClickDeleteMatching = () => {
 		try {
@@ -692,26 +697,26 @@ export default function DetailMatching() {
 							</DragDropContext>
 						</ModalBoxes>
 
-						{/* 모집 완료 O --------------------------------- */}
+						{/* 참여 수락 O --------------------------------- */}
 						{clickFinishRecruit ? (
 							<>
-								<FirstButtonBox>
-									<RoundButton colorstyle={'is-black'} onClick={onConnectChat}>
-										채팅방 입장
-									</RoundButton>
-								</FirstButtonBox>
+								{/* <FirstButtonBox> */}
+								{/*	<RoundButton colorstyle={'is-black'} onClick={onConnectChat}> */}
+								{/*		채팅방 입장 */}
+								{/*	</RoundButton> */}
+								{/* </FirstButtonBox> */}
 								<ButtonBox>
-									<RoundButton colorstyle={'is-black'} onClick={cancelRecruitBtn}>
-										확정 취소
+									<RoundButton colorstyle={'is-black'} onClick={modifyRecruitBtn}>
+										참여 수정
 									</RoundButton>
 								</ButtonBox>
 							</>
 						) : (
-							// 모집완료 X ---------------------------------
+							// 참여 수락 X ---------------------------------
 							<>
 								{authorityValue === 'MEMBER_MY' ? (
 									<>
-										<ButtonBox onClick={finishRecruitBtn}>
+										<ButtonBox onClick={acceptRecruitBtn}>
 											<RoundButton colorstyle={'is-black'}>참여 수락</RoundButton>
 										</ButtonBox>
 									</>
