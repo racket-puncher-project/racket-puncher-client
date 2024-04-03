@@ -6,62 +6,181 @@ import { PrimaryColor, WhiteColor } from '../../../styles/ts/common';
 import { pxToRem } from '../../../utils/formatter';
 import { rem } from 'polished';
 import ChatService from '../../../service/chat/service';
+import SockJs from 'sockjs-client';
+import Stomp from 'stompjs';
+import useCookies from '../../../utils/useCookies';
+import { useRouter } from 'next/router';
+import ModalBox from '../../common/modal';
+import usersService from '../../../service/users/service';
+import useToast from '../../../utils/useToast';
 
 interface ChatListDrawerProps {
 	readonly isOpen: boolean;
 	readonly toggleDrawer: (prev: boolean) => void;
 }
 
+let stompClient = null;
+
 export default function ChatListModal(props: ChatListDrawerProps) {
+	const router = useRouter();
+	const { getCookie, checkLogin } = useCookies();
 	const { isOpen, toggleDrawer } = props;
 
-	const [chatList, setChatList] = useState();
+	// 유저 모달 활성화 visible
+	// const [isUserInfoModalOpen, setIsUserInfoModalOpen] = useState(false);
+
+	const [userNickNameData, setUserNickNameDate] = useState<string>('');
+
+	const [chatRoomVisible, setChatRoomVisible] = useState(false);
+	const [chatList, setChatList] = useState([]);
+	const [messageValue, setMessageValue] = useState('');
+
+	const chatToggleModal = () => {
+		// setChatRoomVisible(!isUserInfoModalOpen);
+		if (stompClient !== null) {
+			stompClient.disconnect();
+		}
+	};
+
+	const closeChatModal = () => {
+		setChatRoomVisible(false);
+		if (stompClient !== null) {
+			stompClient.disconnect();
+		}
+	};
 
 	// 채팅방 목록 불러오기
 	const getChatListData = async () => {
 		try {
 			const res = await ChatService.getChatList();
-			console.log('res', res.data);
-			setChatList(res.data);
+			console.log('res', res.data.response);
+			setChatList(res.data.response);
 		} catch (e) {
 			console.log(e);
 		}
 	};
 
-	const testData = [
-		{
-			id: 1,
-			chatRoomName: 'Test01',
-		},
-		{
-			id: 2,
-			chatRoomName: 'Test02',
-		},
-	];
+	// 채팅방 입장
+	const onConnectChat = () => {
+		const headers = {
+			Authorization: 'Bearer ' + getCookie('accessToken'),
+			matchingId: router.query.id,
+			connectType: 'room',
+		};
+		const socket = new SockJs(`https://racket-puncher.store/ws`);
+		stompClient = Stomp.over(socket);
+
+		stompClient.connect(
+			headers,
+			async (frame) => {
+				console.log('Connected: ' + frame);
+				setChatRoomVisible(true);
+				getPreviousMessage();
+				await stompClient.subscribe(
+					`/topic/${router.query.id}`,
+					(messageOutput) => {
+						if (messageOutput.command === 'MESSAGE') {
+							getPreviousMessage();
+						}
+					},
+					(error) => {
+						console.log('subscribe error', error);
+					}
+				);
+			},
+			(error) => {
+				console.log('Connection error: ' + error);
+			}
+		);
+	};
+
+	// 지난 채팅 내역 불러오기
+	const getPreviousMessage = async () => {
+		const payload = {
+			matchingId: router.query.id,
+		};
+		try {
+			const res = await ChatService.getPreviousMessageData(payload);
+			setChatList(res.data.response);
+			console.log('res', res);
+		} catch (e) {
+			console.log('e', e);
+		}
+	};
+
+	// 메시지 보내기
+	const sendMessage = async () => {
+		stompClient.send(`/app/chat/${router.query.id}`, {}, JSON.stringify({ content: messageValue }));
+	};
 
 	useEffect(() => {
 		getChatListData();
 	}, []);
 
 	return (
-		<DrawerBox
-			isOpen={isOpen}
-			height={'75vh'}
-			placement={'bottom'}
-			toggleDrawer={() => toggleDrawer(isOpen)}>
-			<ChatListModalContainer>
-				{testData.map((item) => {
-					return (
-						<ChatListContainer key={item.id}>
-							<p>{item.chatRoomName}님과의 채팅방</p>
-							<RoundButton width={'100px'} height={'50px'} colorstyle={'is-white-green'}>
-								입장
-							</RoundButton>
-						</ChatListContainer>
-					);
-				})}
-			</ChatListModalContainer>
-		</DrawerBox>
+		<>
+			<DrawerBox
+				isOpen={isOpen}
+				height={'75vh'}
+				placement={'bottom'}
+				toggleDrawer={() => toggleDrawer(isOpen)}>
+				<ChatListModalContainer>
+					{chatList.map((item) => {
+						return (
+							<ChatListContainer key={item.id}>
+								<p>{item.title}</p>
+								<RoundButton
+									width={'100px'}
+									height={'50px'}
+									colorstyle={'is-white-green'}
+									onClick={onConnectChat}>
+									입장
+								</RoundButton>
+							</ChatListContainer>
+						);
+					})}
+				</ChatListModalContainer>
+			</DrawerBox>
+			<ModalBox
+				isOpen={chatRoomVisible}
+				heightType={false}
+				toggleModal={chatToggleModal}
+				onCancel={closeChatModal}>
+				<ChatBoxes>
+					<input
+						value={messageValue}
+						type='text'
+						onChange={(e) => {
+							setMessageValue(e.target.value);
+						}}
+					/>
+					<button onClick={sendMessage}>보내기</button>
+					<div className='chat-list-wrap'>
+						{chatList.map((item) => {
+							return (
+								<>
+									{item.senderNickname === 'admin' && (
+										<>
+											<p className='center-title'>{item.content}</p>
+										</>
+									)}
+									{item.senderNickname !== 'admin' && item.senderNickname === userNickNameData && (
+										<>
+											<p className='right-title'>{item.content}</p>
+										</>
+									)}
+									{item.senderNickname !== 'admin' && item.senderNickname !== userNickNameData && (
+										<>
+											<p className='left-title'>{item.content}</p>
+										</>
+									)}
+								</>
+							);
+						})}
+					</div>
+				</ChatBoxes>
+			</ModalBox>
+		</>
 	);
 }
 
@@ -82,5 +201,22 @@ const ChatListContainer = styled.div`
 		font-family: Pretendard-SemiBold;
 		font-size: 20px;
 		color: ${WhiteColor};
+	}
+`;
+
+const ChatBoxes = styled.div`
+	background-color: yellow;
+	div.chat-list-wrap {
+		p {
+			&.center-title {
+				text-align: center;
+			}
+			&.left-title {
+				text-align: left;
+			}
+			&.right-title {
+				text-align: right;
+			}
+		}
 	}
 `;
