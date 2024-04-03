@@ -113,6 +113,8 @@ export default function DetailMatching() {
 
 	// 참가 신청 여부
 	const [isReqMatching, setIsReqMatching] = useState<boolean>(false);
+	// 참가 신청 수락 배열
+	const [processAcceptMatching, setProcessAcceptMatching] = useState([]);
 	// 신청자 아이디
 	const [applyIdData, setApplyIdData] = useState<string>('');
 	// 유저 아이디
@@ -175,7 +177,8 @@ export default function DetailMatching() {
 			cancelMatchingApplication();
 		} else {
 			// 참가 신청 수락
-			acceptMatchingApplication(processArr);
+			setProcessAcceptMatching(processArr);
+			// acceptMatchingApplication(processArr);
 			console.log('processArr', processArr);
 		}
 	};
@@ -389,8 +392,9 @@ export default function DetailMatching() {
 		}
 	};
 
-	// 모집 완료 버튼 클릭
+	// 참여 수락 버튼 클릭
 	const finishRecruitBtn = () => {
+		acceptMatchingApplication(processAcceptMatching);
 		setClickFinishRecruit(true);
 	};
 
@@ -708,7 +712,7 @@ export default function DetailMatching() {
 								{authorityValue === 'MEMBER_MY' ? (
 									<>
 										<ButtonBox onClick={finishRecruitBtn}>
-											<RoundButton colorstyle={'is-black'}>모집완료</RoundButton>
+											<RoundButton colorstyle={'is-black'}>참여 수락</RoundButton>
 										</ButtonBox>
 									</>
 								) : (

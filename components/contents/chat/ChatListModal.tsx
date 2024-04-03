@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { RoundButton } from '../../../styles/ts/components/buttons';
 import DrawerBox from '../../common/drawer';
 import { PrimaryColor, WhiteColor } from '../../../styles/ts/common';
 import { pxToRem } from '../../../utils/formatter';
 import { rem } from 'polished';
+import ChatService from '../../../service/chat/service';
 
 interface ChatListDrawerProps {
 	readonly isOpen: boolean;
@@ -13,6 +14,19 @@ interface ChatListDrawerProps {
 
 export default function ChatListModal(props: ChatListDrawerProps) {
 	const { isOpen, toggleDrawer } = props;
+
+	const [chatList, setChatList] = useState();
+
+	// 채팅방 목록 불러오기
+	const getChatListData = async () => {
+		try {
+			const res = await ChatService.getChatList();
+			console.log('res', res.data);
+			setChatList(res.data);
+		} catch (e) {
+			console.log(e);
+		}
+	};
 
 	const testData = [
 		{
@@ -24,6 +38,10 @@ export default function ChatListModal(props: ChatListDrawerProps) {
 			chatRoomName: 'Test02',
 		},
 	];
+
+	useEffect(() => {
+		getChatListData();
+	}, []);
 
 	return (
 		<DrawerBox
