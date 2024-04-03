@@ -33,6 +33,7 @@ export default function ChatListModal(props: ChatListDrawerProps) {
 
 	const [chatRoomVisible, setChatRoomVisible] = useState(false);
 	const [chatList, setChatList] = useState([]);
+	const [chatRoomList, setChatRoomList] = useState([]);
 	const [messageValue, setMessageValue] = useState('');
 	const [chatRoomId, setChatRoomId] = useState('');
 
@@ -55,7 +56,7 @@ export default function ChatListModal(props: ChatListDrawerProps) {
 		try {
 			const res = await ChatService.getChatList();
 			console.log('res', res.data.response);
-			setChatList(res.data.response);
+			setChatRoomList(res.data.response);
 		} catch (e) {
 			console.log(e);
 		}
@@ -127,7 +128,7 @@ export default function ChatListModal(props: ChatListDrawerProps) {
 				placement={'bottom'}
 				toggleDrawer={() => toggleDrawer(isOpen)}>
 				<ChatListModalContainer>
-					{chatList.map((item) => {
+					{chatRoomList.map((item) => {
 						return (
 							<ChatListContainer key={item.id}>
 								<p>{item.title}</p>
