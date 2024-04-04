@@ -20,6 +20,7 @@ import useCookies from '../../utils/useCookies';
 import useToast from '../../utils/useToast';
 import { pxToRem } from '../../utils/formatter';
 import { rem } from 'polished';
+import AlarmService from '../../service/alarm/service';
 
 interface FormData {
 	readonly email: string;
@@ -66,12 +67,37 @@ export default function Login() {
 		console.log('취소');
 	};
 
+	// 실시간 알림 확인을 위한 SSE 연결
+	// const connectNotification = async () => {
+	// 	try {
+	// 		const res = await AlarmService.regNotificationConnect();
+	// 		console.log('connectNotification Response', res.data.response);
+	// 	} catch (e) {
+	// 		console.log(e);
+	// 	}
+	// };
+
+	const setupSSE = () => {
+		const eventSource = new EventSource('https://racket-puncher.store/api/notifications/connect');
+
+		eventSource.onmessage = function (event) {
+			const notification = JSON.parse(event.data);
+			// 받은 실시간 알림 처리
+			console.log('Received real-time notification:', notification);
+		};
+
+		eventSource.onerror = function (error) {
+			console.error('SSE error:', error);
+		};
+	};
+
 	// 로그인
 	const clickLoginBtn = async (data: FormData) => {
 		try {
 			const res = await AuthService.login(data);
 			setCookie('accessToken', res.data.response.accessToken, { expires: 7 });
 			movePage('/main');
+			await setupSSE();
 		} catch (e) {
 			console.log(e);
 			setMessage('error', e.response.data.message);

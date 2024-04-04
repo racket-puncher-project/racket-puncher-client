@@ -657,7 +657,7 @@ export default function DetailMatching() {
 							</DragDropContext>
 						</ModalBoxes>
 
-						{/* 모집 완료 O --------------------------------- */}
+						{/* 참여 수락 O --------------------------------- */}
 						<>
 							{authorityValue === 'MEMBER_MY' ? (
 								<></>
