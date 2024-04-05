@@ -18,7 +18,7 @@ export default function KakaoLoginPage() {
 
 			// 기존에 등록된 카카오 유저
 			if (res.data.response.registered) {
-				setCookie('accessToken', res.data.response.accessToken, { expires: 7 });
+				setCookie('accessToken', res.data.response.accessToken, { expires: 1 / 24 });
 				router.replace('/main');
 			} else {
 				// 카카오 로그인 후 최초 접속

@@ -95,7 +95,7 @@ export default function Login() {
 	const clickLoginBtn = async (data: FormData) => {
 		try {
 			const res = await AuthService.login(data);
-			setCookie('accessToken', res.data.response.accessToken, { expires: 7 });
+			setCookie('accessToken', res.data.response.accessToken, { expires: 1 / 24 });
 			movePage('/main');
 			await setupSSE();
 		} catch (e) {
