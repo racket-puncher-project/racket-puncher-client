@@ -8,9 +8,13 @@ import '../styles/css/reset.css';
 import '../styles/scss/font-family.scss';
 import 'swiper/css';
 import 'swiper/css/free-mode';
+import AuthService from '../service/auth/service';
+import useCookies from '../utils/useCookies';
 
 function MyApp({ Component, pageProps }: any) {
 	const router = useRouter();
+	const { getCookie, setCookie } = useCookies();
+
 	const [isResponsive, setIsResponsive] = useState(false);
 
 	const theme = { isResponsive };
@@ -23,6 +27,20 @@ function MyApp({ Component, pageProps }: any) {
 		} else {
 			document.documentElement.style.fontSize = '';
 			setIsResponsive(false);
+		}
+	};
+
+	// 토큰 재발행
+	const getRefreshToken = async () => {
+		const payload = {
+			accessToken: getCookie('accessToken'),
+		};
+		try {
+			const res = await AuthService.refreshToken(payload);
+			console.log(res.data.response);
+			setCookie('accessToken', res.data.response.accessToken);
+		} catch (e) {
+			console.log(e);
 		}
 	};
 
@@ -52,6 +70,7 @@ function MyApp({ Component, pageProps }: any) {
 		if (router.pathname === '/' || router.pathname === '/_error') {
 			router.replace('/main');
 		}
+		getRefreshToken();
 	}, [router]);
 
 	return (
