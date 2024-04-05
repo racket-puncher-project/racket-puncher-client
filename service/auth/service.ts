@@ -11,6 +11,7 @@ import {
 	reqPhoneSendCodeData,
 	reqPhoneVerifyCodeData,
 	reqPostPwdVerifyApiData,
+	reqRefreshTokenApiData,
 	reqResetPwdApiData,
 	reqSignupApiData,
 } from './interface';
@@ -23,6 +24,11 @@ const signup = (data: reqSignupApiData) => {
 // 로그인
 const login = (data: reqLoginApiData) => {
 	return http.post('/api/auth/sign-in', data);
+};
+
+// 토큰 재발행
+const refreshToken = (data: reqRefreshTokenApiData) => {
+	return http.post('/api/auth/reissue', data);
 };
 
 // 회원가입 프로필 이미지
@@ -89,6 +95,7 @@ const resetPwd = (data: { newPassword: any; resetToken: { resetToken: string } }
 const AuthService = {
 	signup,
 	login,
+	refreshToken,
 	uploadImgSignup,
 	kakaoSignup,
 	kakaoLogin,

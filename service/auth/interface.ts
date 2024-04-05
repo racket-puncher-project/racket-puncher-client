@@ -19,6 +19,11 @@ export interface reqLoginApiData {
 	password: string;
 }
 
+// 토큰 재발행
+export interface reqRefreshTokenApiData {
+	accessToken: string;
+}
+
 // 회원가입 프로필 이미지
 export interface reqUploadImgSignupApiData {
 	imageFile: any;
