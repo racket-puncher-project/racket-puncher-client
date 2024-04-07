@@ -10,6 +10,7 @@ import useCookies from '../../utils/useCookies';
 import { pxToRem } from '../../utils/formatter';
 import AuthService from '../../service/auth/service';
 import { getCookies } from 'undici-types';
+import { InputErrorColor } from '../../styles/ts/common';
 
 interface MenuDrawerProps {
 	readonly isOpen: boolean;
@@ -74,7 +75,10 @@ export default function MenuDrawer(props: MenuDrawerProps) {
 									}}
 									colorstyle={'is-green'}
 									aria-label='알림 페이지로 이동'>
-									알림 페이지
+									<AlertBox>
+										<NewAlertIcon></NewAlertIcon>
+										<p>알림 페이지</p>
+									</AlertBox>
 								</RoundButton>
 							</Link>
 						</MenuArea>
@@ -156,4 +160,18 @@ const SignArea = styled(MenuArea)`
 	button {
 		text-align: center;
 	}
+`;
+
+const AlertBox = styled.div`
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+`;
+
+const NewAlertIcon = styled.div`
+	width: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
+	height: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
+	border-radius: 50%;
+	background-color: ${InputErrorColor};
+	box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.15);
 `;

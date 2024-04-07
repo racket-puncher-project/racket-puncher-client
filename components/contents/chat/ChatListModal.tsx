@@ -166,25 +166,27 @@ export default function ChatListModal(props: ChatListDrawerProps) {
 						보내기
 					</button>
 					<div className='chat-list-wrap'>
-						{chatList.map((item) => {
+						{chatList.map((chatItem, chatIndex) => {
 							return (
-								<>
-									{item.senderNickname === 'admin' && (
+								<div key={'chatItem' + chatIndex}>
+									{chatItem.senderNickname === 'admin' && (
 										<>
-											<p className='center-title'>{item.content}</p>
+											<p className='center-title'>{chatItem.content}</p>
 										</>
 									)}
-									{item.senderNickname !== 'admin' && item.senderNickname === userNickNameData && (
-										<>
-											<p className='right-title'>{item.content}</p>
-										</>
-									)}
-									{item.senderNickname !== 'admin' && item.senderNickname !== userNickNameData && (
-										<>
-											<p className='left-title'>{item.content}</p>
-										</>
-									)}
-								</>
+									{chatItem.senderNickname !== 'admin' &&
+										chatItem.senderNickname === userNickNameData && (
+											<>
+												<p className='right-title'>{chatItem.content}</p>
+											</>
+										)}
+									{chatItem.senderNickname !== 'admin' &&
+										chatItem.senderNickname !== userNickNameData && (
+											<>
+												<p className='left-title'>{chatItem.content}</p>
+											</>
+										)}
+								</div>
 							);
 						})}
 					</div>

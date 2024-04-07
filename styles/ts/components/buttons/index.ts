@@ -69,6 +69,8 @@ export const RoundButton = styled.button<IButtonProps>`
 		}
 	}};
 
+  box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.15);
+	
 	&:disabled {
 		background-color: ${(props) => props.disabled && common.DisabledColor}
 	}

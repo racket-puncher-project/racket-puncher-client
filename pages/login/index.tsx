@@ -20,7 +20,6 @@ import useCookies from '../../utils/useCookies';
 import useToast from '../../utils/useToast';
 import { pxToRem } from '../../utils/formatter';
 import { rem } from 'polished';
-import AlarmService from '../../service/alarm/service';
 
 interface FormData {
 	readonly email: string;
@@ -43,7 +42,7 @@ const schema = yup.object().shape({
 });
 export default function Login() {
 	const { movePage } = useRouterHook();
-	const { setCookie } = useCookies();
+	const { setCookie, getCookie } = useCookies();
 	const { setMessage } = useToast();
 
 	const {
@@ -78,7 +77,11 @@ export default function Login() {
 	// };
 
 	const setupSSE = () => {
-		const eventSource = new EventSource('https://racket-puncher.store/api/notifications/connect');
+		const token = getCookie('accessToken');
+		const eventSource = new EventSource(
+			`https://racket-puncher.store/api/notifications/connect/${token}`
+		);
+		console.log('eventSource', eventSource);
 
 		eventSource.onmessage = function (event) {
 			const notification = JSON.parse(event.data);
