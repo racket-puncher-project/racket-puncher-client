@@ -10,10 +10,13 @@ import 'swiper/css';
 import 'swiper/css/free-mode';
 import AuthService from '../service/auth/service';
 import useCookies from '../utils/useCookies';
+import useRouterHook from '../utils/useRouterHook';
 
 function MyApp({ Component, pageProps }: any) {
 	const router = useRouter();
-	const { getCookie, setCookie } = useCookies();
+
+	const { getCookie, setCookie, removeCookie } = useCookies();
+	const { movePage } = useRouterHook();
 
 	const [isResponsive, setIsResponsive] = useState(false);
 
@@ -41,6 +44,10 @@ function MyApp({ Component, pageProps }: any) {
 			setCookie('accessToken', res.data.response.accessToken);
 		} catch (e) {
 			console.log(e);
+			if (e.response.data.code === 401) {
+				removeCookie('accessToken');
+				movePage('/login');
+			}
 		}
 	};
 
