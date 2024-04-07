@@ -74,10 +74,15 @@ function MyApp({ Component, pageProps }: any) {
 
 	// router replace
 	useEffect(() => {
+		const token = getCookie('accessToken');
+
 		if (router.pathname === '/' || router.pathname === '/_error') {
 			router.replace('/main');
 		}
-		getRefreshToken();
+
+		if (token) {
+			getRefreshToken();
+		}
 	}, [router]);
 
 	return (
