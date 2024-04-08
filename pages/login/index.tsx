@@ -83,6 +83,11 @@ export default function Login() {
 		);
 		console.log('eventSource', eventSource);
 
+		// eventSource.addEventListener('notify', (e) => {
+		// 	const { data: receivedConnectData } = e;
+		// 	console.log('connect event data: ', receivedConnectData);
+		// });
+
 		eventSource.onmessage = function (event) {
 			const notification = JSON.parse(event.data);
 			// 받은 실시간 알림 처리
@@ -100,7 +105,7 @@ export default function Login() {
 			const res = await AuthService.login(data);
 			setCookie('accessToken', res.data.response.accessToken);
 			movePage('/main');
-			await setupSSE();
+			// await setupSSE();
 		} catch (e) {
 			console.log(e);
 			setMessage('error', e.response.data.message);

@@ -2,8 +2,14 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { RoundButton } from '../../../styles/ts/components/buttons';
 import DrawerBox from '../../common/drawer';
-import { PrimaryColor, WhiteColor } from '../../../styles/ts/common';
-import { pxToRem } from '../../../utils/formatter';
+import {
+	FontSizeSpSm,
+	InputBorderColor,
+	InputBoxColor,
+	PrimaryColor,
+	WhiteColor,
+} from '../../../styles/ts/common';
+import { chatTimeFormatter, pxToRem } from '../../../utils/formatter';
 import { rem } from 'polished';
 import ChatService from '../../../service/chat/service';
 import SockJs from 'sockjs-client';
@@ -13,6 +19,8 @@ import { useRouter } from 'next/router';
 import ModalBox from '../../common/modal';
 import usersService from '../../../service/users/service';
 import useToast from '../../../utils/useToast';
+import { ImageBox } from '../../../styles/ts/components/box';
+import { prefix } from '../../../constants/prefix';
 
 interface ChatListDrawerProps {
 	readonly isOpen: boolean;
@@ -23,7 +31,8 @@ let stompClient = null;
 
 export default function ChatListModal(props: ChatListDrawerProps) {
 	const router = useRouter();
-	const { getCookie, checkLogin } = useCookies();
+	const { getCookie } = useCookies();
+	const { setMessage } = useToast();
 	const { isOpen, toggleDrawer } = props;
 
 	// 유저 모달 활성화 visible
@@ -48,6 +57,20 @@ export default function ChatListModal(props: ChatListDrawerProps) {
 		setChatRoomVisible(false);
 		if (stompClient !== null) {
 			stompClient.disconnect();
+		}
+	};
+
+	// 유저 조회 (본인)
+	const getMyInfoData = async () => {
+		try {
+			const res = await usersService.getUserInfo();
+			console.log('res', res);
+			setUserNickNameDate(res.data.response.nickname);
+		} catch (e) {
+			console.log(e);
+			if (e.response.data.code === 404) {
+				setMessage('error', e.response.data.message);
+			}
 		}
 	};
 
@@ -95,6 +118,7 @@ export default function ChatListModal(props: ChatListDrawerProps) {
 				console.log('Connection error: ' + error);
 			}
 		);
+		getMyInfoData();
 	};
 
 	// 지난 채팅 내역 불러오기
@@ -105,7 +129,7 @@ export default function ChatListModal(props: ChatListDrawerProps) {
 		try {
 			const res = await ChatService.getPreviousMessageData(payload);
 			setChatList(res.data.response);
-			console.log('res', res);
+			console.log('chatList', chatList);
 		} catch (e) {
 			console.log('e', e);
 		}
@@ -113,6 +137,9 @@ export default function ChatListModal(props: ChatListDrawerProps) {
 
 	// 메시지 보내기
 	const sendMessage = async (chatRoomId) => {
+		console.log('stompClient', stompClient);
+		console.log('chatRoomId', chatRoomId);
+		console.log('test');
 		stompClient.send(`/app/chat/${chatRoomId}`, {}, JSON.stringify({ content: messageValue }));
 	};
 
@@ -152,44 +179,54 @@ export default function ChatListModal(props: ChatListDrawerProps) {
 				toggleModal={chatToggleModal}
 				onCancel={closeChatModal}>
 				<ChatBoxes>
-					<input
-						value={messageValue}
-						type='text'
-						onChange={(e) => {
-							setMessageValue(e.target.value);
-						}}
-					/>
-					<button
-						onClick={() => {
-							sendMessage(chatRoomId);
-						}}>
-						보내기
-					</button>
-					<div className='chat-list-wrap'>
+					<ChatListWrap>
 						{chatList.map((chatItem, chatIndex) => {
 							return (
 								<div key={'chatItem' + chatIndex}>
-									{chatItem.senderNickname === 'admin' && (
-										<>
-											<p className='center-title'>{chatItem.content}</p>
-										</>
-									)}
+									{/* {chatItem.senderNickname === 'admin' && ( */}
+									{/*	<> */}
+									{/*		<p className='center-title'>{chatItem.content}</p> */}
+									{/*	</> */}
+									{/* )} */}
 									{chatItem.senderNickname !== 'admin' &&
 										chatItem.senderNickname === userNickNameData && (
-											<>
+											<MyChatList>
 												<p className='right-title'>{chatItem.content}</p>
-											</>
+												<p className='right-title'>{chatTimeFormatter(chatItem.sentTime)}</p>
+											</MyChatList>
 										)}
 									{chatItem.senderNickname !== 'admin' &&
 										chatItem.senderNickname !== userNickNameData && (
-											<>
+											<OtherChatList>
 												<p className='left-title'>{chatItem.content}</p>
-											</>
+												<p className='left-title'>{chatTimeFormatter(chatItem.sentTime)}</p>
+											</OtherChatList>
 										)}
 								</div>
 							);
 						})}
-					</div>
+					</ChatListWrap>
+
+					<SendMessageWrapper>
+						<ChatInputBox>
+							<input
+								value={messageValue}
+								type='text'
+								onChange={(e) => {
+									setMessageValue(e.target.value);
+								}}
+							/>
+						</ChatInputBox>
+
+						<SendMessageBox
+							onClick={() => {
+								sendMessage(chatRoomId);
+							}}>
+							<ImageBox width={'50px'} height={'50px'}>
+								<img src={`${prefix}/svg/send-message.svg`} alt='send-message' />
+							</ImageBox>
+						</SendMessageBox>
+					</SendMessageWrapper>
 				</ChatBoxes>
 			</ModalBox>
 		</>
@@ -232,3 +269,53 @@ const ChatBoxes = styled.div`
 		}
 	}
 `;
+
+const ChatListWrap = styled.div``;
+
+const SendMessageWrapper = styled.div`
+	display: flex;
+	justify-content: center;
+	gap: 15px;
+`;
+
+const ChatInputBox = styled.div`
+	width: 100%;
+	input {
+		width: 100%;
+		height: ${(props) => (props.theme.isResponsive ? pxToRem('50px') : rem('50px'))};
+		border: 1px solid ${InputBorderColor};
+		background: ${InputBoxColor};
+		border-radius: 5px;
+		padding: ${(props) => (props.theme.isResponsive ? `0 ${pxToRem('15px')}` : `0 ${rem('15px')}`)};
+		font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeSpSm) : rem(FontSizeSpSm))};
+		&:focus {
+			border: 1px solid ${PrimaryColor};
+			outline: none;
+		}
+	}
+`;
+
+const SendMessageBox = styled.div`
+	width: 80px;
+	height: 50px;
+	border-radius: 5px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: ${PrimaryColor};
+`;
+
+const MyChatList = styled.div`
+	p {
+		&.center-title {
+			text-align: center;
+		}
+		&.left-title {
+			text-align: left;
+		}
+		&.right-title {
+			text-align: right;
+		}
+	}
+`;
+const OtherChatList = styled.div``;
