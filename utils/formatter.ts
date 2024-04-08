@@ -5,7 +5,13 @@ export const dateFormatter = (date: Date) => {
 	return moment(date).format('YYYY-MM-DD');
 };
 
-// 시간 포매터
+// 채팅 날짜 포맷터
+export const chatTimeFormatter = (dateString: string) => {
+	console.log('dateString', dateString);
+	return moment(dateString, 'YYYY-MM-DD HH:mm:ss.SSS').format('hh:mm a');
+};
+
+// 시간 포맷터₩
 export const timeFormatter = (time: Date, type?: string) => {
 	const hour = time.getHours() > 9 ? time.getHours() + '' : '0' + time.getHours() + '';
 	const minute = time.getMinutes() > 9 ? time.getMinutes() + '' : '0' + time.getMinutes() + '';

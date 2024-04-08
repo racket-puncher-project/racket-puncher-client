@@ -44,7 +44,7 @@ function MyApp({ Component, pageProps }: any) {
 			setCookie('accessToken', res.data.response.accessToken);
 		} catch (e) {
 			console.log(e);
-			if (e.response.data.code === 401) {
+			if (e.response?.data?.code === 401) {
 				removeCookie('accessToken');
 				movePage('/login');
 			}
