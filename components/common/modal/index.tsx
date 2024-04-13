@@ -13,6 +13,7 @@ interface IModalProps {
 	readonly isOpen: boolean;
 	readonly heightType?: boolean;
 	readonly footerButtons?: ReactElement[];
+	readonly isChatModal?: boolean;
 	readonly toggleModal: () => void;
 	readonly onOk?: () => void;
 	readonly onCancel: () => void;
@@ -73,16 +74,15 @@ const CustomModal = styled(AntdModal).withConfig({
 		border-radius: 20px !important;
 		box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.15) !important;
 		padding: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))} !important;
-		height: 100%;
+		height: ${(props) => (props.isChatModal ? '' : '100%')};
 		overflow-y: scroll;
 
 		div.ant-modal-header {
 			padding: ${(props) =>
 				props.theme.isResponsive ? `${pxToRem('20px')} 0` : `${rem('20px')} 0`};
 		}
-
 		div.ant-modal-body {
-			height: 100%;
+			height: ${(props) => (props.isChatModal ? '' : props.theme.isResponsive ? '100%' : '100%')};
 		}
 	}
 `;

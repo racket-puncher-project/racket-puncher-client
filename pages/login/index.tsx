@@ -20,6 +20,7 @@ import useCookies from '../../utils/useCookies';
 import useToast from '../../utils/useToast';
 import { pxToRem } from '../../utils/formatter';
 import { rem } from 'polished';
+import AlarmService from '../../service/alarm/service';
 
 interface FormData {
 	readonly email: string;
@@ -105,7 +106,7 @@ export default function Login() {
 			const res = await AuthService.login(data);
 			setCookie('accessToken', res.data.response.accessToken);
 			movePage('/main');
-			// await setupSSE();
+			await setupSSE();
 		} catch (e) {
 			console.log(e);
 			setMessage('error', e.response.data.message);

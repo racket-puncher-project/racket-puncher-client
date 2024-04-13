@@ -21,6 +21,7 @@ import usersService from '../../../service/users/service';
 import useToast from '../../../utils/useToast';
 import { ImageBox } from '../../../styles/ts/components/box';
 import { prefix } from '../../../constants/prefix';
+import { v4 as uuidv4 } from 'uuid';
 
 interface ChatListDrawerProps {
 	readonly isOpen: boolean;
@@ -175,9 +176,32 @@ export default function ChatListModal(props: ChatListDrawerProps) {
 			</DrawerBox>
 			<ModalBox
 				isOpen={chatRoomVisible}
-				heightType={false}
+				heightType={true}
 				toggleModal={chatToggleModal}
-				onCancel={closeChatModal}>
+				onCancel={closeChatModal}
+				isChatModal={true}
+				footerButtons={[
+					<SendMessageWrapper key={uuidv4()}>
+						<ChatInputBox>
+							<input
+								value={messageValue}
+								type='text'
+								onChange={(e) => {
+									setMessageValue(e.target.value);
+								}}
+							/>
+						</ChatInputBox>
+
+						<SendMessageBox
+							onClick={() => {
+								sendMessage(chatRoomId);
+							}}>
+							<ImageBox width={'50px'} height={'50px'}>
+								<img src={`${prefix}/svg/send-message.svg`} alt='send-message' />
+							</ImageBox>
+						</SendMessageBox>
+					</SendMessageWrapper>,
+				]}>
 				<ChatBoxes>
 					<ChatListWrap>
 						{chatList.map((chatItem, chatIndex) => {
@@ -206,27 +230,6 @@ export default function ChatListModal(props: ChatListDrawerProps) {
 							);
 						})}
 					</ChatListWrap>
-
-					<SendMessageWrapper>
-						<ChatInputBox>
-							<input
-								value={messageValue}
-								type='text'
-								onChange={(e) => {
-									setMessageValue(e.target.value);
-								}}
-							/>
-						</ChatInputBox>
-
-						<SendMessageBox
-							onClick={() => {
-								sendMessage(chatRoomId);
-							}}>
-							<ImageBox width={'50px'} height={'50px'}>
-								<img src={`${prefix}/svg/send-message.svg`} alt='send-message' />
-							</ImageBox>
-						</SendMessageBox>
-					</SendMessageWrapper>
 				</ChatBoxes>
 			</ModalBox>
 		</>
@@ -255,34 +258,25 @@ const ChatListContainer = styled.div`
 
 const ChatBoxes = styled.div`
 	background-color: yellow;
-	div.chat-list-wrap {
-		p {
-			&.center-title {
-				text-align: center;
-			}
-			&.left-title {
-				text-align: left;
-			}
-			&.right-title {
-				text-align: right;
-			}
-		}
-	}
 `;
 
-const ChatListWrap = styled.div``;
+const ChatListWrap = styled.div`
+	height: 77vh;
+	overflow: scroll;
+`;
 
 const SendMessageWrapper = styled.div`
 	display: flex;
 	justify-content: center;
 	gap: 15px;
+	align-items: center;
 `;
 
 const ChatInputBox = styled.div`
 	width: 100%;
 	input {
 		width: 100%;
-		height: ${(props) => (props.theme.isResponsive ? pxToRem('50px') : rem('50px'))};
+		height: ${(props) => (props.theme.isResponsive ? pxToRem('70px') : rem('70px'))};
 		border: 1px solid ${InputBorderColor};
 		background: ${InputBoxColor};
 		border-radius: 5px;
@@ -296,8 +290,8 @@ const ChatInputBox = styled.div`
 `;
 
 const SendMessageBox = styled.div`
-	width: 80px;
-	height: 50px;
+	width: ${(props) => (props.theme.isResponsive ? pxToRem('110px') : rem('110px'))};
+	height: ${(props) => (props.theme.isResponsive ? pxToRem('70px') : rem('70px'))};
 	border-radius: 5px;
 	display: flex;
 	justify-content: center;
