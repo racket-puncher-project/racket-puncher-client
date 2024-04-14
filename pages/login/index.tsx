@@ -84,20 +84,21 @@ export default function Login() {
 		);
 		console.log('eventSource', eventSource);
 
-		// eventSource.addEventListener('notify', (e) => {
-		// 	const { data: receivedConnectData } = e;
-		// 	console.log('connect event data: ', receivedConnectData);
-		// });
+		eventSource.onopen = function (event) {
+			console.log('접속연결완료!!', event);
+		};
 
 		eventSource.onmessage = function (event) {
-			const notification = JSON.parse(event.data);
-			// 받은 실시간 알림 처리
-			console.log('Received real-time notification:', notification);
+			console.log('메시지 받음!!', event);
 		};
 
 		eventSource.onerror = function (error) {
 			console.error('SSE error:', error);
 		};
+
+		eventSource.addEventListener('notify', (event) => {
+			console.log('서버에서 작성한명대로 메시지!!', event);
+		});
 	};
 
 	// 로그인
