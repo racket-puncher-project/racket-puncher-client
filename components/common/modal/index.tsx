@@ -60,6 +60,7 @@ export default function ModalBox(props: IModalProps) {
 				onCancel={handleCancel}
 				centered={true}
 				maskClosable={false}
+				isChatModal={props.isChatModal}
 				footer={props.footerButtons || []}>
 				{props.children}
 			</CustomModal>
@@ -67,23 +68,39 @@ export default function ModalBox(props: IModalProps) {
 	);
 }
 
-const CustomModal = styled(AntdModal).withConfig({
-	shouldForwardProp: (props) => props !== 'heightType',
-})<IModalProps>`
+// const CustomModal = styled(AntdModal).withConfig({
+// 	shouldForwardProp: (propName) => !['heightType', 'isChatModal'].includes(propName),
+// })<IModalProps>`
+// 	div.ant-modal-content {
+// 		border-radius: 20px !important;
+// 		box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.15) !important;
+// 		padding: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))} !important;
+// 		height: ${(props) => (props.isChatModal ? '500px' : '100%')} !important;
+// 		overflow-y: scroll;
+
+// 		div.ant-modal-header {
+// 			padding: ${(props) =>
+// 				props.theme.isResponsive ? `${pxToRem('20px')} 0` : `${rem('20px')} 0`};
+// 		}
+// 		div.ant-modal-body {
+// 			height: ${(props) => (props.isChatModal ? '' : props.theme.isResponsive ? '100%' : '100%')};
+// 		}
+// 	}
+// `;
+
+const CustomModal = styled(({ ...props }) => <AntdModal {...props} />)`
 	div.ant-modal-content {
 		border-radius: 20px !important;
 		box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.15) !important;
 		padding: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))} !important;
-		height: ${(props) => (props.isChatModal ? '' : '100%')};
+		height: ${(props) => (props.isChatModal ? '500px' : '100%')} !important;
 		overflow-y: scroll;
-
-		div.ant-modal-header {
-			padding: ${(props) =>
-				props.theme.isResponsive ? `${pxToRem('20px')} 0` : `${rem('20px')} 0`};
-		}
-		div.ant-modal-body {
-			height: ${(props) => (props.isChatModal ? '' : props.theme.isResponsive ? '100%' : '100%')};
-		}
+	}
+	div.ant-modal-header {
+		padding: ${(props) => (props.theme.isResponsive ? `${pxToRem('20px')} 0` : `${rem('20px')} 0`)};
+	}
+	div.ant-modal-body {
+		height: ${(props) => (props.isChatModal ? '' : props.theme.isResponsive ? '100%' : '100%')};
 	}
 `;
 
