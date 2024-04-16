@@ -94,6 +94,7 @@ export default function Login() {
 
 		eventSource.onerror = function (error) {
 			console.error('SSE error:', error);
+			eventSource.close();
 		};
 
 		eventSource.addEventListener('notify', (event) => {
