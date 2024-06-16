@@ -14,13 +14,13 @@ import usersService from '../../service/users/service';
 export default function AlarmPage() {
 	const { setMessage } = useToast();
 
-	const [alarmData, setAlaramData] = useState([]);
+	const [alarmData, setAlarmData] = useState([]);
 
 	const getNotificationList = async () => {
 		try {
 			const res = await usersService.getNotificationData();
 			console.log(res.data.response);
-			setAlaramData(res.data.response);
+			// setAlarmData(res.data.response);
 		} catch (e) {
 			console.log(e);
 			if (e.response.data.code === 404) {
@@ -31,7 +31,7 @@ export default function AlarmPage() {
 
 	useEffect(() => {
 		getNotificationList();
-	}, [alarmData]);
+	}, []);
 
 	return (
 		<>
