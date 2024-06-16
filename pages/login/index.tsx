@@ -77,30 +77,30 @@ export default function Login() {
 	// 	}
 	// };
 
-	const setupSSE = () => {
-		const token = getCookie('accessToken');
-		const eventSource = new EventSource(
-			`https://racket-puncher.store/api/notifications/connect/${token}`
-		);
-		console.log('eventSource', eventSource);
+	// const setupSSE = () => {
+	// 	const token = getCookie('accessToken');
+	// 	const eventSource = new EventSource(
+	// 		`https://racket-puncher.store/api/notifications/connect/${token}`
+	// 	);
+	// 	console.log('eventSource', eventSource);
 
-		eventSource.onopen = function (event) {
-			console.log('접속연결완료!!', event);
-		};
+	// 	eventSource.onopen = function (event) {
+	// 		console.log('접속연결완료!!', event);
+	// 	};
 
-		eventSource.onmessage = function (event) {
-			console.log('메시지 받음!!', event);
-		};
+	// 	eventSource.onmessage = function (event) {
+	// 		console.log('메시지 받음!!', event);
+	// 	};
 
-		eventSource.onerror = function (error) {
-			console.error('SSE error:', error);
-			eventSource.close();
-		};
+	// 	eventSource.onerror = function (error) {
+	// 		console.error('SSE error:', error);
+	// 		eventSource.close();
+	// 	};
 
-		eventSource.addEventListener('notify', (event) => {
-			console.log('서버에서 작성한명대로 메시지!!', event);
-		});
-	};
+	// 	eventSource.addEventListener('notify', (event) => {
+	// 		console.log('서버에서 작성한명대로 메시지!!', event);
+	// 	});
+	// };
 
 	// 로그인
 	const clickLoginBtn = async (data: FormData) => {
@@ -108,7 +108,7 @@ export default function Login() {
 			const res = await AuthService.login(data);
 			setCookie('accessToken', res.data.response.accessToken);
 			movePage('/main');
-			await setupSSE();
+			// await setupSSE();
 		} catch (e) {
 			console.log(e);
 			setMessage('error', e.response.data.message);
