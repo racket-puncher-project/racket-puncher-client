@@ -75,10 +75,7 @@ export default function MenuDrawer(props: MenuDrawerProps) {
 									}}
 									colorstyle={'is-green'}
 									aria-label='알림 페이지로 이동'>
-									<AlertBox>
-										<NewAlertIcon></NewAlertIcon>
-										<p>알림 페이지</p>
-									</AlertBox>
+										알림 페이지
 								</RoundButton>
 							</Link>
 						</MenuArea>
