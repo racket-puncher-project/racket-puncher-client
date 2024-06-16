@@ -88,6 +88,7 @@ export default function ChatListModal(props: ChatListDrawerProps) {
 
 	// 채팅방 입장
 	const onConnectChat = (matchingId) => {
+		setChatRoomVisible(true);
 		const headers = {
 			Authorization: 'Bearer ' + getCookie('accessToken'),
 			matchingId,
@@ -176,10 +177,11 @@ export default function ChatListModal(props: ChatListDrawerProps) {
 			</DrawerBox>
 			<ModalBox
 				isOpen={chatRoomVisible}
-				heightType={true}
+				heightType={false}
 				toggleModal={chatToggleModal}
 				onCancel={closeChatModal}
 				isChatModal={true}
+				isFooterFixed={true}
 				footerButtons={[
 					<SendMessageWrapper key={uuidv4()}>
 						<ChatInputBox>
@@ -215,15 +217,27 @@ export default function ChatListModal(props: ChatListDrawerProps) {
 									{chatItem.senderNickname !== 'admin' &&
 										chatItem.senderNickname === userNickNameData && (
 											<MyChatList>
-												<p className='right-title'>{chatItem.content}</p>
-												<p className='right-title'>{chatTimeFormatter(chatItem.sentTime)}</p>
+												<div className='content-box'>
+													<p className='content-title'>{chatItem.content}</p>
+													<p className='right-title'>{chatTimeFormatter(chatItem.sentTime)}</p>
+												</div>
 											</MyChatList>
 										)}
 									{chatItem.senderNickname !== 'admin' &&
 										chatItem.senderNickname !== userNickNameData && (
 											<OtherChatList>
-												<p className='left-title'>{chatItem.content}</p>
-												<p className='left-title'>{chatTimeFormatter(chatItem.sentTime)}</p>
+												<div className='left-box'>
+													<div className='img-box'>
+														<img src={`${prefix}/images/no-result.png`} />
+													</div>
+												</div>
+												<div className='right-box'>
+													<p className='title'>{chatItem.senderNickname}</p>
+													<div className='content-box'>
+														<p className='content-title'>{chatItem.content}</p>
+														<p className='right-title'>{chatTimeFormatter(chatItem.sentTime)}</p>
+													</div>
+												</div>
 											</OtherChatList>
 										)}
 								</div>
@@ -257,12 +271,12 @@ const ChatListContainer = styled.div`
 `;
 
 const ChatBoxes = styled.div`
-	background-color: yellow;
+	background-color: #ffffff;
 `;
 
 const ChatListWrap = styled.div`
-	height: 77vh;
-	overflow: scroll;
+	/* height: 77vh;
+	overflow: scroll; */
 `;
 
 const SendMessageWrapper = styled.div`
@@ -300,16 +314,58 @@ const SendMessageBox = styled.div`
 `;
 
 const MyChatList = styled.div`
-	p {
-		&.center-title {
-			text-align: center;
-		}
-		&.left-title {
-			text-align: left;
-		}
-		&.right-title {
-			text-align: right;
+	display: flex;
+	justify-content: flex-end;
+	width: 100%;
+	margin-bottom: 10px;
+	div.content-box {
+		width: 80%;
+		background-color: #f1fff2;
+		border-radius: 10px;
+		padding: 15px;
+		p {
+			font-family: Pretendard-Regular;
+			&.right-title {
+				color: #656565;
+				text-align: right;
+				font-size: 10px;
+			}
 		}
 	}
 `;
-const OtherChatList = styled.div``;
+const OtherChatList = styled.div`
+	display: flex;
+	width: 100%;
+	margin-bottom: 10px;
+	div.left-box {
+		margin-right: 15px;
+		div.img-box {
+			width: 30px;
+			img {
+				display: block;
+				width: 100%;
+			}
+		}
+	}
+	div.right-box {
+		width: 80%;
+		p.title {
+			font-size: 14px;
+			font-family: Pretendard-Bold;
+			text-align: left;
+		}
+		div.content-box {
+			background-color: #f1fff2;
+			border-radius: 10px;
+			padding: 15px;
+			p {
+				font-family: Pretendard-Regular;
+				&.right-title {
+					color: #656565;
+					text-align: right;
+					font-size: 10px;
+				}
+			}
+		}
+	}
+`;
