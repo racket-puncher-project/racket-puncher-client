@@ -14,6 +14,7 @@ interface IModalProps {
 	readonly heightType?: boolean;
 	readonly footerButtons?: ReactElement[];
 	readonly isChatModal?: boolean;
+	readonly isFooterFixed?: boolean;
 	readonly toggleModal: () => void;
 	readonly onOk?: () => void;
 	readonly onCancel: () => void;
@@ -60,6 +61,7 @@ export default function ModalBox(props: IModalProps) {
 				onCancel={handleCancel}
 				centered={true}
 				maskClosable={false}
+				isFooterFixed={props.isFooterFixed}
 				isChatModal={props.isChatModal}
 				footer={props.footerButtons || []}>
 				{props.children}
@@ -90,17 +92,47 @@ export default function ModalBox(props: IModalProps) {
 
 const CustomModal = styled(({ ...props }) => <AntdModal {...props} />)`
 	div.ant-modal-content {
+		position: relative;
 		border-radius: 20px !important;
 		box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.15) !important;
-		padding: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))} !important;
+		padding: ${(props) =>
+			props.isFooterFixed
+				? '0'
+				: props.theme.isResponsive
+				  ? pxToRem('20px')
+				  : rem('20px')} !important;
 		height: ${(props) => (props.isChatModal ? '500px' : '100%')} !important;
 		overflow-y: scroll;
 	}
 	div.ant-modal-header {
-		padding: ${(props) => (props.theme.isResponsive ? `${pxToRem('20px')} 0` : `${rem('20px')} 0`)};
+		padding: ${(props) =>
+			props.isFooterFixed
+				? props.theme.isResponsive
+					? `${pxToRem('30px')} ${pxToRem('15px')}`
+					: `${rem('30px')} ${rem('15px')}`
+				: props.theme.isResponsive
+				  ? `${pxToRem('20px')} 0`
+				  : `${rem('20px')} 0`};
 	}
 	div.ant-modal-body {
+		padding: ${(props) =>
+			props.isFooterFixed
+				? props.theme.isResponsive
+					? `0 ${pxToRem('20px')}`
+					: `0 ${rem('20px')}`
+				: `0`};
 		height: ${(props) => (props.isChatModal ? '' : props.theme.isResponsive ? '100%' : '100%')};
+	}
+	div.ant-modal-footer {
+		padding: ${(props) =>
+			props.isFooterFixed
+				? props.theme.isResponsive
+					? `${pxToRem('20px')}`
+					: `${rem('20px')}`
+				: `0`};
+		background-color: ${(props) => (props.isFooterFixed ? '#ffffff' : 'inherit')};
+		position: ${(props) => (props.isFooterFixed ? 'sticky' : 'static')};
+		bottom: ${(props) => (props.isFooterFixed ? '0' : 'static')};
 	}
 `;
 
