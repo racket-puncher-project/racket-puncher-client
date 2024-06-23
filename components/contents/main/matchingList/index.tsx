@@ -153,9 +153,11 @@ export default function MatchingList() {
 					}}
 					hasMore={hasMoreData}
 					loader={
-						<div className='loader' key={uuidv4()}>
-							<SkeletonUI />
-						</div>
+						!hasMoreData && (
+							<div className='loader' key={uuidv4()}>
+								<SkeletonUI />
+							</div>
+						)
 					}>
 					{matchingList.map((item) => {
 						return (
