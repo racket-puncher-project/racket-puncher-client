@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { RoundButton } from '../../../styles/ts/components/buttons';
 import DrawerBox from '../../common/drawer';
@@ -22,6 +22,7 @@ import useToast from '../../../utils/useToast';
 import { ImageBox } from '../../../styles/ts/components/box';
 import { prefix } from '../../../constants/prefix';
 import { v4 as uuidv4 } from 'uuid';
+import { debounce } from 'lodash';
 
 interface ChatListDrawerProps {
 	readonly isOpen: boolean;
@@ -32,6 +33,7 @@ let stompClient = null;
 
 export default function ChatListModal(props: ChatListDrawerProps) {
 	const router = useRouter();
+	const inputRef = useRef(null);
 	const { getCookie } = useCookies();
 	const { setMessage } = useToast();
 	const { isOpen, toggleDrawer } = props;
@@ -45,6 +47,7 @@ export default function ChatListModal(props: ChatListDrawerProps) {
 	const [chatList, setChatList] = useState([]);
 	const [chatRoomList, setChatRoomList] = useState([]);
 	const [messageValue, setMessageValue] = useState('');
+
 	const [chatRoomId, setChatRoomId] = useState('');
 
 	const chatToggleModal = () => {
@@ -143,7 +146,28 @@ export default function ChatListModal(props: ChatListDrawerProps) {
 		console.log('chatRoomId', chatRoomId);
 		console.log('test');
 		stompClient.send(`/app/chat/${chatRoomId}`, {}, JSON.stringify({ content: messageValue }));
+		setMessageValue('');
 	};
+
+	const debouncedSetMessageValue = useCallback(
+		debounce((value) => {
+			setMessageValue(value);
+		}, 200),
+		[]
+	);
+
+	const handleChange = (e) => {
+		inputRef.current.value = e.target.value;
+		debouncedSetMessageValue(e.target.value);
+	};
+
+	useEffect(() => {
+		const contentsEl = document.getElementsByClassName('ant-modal-content');
+		if (contentsEl.length > 0) {
+			const lastElement = contentsEl[0];
+			lastElement.scrollTop = lastElement.scrollHeight;
+		}
+	}, [chatList]);
 
 	useEffect(() => {
 		getChatListData();
@@ -186,10 +210,10 @@ export default function ChatListModal(props: ChatListDrawerProps) {
 					<SendMessageWrapper key={uuidv4()}>
 						<ChatInputBox>
 							<input
-								value={messageValue}
-								type='text'
+								ref={inputRef}
+								defaultValue={messageValue}
 								onChange={(e) => {
-									setMessageValue(e.target.value);
+									handleChange(e);
 								}}
 							/>
 						</ChatInputBox>
@@ -228,7 +252,7 @@ export default function ChatListModal(props: ChatListDrawerProps) {
 											<OtherChatList>
 												<div className='left-box'>
 													<div className='img-box'>
-														<img src={`${prefix}/images/no-result.png`} />
+														<img src={chatItem.senderProfileImg} />
 													</div>
 												</div>
 												<div className='right-box'>

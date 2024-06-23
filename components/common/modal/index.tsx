@@ -92,6 +92,9 @@ export default function ModalBox(props: IModalProps) {
 
 const CustomModal = styled(({ ...props }) => <AntdModal {...props} />)`
 	div.ant-modal-content {
+		display: ${(props) => (props.isFooterFixed ? 'flex' : 'block')};
+		flex-direction: ${(props) => (props.isFooterFixed ? 'column' : '')};
+		justify-content: ${(props) => (props.isFooterFixed ? 'space-between' : '')};
 		position: relative;
 		border-radius: 20px !important;
 		box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.15) !important;
@@ -105,6 +108,8 @@ const CustomModal = styled(({ ...props }) => <AntdModal {...props} />)`
 		overflow-y: scroll;
 	}
 	div.ant-modal-header {
+		position: ${(props) => (props.isFooterFixed ? 'sticky' : 'static')};
+		top: ${(props) => (props.isFooterFixed ? '0' : 'static')};
 		padding: ${(props) =>
 			props.isFooterFixed
 				? props.theme.isResponsive
@@ -115,6 +120,7 @@ const CustomModal = styled(({ ...props }) => <AntdModal {...props} />)`
 				  : `${rem('20px')} 0`};
 	}
 	div.ant-modal-body {
+		flex: 1 1 auto;
 		padding: ${(props) =>
 			props.isFooterFixed
 				? props.theme.isResponsive
