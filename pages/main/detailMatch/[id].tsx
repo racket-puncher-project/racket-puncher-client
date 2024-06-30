@@ -94,10 +94,10 @@ export default function DetailMatching() {
 	const [userInfo, setUserInfo] = useState<any>();
 	// 상세정보
 	const [detailInfo, setDetailInfo] = useState<any>();
-	// 모집 종료까지 남은 일
-	const [recruitDays, setRecruitDays] = useState<any>();
-	// 모집 종료까지 남은 시간
-	const [recruitHour, setRecruitHour] = useState<any>();
+
+	// 모집 종료까지 남은 시간 (일, 시간, 분)
+	const [recruitInfo, setRecruitInfo] = useState<any[]>([0, 0, 0]);
+
 	// 모집 종료까지 남은 시간 퍼센트
 	const [recruitPercentage, setRecruitPercentage] = useState<any>();
 	const [recruitList, setRecruitList] = useState({
@@ -167,8 +167,14 @@ export default function DetailMatching() {
 			const res: any = await Service.getDetailMatchingList(id);
 			setDetailInfo(res.data.response);
 			setUserInfo({ ...res.data.response.creatorInfo });
-			checkRecruitDate(res.data.response.createTime, res.data.response.recruitDueDateTime);
-			convertRecruitPercentage(res.data.response.createTime, res.data.response.recruitDueDateTime);
+			checkRecruitDate(
+				moment().format('YYYY-MM-DDTHH:mm:ss'),
+				res.data.response.recruitDueDateTime
+			);
+			convertRecruitPercentage(
+				moment().format('YYYY-MM-DDTHH:mm:ss'),
+				res.data.response.recruitDueDateTime
+			);
 			// 로그인 체크
 			if (checkLogin()) {
 				// 유저 정보 조회
@@ -241,8 +247,7 @@ export default function DetailMatching() {
 
 		const duration = moment.duration(recruitDateEnd.diff(recruitDateStart));
 
-		setRecruitDays(duration.days());
-		setRecruitHour(duration.hours());
+		setRecruitInfo([duration.days(), duration.hours(), duration.minutes()]);
 	};
 
 	// 종료 일자를 퍼센트 변환
@@ -502,7 +507,24 @@ export default function DetailMatching() {
 
 				<ProgressBarContainer>
 					<p>
-						“모집 기간이 <span>{recruitDays}</span>일 <span>{recruitHour}</span>시간 남았습니다.“
+						"모집 기간이{' '}
+						{recruitInfo.map((recruitItem, recruitIdx) => {
+							const labels = ['일', '시간', '분'];
+							return (
+								<>
+									{recruitItem !== 0 && (
+										<>
+											<span>
+												{' '}
+												{recruitItem}
+												{labels[recruitIdx]}
+											</span>
+										</>
+									)}
+								</>
+							);
+						})}
+						남았습니다. "
 					</p>
 					<Progress
 						strokeLinecap='round'
