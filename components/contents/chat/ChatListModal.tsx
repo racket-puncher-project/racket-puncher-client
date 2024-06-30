@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { RoundButton } from '../../../styles/ts/components/buttons';
 import DrawerBox from '../../common/drawer';
@@ -15,14 +15,11 @@ import ChatService from '../../../service/chat/service';
 import SockJs from 'sockjs-client';
 import Stomp from 'stompjs';
 import useCookies from '../../../utils/useCookies';
-import { useRouter } from 'next/router';
 import ModalBox from '../../common/modal';
 import usersService from '../../../service/users/service';
 import useToast from '../../../utils/useToast';
 import { ImageBox } from '../../../styles/ts/components/box';
 import { prefix } from '../../../constants/prefix';
-import { v4 as uuidv4 } from 'uuid';
-import { debounce } from 'lodash';
 
 interface ChatListDrawerProps {
 	readonly isOpen: boolean;
@@ -32,8 +29,6 @@ interface ChatListDrawerProps {
 let stompClient = null;
 
 export default function ChatListModal(props: ChatListDrawerProps) {
-	const router = useRouter();
-	const inputRef = useRef(null);
 	const { getCookie } = useCookies();
 	const { setMessage } = useToast();
 	const { isOpen, toggleDrawer } = props;
@@ -49,6 +44,8 @@ export default function ChatListModal(props: ChatListDrawerProps) {
 	const [messageValue, setMessageValue] = useState('');
 
 	const [chatRoomId, setChatRoomId] = useState('');
+
+	const messageToSend = useRef(null);
 
 	const chatToggleModal = () => {
 		// setChatRoomVisible(!isUserInfoModalOpen);
@@ -141,24 +138,25 @@ export default function ChatListModal(props: ChatListDrawerProps) {
 	};
 
 	// 메시지 보내기
-	const sendMessage = async (chatRoomId) => {
+	const sendMessage = async (chatRoomId, message) => {
+		if (!stompClient) {
+			console.error('stompClient 가 초기화되어야 함');
+			return;
+		}
+
 		console.log('stompClient', stompClient);
 		console.log('chatRoomId', chatRoomId);
 		console.log('test');
-		stompClient.send(`/app/chat/${chatRoomId}`, {}, JSON.stringify({ content: messageValue }));
-		setMessageValue('');
+
+		await stompClient.send(`/app/chat/${chatRoomId}`, {}, JSON.stringify({ content: message }));
 	};
 
-	const debouncedSetMessageValue = useCallback(
-		debounce((value) => {
-			setMessageValue(value);
-		}, 200),
-		[]
-	);
-
-	const handleChange = (e) => {
-		inputRef.current.value = e.target.value;
-		debouncedSetMessageValue(e.target.value);
+	const handleKeyDown = (event) => {
+		if (event.key === 'Enter') {
+			event.preventDefault();
+			messageToSend.current = messageValue;
+			setMessageValue('');
+		}
 	};
 
 	useEffect(() => {
@@ -173,6 +171,13 @@ export default function ChatListModal(props: ChatListDrawerProps) {
 		getChatListData();
 	}, []);
 
+	useEffect(() => {
+		if (messageToSend.current !== null) {
+			sendMessage(chatRoomId, messageToSend.current);
+			messageToSend.current = null;
+		}
+	}, [messageValue]);
+
 	return (
 		<>
 			<DrawerBox
@@ -181,7 +186,7 @@ export default function ChatListModal(props: ChatListDrawerProps) {
 				placement={'bottom'}
 				toggleDrawer={() => toggleDrawer(isOpen)}>
 				<ChatListModalContainer>
-					{chatRoomList.map((item) => {
+					{chatRoomList?.map((item) => {
 						return (
 							<ChatListContainer key={item.id}>
 								<p>{item.title}</p>
@@ -207,20 +212,21 @@ export default function ChatListModal(props: ChatListDrawerProps) {
 				isChatModal={true}
 				isFooterFixed={true}
 				footerButtons={[
-					<SendMessageWrapper key={uuidv4()}>
+					<SendMessageWrapper key={'messageValue'}>
 						<ChatInputBox>
 							<input
-								ref={inputRef}
-								defaultValue={messageValue}
+								value={messageValue}
+								onKeyDown={handleKeyDown}
 								onChange={(e) => {
-									handleChange(e);
+									setMessageValue(e.target.value);
 								}}
 							/>
 						</ChatInputBox>
 
 						<SendMessageBox
 							onClick={() => {
-								sendMessage(chatRoomId);
+								messageToSend.current = messageValue;
+								setMessageValue('');
 							}}>
 							<ImageBox width={'50px'} height={'50px'}>
 								<img src={`${prefix}/svg/send-message.svg`} alt='send-message' />
