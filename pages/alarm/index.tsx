@@ -20,7 +20,7 @@ export default function AlarmPage() {
 		try {
 			const res = await usersService.getNotificationData();
 			console.log(res.data.response);
-			// setAlarmData(res.data.response);
+			setAlarmData(res.data.response);
 		} catch (e) {
 			console.log(e);
 			if (e.response.data.code === 404) {
@@ -41,17 +41,15 @@ export default function AlarmPage() {
 			<AlarmList>
 				{alarmData?.map((alarmItem, alarmIndex) => {
 					return (
-						<>
-							<AlarmListItem key={'alarmItem' + alarmIndex}>
-								<div className='left-box'>
-									<p className='title'>{alarmItem.title}</p>
-									<p className='contents'>{alarmItem.content}</p>
-								</div>
-								<ImageBox width={'40px'} height={'40px'}>
-									<img src={`${prefix}/svg/bell-icon.svg`} alt='알림' />
-								</ImageBox>
-							</AlarmListItem>
-						</>
+						<AlarmListItem key={'alarmItem' + alarmIndex}>
+							<div className='left-box'>
+								<p className='title'>{alarmItem.title}</p>
+								<p className='contents'>{alarmItem.content}</p>
+							</div>
+							<ImageBox width={'40px'} height={'40px'}>
+								<img src={`${prefix}/svg/bell-icon.svg`} alt='알림' />
+							</ImageBox>
+						</AlarmListItem>
 					);
 				})}
 			</AlarmList>
@@ -83,7 +81,7 @@ const AlarmListItem = styled.li`
 				font-family: Pretendard-Bold;
 				color: ${BlackColor};
 				font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeLg) : rem(FontSizeLg))};
-				margin-bottom: 5px;
+				margin-bottom: 10px;
 			}
 
 			&.contents {
