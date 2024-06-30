@@ -270,7 +270,6 @@ export default function EditMatching() {
 								<CustomSelect
 									{...field}
 									options={[
-										{ value: 1, label: '1명' },
 										{ value: 2, label: '2명' },
 										{ value: 3, label: '3명' },
 									]}
