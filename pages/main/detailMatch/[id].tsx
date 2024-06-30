@@ -173,6 +173,7 @@ export default function DetailMatching() {
 			);
 			convertRecruitPercentage(
 				moment().format('YYYY-MM-DDTHH:mm:ss'),
+				res.data.response.createTime,
 				res.data.response.recruitDueDateTime
 			);
 			// 로그인 체크
@@ -247,27 +248,29 @@ export default function DetailMatching() {
 
 		const duration = moment.duration(recruitDateEnd.diff(recruitDateStart));
 
-		setRecruitInfo([duration.days(), duration.hours(), duration.minutes()]);
+		const days = Math.floor(duration.asDays());
+		const hours = Math.floor(duration.asHours() % 24);
+		const minutes = Math.floor(duration.asMinutes() % 60);
+
+		setRecruitInfo([days, hours, minutes]);
 	};
 
 	// 종료 일자를 퍼센트 변환
-	const convertRecruitPercentage = (startDate: any, endDate: any) => {
-		// 모든 날짜를 moment 객체로 변환
-		const startMoment = moment(startDate);
-		const endMoment = moment(endDate);
-		const nowMoment = moment();
+	const convertRecruitPercentage = (nowDate: any, startDate: any, endDate: any) => {
+		const start = moment(startDate);
+		const end = moment(endDate);
+		const now = moment(nowDate);
 
-		// 전체 기간과 현재까지 경과한 기간을 계산
-		const totalDuration = moment.duration(endMoment.diff(startMoment));
-		const elapsedDuration = moment.duration(nowMoment.diff(startMoment));
+		// 전체 모집 기간을 초 단위로 계산
+		const totalDuration = end.diff(start, 'seconds');
 
-		// 전체 기간과 경과 기간을 분으로 변환하여 퍼센트 계산
-		const totalMinutes = totalDuration.asMinutes();
-		const elapsedMinutes = elapsedDuration.asMinutes();
-		const percentageLeft = ((totalMinutes - elapsedMinutes) / totalMinutes) * 100;
+		// 모집 시작 시간부터 현재 시간까지 경과한 시간을 초 단위로 계산
+		const elapsedDuration = end.diff(now, 'seconds');
+
+		const percentage = (elapsedDuration / totalDuration) * 100;
 
 		// 남은 시간의 퍼센트 반환
-		setRecruitPercentage(percentageLeft.toFixed(0));
+		setRecruitPercentage(percentage.toFixed(2));
 	};
 
 	// 유저 조회(본인)
