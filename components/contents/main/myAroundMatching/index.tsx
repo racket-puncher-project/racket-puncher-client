@@ -97,12 +97,13 @@ export default function MyAroundMatching() {
 						return marker;
 					});
 					setInfowindows([...infowindows, ...newInfowindows]);
+					hideLoading();
 				},
 				(error) => {
 					console.error('error: ' + error.message);
+					hideLoading();
 				}
 			);
-			hideLoading();
 		} else {
 			// Geolocation API 사용 불가능 시 기본 위치로 설정
 			const defaultOptions = {
@@ -111,6 +112,7 @@ export default function MyAroundMatching() {
 			};
 			const kakaoMap = new kakao.maps.Map(container, defaultOptions);
 			setMap(kakaoMap);
+			console.log('끝!!');
 			hideLoading();
 		}
 	}, []);

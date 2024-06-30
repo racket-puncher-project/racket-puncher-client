@@ -178,7 +178,7 @@ export default function FilteringModal(props: IFilteringProps) {
 
 		props.setParams((prev) => ({
 			...prev,
-			page: 1,
+			page: 0,
 		}));
 
 		props.setMatchingList([]);
