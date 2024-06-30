@@ -63,11 +63,8 @@ const RadioButton = styled(AntdRadio.Button)`
 		props.theme.isResponsive ? pxToRem(FontSizeSm) : rem(FontSizeSm)} !important;
 	text-align: center;
 
-	& :last-child {
-		position: absolute;
-		left: 0;
-		right: 0;
-		top: 50%;
-		transform: translateY(-50%);
+	span {
+		display: block;
+		margin: ${(props) => (props.theme.isResponsive ? pxToRem('1px') : rem('5px'))};
 	}
 `;
