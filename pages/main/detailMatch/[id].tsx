@@ -487,44 +487,40 @@ export default function DetailMatching() {
 				</ProfileContainer>
 
 				{authorityValue === 'MEMBER_MY' && (
-					<>
-						<DetailActionBtnContainer>
-							<RoundButton
-								onClick={() => {
-									onClickMoveEdit();
-								}}>
-								수정
-							</RoundButton>
-							<RoundButton
-								onClick={() => {
-									onClickDeleteMatching();
-								}}>
-								삭제
-							</RoundButton>
-						</DetailActionBtnContainer>
-					</>
+					<DetailActionBtnContainer>
+						<RoundButton
+							onClick={() => {
+								onClickMoveEdit();
+							}}>
+							수정
+						</RoundButton>
+						<RoundButton
+							onClick={() => {
+								onClickDeleteMatching();
+							}}>
+							삭제
+						</RoundButton>
+					</DetailActionBtnContainer>
 				)}
 
 				<ProgressBarContainer>
 					<p>
-						"모집 기간이{' '}
+						모집 기간이{' '}
 						{recruitInfo.map((recruitItem, recruitIdx) => {
 							const labels = ['일', '시간', '분'];
 							return (
 								<>
 									{recruitItem !== 0 && (
-										<>
-											<span>
-												{' '}
-												{recruitItem}
-												{labels[recruitIdx]}
-											</span>
-										</>
+										<span>
+											{' '}
+											{recruitItem}
+											{labels[recruitIdx]}
+										</span>
 									)}
 								</>
 							);
-						})}
-						남았습니다. "
+						})}{' '}
+						남았습니다.
 					</p>
 					<Progress
 						strokeLinecap='round'
@@ -575,17 +571,13 @@ export default function DetailMatching() {
 					<DetailMatchItemBox>
 						<label htmlFor='detailMatchInfo'>구장 이미지</label>
 						{detailInfo?.locationImg ? (
-							<>
-								<BackgroundImageBox
-									widthInit={true}
-									height={'300px'}
-									backgroundImage={detailInfo?.locationImg}
-								/>
-							</>
+							<BackgroundImageBox
+								widthInit={true}
+								height={'300px'}
+								backgroundImage={detailInfo?.locationImg}
+							/>
 						) : (
-							<>
-								<DetailMatchContent height={'300px'}></DetailMatchContent>
-							</>
+							<DetailMatchContent height={'300px'}></DetailMatchContent>
 						)}
 					</DetailMatchItemBox>
 
@@ -620,61 +612,55 @@ export default function DetailMatching() {
 						<ModalBoxes>
 							<DragDropContext onDragEnd={onDragEnd}>
 								{Object.keys(recruitList).map((key) => (
-									<>
-										<ModalWrapBoxContainer key={key}>
-											<ModalWrapBox>
-												<div className='is-modal-wrap-header'>
-													<p>{key === 'beforeList' ? '신청인원' : '참여인원'}</p>
-													<p>{recruitList[key].length}명</p>
-												</div>
-												<Droppable key={key} droppableId={key}>
-													{(provided) => (
-														<div
-															className={'is-modal-wrap-body'}
-															{...provided.droppableProps}
-															ref={provided.innerRef}>
-															{recruitList[key].map((item, index) => (
-																<Draggable
-																	key={item.applyId}
-																	draggableId={String(item.applyId)}
-																	isDragDisabled={
-																		authorityValue !== 'MEMBER_MY' ||
-																		item.siteUserId === userInfo.id
-																	}
-																	index={index}>
-																	{(provided) => (
-																		<div
-																			ref={provided.innerRef}
-																			{...provided.draggableProps}
-																			{...provided.dragHandleProps}>
-																			<ModalWrapItem>
-																				<div className='box-top'>
-																					<ImageBox width='80px' height='80px'>
-																						<img
-																							src={`${prefix}/images/main-img1.png`}
-																							alt='image'
-																						/>
-																					</ImageBox>
-																					<p>{item.nickname}</p>
+									<ModalWrapBoxContainer key={key}>
+										<ModalWrapBox>
+											<div className='is-modal-wrap-header'>
+												<p>{key === 'beforeList' ? '신청인원' : '참여인원'}</p>
+												<p>{recruitList[key].length}명</p>
+											</div>
+											<Droppable key={key} droppableId={key}>
+												{(provided) => (
+													<div
+														className={'is-modal-wrap-body'}
+														{...provided.droppableProps}
+														ref={provided.innerRef}>
+														{recruitList[key].map((item, index) => (
+															<Draggable
+																key={item.applyId}
+																draggableId={String(item.applyId)}
+																isDragDisabled={
+																	authorityValue !== 'MEMBER_MY' || item.siteUserId === userInfo.id
+																}
+																index={index}>
+																{(provided) => (
+																	<div
+																		ref={provided.innerRef}
+																		{...provided.draggableProps}
+																		{...provided.dragHandleProps}>
+																		<ModalWrapItem>
+																			<div className='box-top'>
+																				<ImageBox width='80px' height='80px'>
+																					<img src={`${prefix}/images/main-img1.png`} alt='image' />
+																				</ImageBox>
+																				<p>{item.nickname}</p>
+																			</div>
+																			<div className='box-footer'>
+																				<div
+																					className='is-btn black'
+																					onClick={() => getUserInfoData(item.siteUserId)}>
+																					정보
 																				</div>
-																				<div className='box-footer'>
-																					<div
-																						className='is-btn black'
-																						onClick={() => getUserInfoData(item.siteUserId)}>
-																						정보
-																					</div>
-																				</div>
-																			</ModalWrapItem>
-																		</div>
-																	)}
-																</Draggable>
-															))}
-														</div>
-													)}
-												</Droppable>
-											</ModalWrapBox>
-										</ModalWrapBoxContainer>
-									</>
+																			</div>
+																		</ModalWrapItem>
+																	</div>
+																)}
+															</Draggable>
+														))}
+													</div>
+												)}
+											</Droppable>
+										</ModalWrapBox>
+									</ModalWrapBoxContainer>
 								))}
 							</DragDropContext>
 						</ModalBoxes>
@@ -724,21 +710,15 @@ export default function DetailMatching() {
 								return (
 									<>
 										{item.senderNickname === 'admin' && (
-											<>
-												<p className='center-title'>{item.content}</p>
-											</>
+											<p className='center-title'>{item.content}</p>
 										)}
 										{item.senderNickname !== 'admin' &&
 											item.senderNickname === userNickNameData && (
-												<>
-													<p className='right-title'>{item.content}</p>
-												</>
+												<p className='right-title'>{item.content}</p>
 											)}
 										{item.senderNickname !== 'admin' &&
 											item.senderNickname !== userNickNameData && (
-												<>
-													<p className='left-title'>{item.content}</p>
-												</>
+												<p className='left-title'>{item.content}</p>
 											)}
 									</>
 								);

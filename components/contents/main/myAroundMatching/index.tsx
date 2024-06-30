@@ -140,16 +140,16 @@ export default function MyAroundMatching() {
 
 	const handleButtonClick = (position, index) => {
 		if (map) {
-			const markerPosition = new kakao.maps.LatLng(position.lat, position.lng);
+			const markerPosition = new kakao.maps.LatLng(position.lat, position.lon);
 			map.setCenter(markerPosition);
 
-			infowindows.forEach((iw, idx) => {
-				if (index === idx) {
-					iw.open(map, selectedMarker);
-				} else {
-					iw.close();
-				}
-			});
+			// infowindows.forEach((iw, idx) => {
+			// 	if (index === idx) {
+			// 		iw.open(map, selectedMarker);
+			// 	} else {
+			// 		iw.close();
+			// 	}
+			// });
 		}
 	};
 
@@ -164,13 +164,14 @@ export default function MyAroundMatching() {
 						<MatchingCard
 							matchingStartDateTime={position.matchingStartDateTime}
 							matchingType={position.matchingType}
+							locationImg={position.locationImg}
 							ntrp={position.ntrp}
 							reserved={position.reserved}
 							title={position.title}
 							onClick={() => handleButtonClick(position, index)}></MatchingCard>
 					</div>
 				))}
-				{aroundPositions.length === 0 && <NoResultBox />}
+				{matchingList.length === 0 && <NoResultBox />}
 			</MyAroundMatchingContainer>
 		</>
 	);
