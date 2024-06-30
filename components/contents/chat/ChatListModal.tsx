@@ -45,8 +45,6 @@ export default function ChatListModal(props: ChatListDrawerProps) {
 
 	const [chatRoomId, setChatRoomId] = useState('');
 
-	const messageToSend = useRef(null);
-
 	const chatToggleModal = () => {
 		// setChatRoomVisible(!isUserInfoModalOpen);
 		if (stompClient !== null) {
@@ -152,9 +150,8 @@ export default function ChatListModal(props: ChatListDrawerProps) {
 	};
 
 	const handleKeyDown = (event) => {
-		if (event.key === 'Enter') {
-			event.preventDefault();
-			messageToSend.current = messageValue;
+		if (event.key === 'Enter' && messageValue) {
+			sendMessage(chatRoomId, messageValue);
 			setMessageValue('');
 		}
 	};
@@ -170,13 +167,6 @@ export default function ChatListModal(props: ChatListDrawerProps) {
 	useEffect(() => {
 		getChatListData();
 	}, []);
-
-	useEffect(() => {
-		if (messageToSend.current !== null) {
-			sendMessage(chatRoomId, messageToSend.current);
-			messageToSend.current = null;
-		}
-	}, [messageValue]);
 
 	return (
 		<>
@@ -216,7 +206,9 @@ export default function ChatListModal(props: ChatListDrawerProps) {
 						<ChatInputBox>
 							<input
 								value={messageValue}
-								onKeyDown={handleKeyDown}
+								onKeyPress={(e) => {
+									handleKeyDown(e);
+								}}
 								onChange={(e) => {
 									setMessageValue(e.target.value);
 								}}
@@ -225,7 +217,7 @@ export default function ChatListModal(props: ChatListDrawerProps) {
 
 						<SendMessageBox
 							onClick={() => {
-								messageToSend.current = messageValue;
+								sendMessage(chatRoomId, messageValue);
 								setMessageValue('');
 							}}>
 							<ImageBox width={'50px'} height={'50px'}>
