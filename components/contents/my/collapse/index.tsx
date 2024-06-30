@@ -88,14 +88,14 @@ export default function MyListItem({ postInfo }: IMyListItemProps) {
 													userId={user.id}
 												/>
 											))}
-											<RoundButton
+											{/* <RoundButton
 												onClick={() => {
 													console.log('클릭');
 												}}
 												colorstyle={'is-black'}
 												aria-label='평가하기 페이지로 이동'>
 												평가하기
-											</RoundButton>
+											</RoundButton> */}
 										</>
 									</PlayerCardContainer>
 								),
