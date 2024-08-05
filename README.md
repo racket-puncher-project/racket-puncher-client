@@ -4,7 +4,7 @@
 <br />
 
 [![Watch the video](http://img.youtube.com/vi/90b4NI6k3wY/0.jpg)](https://youtu.be/90b4NI6k3wY)
-[![Video Label](http://img.youtube.com/vi/90b4NI6k3wY/0.jpg)](https://youtu.be/90b4NI6k3wY)
+
 ## ▶️ 목차
 - [팀원 소개](#1)
 - [프로젝트 기간](#2)
