@@ -37,7 +37,7 @@ const getReviewData = (matchingId) => {
 };
 
 // 리뷰하기
-const postReviewData = (matchingId, data: reqPostReviewApiData) => {
+const postReviewData = (matchingId, data: any) => {
 	return http.post(`/api/users/review/${matchingId}`, data);
 };
 

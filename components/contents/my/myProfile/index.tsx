@@ -86,7 +86,7 @@ export default function MyProfile(props: IProfileProps) {
 						<ProfileInfoItem>
 							<ItemName>닉네임 : </ItemName>
 							<ItemContent>{nickname}</ItemContent>
-							<Badge> {ntrp} </Badge>
+							{/* <Badge> {ntrp} </Badge> */}
 						</ProfileInfoItem>
 						<ProfileInfoItem>
 							<ItemName>연령/성별 :</ItemName>

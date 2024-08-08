@@ -18,6 +18,7 @@ import { RoundButton } from '../../../../styles/ts/components/buttons';
 import useToast from '../../../../utils/useToast';
 import usersService from '../../../../service/users/service';
 import { prefix } from '../../../../constants/prefix';
+import { useRouter } from 'next/router';
 
 interface IUser {
 	readonly id: number; // 유저 아이디
@@ -45,6 +46,8 @@ interface IMyListItemProps {
 }
 
 export default function MyListItem({ postInfo }: IMyListItemProps) {
+	const router = useRouter();
+
 	return (
 		<>
 			{postInfo.map((info) => (
@@ -88,14 +91,16 @@ export default function MyListItem({ postInfo }: IMyListItemProps) {
 													userId={user.id}
 												/>
 											))}
-											{/* <RoundButton
-												onClick={() => {
-													console.log('클릭');
-												}}
-												colorstyle={'is-black'}
-												aria-label='평가하기 페이지로 이동'>
-												평가하기
-											</RoundButton> */}
+											{info.recruitStatus === 'FINISHED' && !info.evaluated && (
+												<RoundButton
+													onClick={() => {
+														router.push(`/evaluation/${info.id}`);
+													}}
+													colorstyle={'is-black'}
+													aria-label='평가하기 페이지로 이동'>
+													평가하기
+												</RoundButton>
+											)}
 										</>
 									</PlayerCardContainer>
 								),

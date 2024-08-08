@@ -7,7 +7,7 @@ const regMatchingData = (matchingId) => {
 };
 
 // 참가 신청 취소(매칭 확정된 경기일 경우, 경기 매칭 확정 상태 변경 및 패널티 부여, 알림)
-const getDetailMatchingList = (applyId) => {
+const cancelMatchingData = (applyId) => {
 	return http.delete(`/api/apply/${applyId}`);
 };
 
@@ -18,7 +18,7 @@ const applyMatches = (matchingId, data: reqApplyMatchesApiData) => {
 
 const ApplyService = {
 	regMatchingData,
-	getDetailMatchingList,
+	cancelMatchingData,
 	applyMatches,
 };
 
