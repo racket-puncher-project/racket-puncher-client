@@ -144,8 +144,6 @@ export default function DetailMatching() {
 	};
 
 	const onDragEnd = ({ source, destination }) => {
-		console.log('시작', source);
-		console.log('끝', destination);
 		if (!destination || destination.droppableId === null) return;
 
 		const scourceKey = source.droppableId;
@@ -213,8 +211,6 @@ export default function DetailMatching() {
 	const getRecruitListInfo = async (id: any) => {
 		try {
 			const res = await Service.getMatchingApplyState(id);
-
-			console.log('매칭별 신청 현황 조회', res.data.response);
 			let processData = null;
 			if (res.data.response.appliedMembers) {
 				processData = {
@@ -229,13 +225,13 @@ export default function DetailMatching() {
 			setRecruitList(processData);
 			setIsReqMatching(res.data.response.isApplied);
 
+			console.log('res', res);
+
 			// 내 신청 데이터 내역 가공
 			const myAppliedData = res.data.response.acceptedMembers.filter(
 				(item) => item.siteUserId === userIdData
 			);
 			setApplyIdData(myAppliedData[0].applyId);
-			console.log('userIdData', userIdData);
-			console.log('myAppliedData', myAppliedData);
 		} catch (e) {
 			console.log('e', e);
 		}
@@ -280,8 +276,8 @@ export default function DetailMatching() {
 			// 권한 체크
 			checkAuthorityValue(matchingId, res.data.response.id);
 			setUserIdData(res.data.response.id);
+			console.log('userId', res);
 			setUserNickNameDate(res.data.response.nickname);
-			console.log('res.data', res.data.response);
 
 			return res.data.response.id;
 		} catch (e) {
@@ -321,7 +317,6 @@ export default function DetailMatching() {
 
 	// 신청 여부에 따라 컨트롤
 	const handleMatchingApplication = () => {
-		console.log('isReqMatching', isReqMatching);
 		if (isReqMatching) {
 			cancelMatchingApplication();
 		} else {
@@ -333,8 +328,8 @@ export default function DetailMatching() {
 	const requestMatching = async () => {
 		try {
 			const res = await ApplyService.regMatchingData(router.query.id);
-			console.log('참가 신청', res.data.response);
 			setIsReqMatching(true);
+			setMessage('success', '신청완료');
 		} catch (e) {
 			console.log(e);
 			if (e.response.data.code === 400 || e.response.data.code === 404) {
@@ -346,11 +341,12 @@ export default function DetailMatching() {
 	// 참가 신청 취소
 	// (매칭상태가 FULL인 경기일 경우, 경기 매칭 확정 상태 변경 및 패널티 부여, 알림)
 	const cancelMatchingApplication = async () => {
+		console.log('applyIdData', applyIdData);
 		try {
-			const res = await ApplyService.getDetailMatchingList(applyIdData);
-			console.log(res.data.response);
-
+			const res = await ApplyService.cancelMatchingData(applyIdData);
 			setIsReqMatching(false);
+			setMessage('success', '신청취소');
+			getRecruitListInfo(router.query.id);
 		} catch (e) {
 			console.log(e);
 			if (e.response.data.code === 400 || e.response.data.code === 404) {
@@ -366,10 +362,8 @@ export default function DetailMatching() {
 			acceptedApplies: updatedLists.afterList.map((item: any) => item.applyId),
 		};
 
-		console.log('payload', payload);
 		try {
 			const res = await ApplyService.applyMatches(router.query.id, payload);
-			console.log(res.data.response);
 		} catch (e) {
 			console.log(e);
 			if (e.response.data.code === 400 || e.response.data.code === 404) {
@@ -432,7 +426,6 @@ export default function DetailMatching() {
 		try {
 			const res = await ChatService.getPreviousMessageData(payload);
 			setChatList(res.data.response);
-			console.log('res', res);
 		} catch (e) {
 			console.log('e', e);
 		}

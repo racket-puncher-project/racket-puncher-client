@@ -1,31 +1,21 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { v4 as uuidv4 } from 'uuid';
-import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
+import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import KakaoLogin from 'react-kakao-login';
 
-import { RoundButton } from '../../styles/ts/components/buttons';
-import { ImageBox } from '../../styles/ts/components/box';
-import { BlackColor, FontSizeMc, PrimaryColor } from '../../styles/ts/common';
-import useRouterHook from '../../utils/useRouterHook';
-import { PageMainTitle } from '../../styles/ts/components/titles';
-import ModalBox from '../../components/common/modal';
 import { InputBox } from '../../styles/ts/components/input';
 import { InputErrorText } from '../../styles/ts/components/text';
-import { prefix } from '../../constants/prefix';
-import AuthService from '../../service/auth/service';
-import useCookies from '../../utils/useCookies';
-import useToast from '../../utils/useToast';
-import { pxToRem } from '../../utils/formatter';
+import { RoundButton, SquareButton } from '../../styles/ts/components/buttons';
+import { PageMainTitle } from '../../styles/ts/components/titles';
+import { onlyNumber, pxToRem } from '../../utils/formatter';
+import useRouterHook from '../../utils/useRouterHook';
 import { rem } from 'polished';
-import AlarmService from '../../service/alarm/service';
-
-interface FormData {
-	readonly email: string;
-	readonly password: string;
-}
+import { useRouter } from 'next/router';
+import AuthService from '../../service/auth/service';
+import useToast from '../../utils/useToast';
+import { useSetRecoilState } from 'recoil';
+import { pwdResetTokenState } from '../../lib/store/reset';
 
 const schema = yup.object().shape({
 	email: yup
@@ -35,224 +25,260 @@ const schema = yup.object().shape({
 			/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
 			'이메일 형식이 올바르지 않습니다.'
 		),
-	password: yup.string().required('비밀번호는 필수입니다.'),
-	// .matches(
-	// 	/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/,
-	// 	'비밀번호는 8자 이상, 숫자/소문자/대문자/특수문자를 각 최소 하나씩 포함해야 합니다.'
-	// ),
+	phoneNumber: yup
+		.string()
+		.required('휴대폰 번호는 필수입니다.')
+		.matches(
+			/^(01[016789]{1}|02|0[3-9]{1}[0-9]{1})-?[0-9]{3,4}-?[0-9]{4}$/,
+			'휴대폰 번호 형식을 확인해주세요'
+		),
+	certifyNumber: yup.string().required('인증번호는 필수입니다.'),
 });
-export default function Login() {
+
+export default function FindPwd() {
 	const { movePage } = useRouterHook();
-	const { setCookie, getCookie } = useCookies();
 	const { setMessage } = useToast();
+	const router = useRouter();
+
+	const setResetTokenState = useSetRecoilState(pwdResetTokenState);
+
+	const [email, setEmail] = useState('');
+
+	const [certifyNumVisible, setCertifyNumVisible] = useState(false);
+
+	// timer
+	const [intervalId, setIntervalId] = useState<number | null>(null);
+	const [timer, setTimer] = useState(5);
+
+	// CheckComplete
+	const [checkPhoneCertifyComplete, setCheckPhoneCertifyComplete] = useState(false);
 
 	const {
 		register,
 		handleSubmit,
+		watch,
+		setValue,
+		getValues,
 		formState: { errors },
+		setError,
+		clearErrors,
 	} = useForm({
 		resolver: yupResolver(schema),
 	});
 
-	const [isModalOpenVisible, setIsModalOpenVisible] = useState(false);
-	const toggleModal = () => {
-		setIsModalOpenVisible((prev) => !prev);
+	// 인증번호 ---------------------------------------------------------------
+	// 인증번호 타이머
+	const setCertTimer = () => {
+		if (intervalId) {
+			clearInterval(intervalId);
+		}
+		const newIntervalId = setInterval(() => {
+			setTimer((prevTimer) => {
+				if (prevTimer === 1) {
+					clearInterval(newIntervalId);
+					setCertifyNumVisible(false);
+					return 0;
+				} else {
+					return prevTimer - 1;
+				}
+			});
+		}, 1000);
+		setIntervalId(Number(newIntervalId));
 	};
 
-	const modalIsOk = () => {
-		console.log('확인');
-	};
-
-	const modalIsCancel = () => {
-		console.log('취소');
-	};
-
-	// 실시간 알림 확인을 위한 SSE 연결
-	// const connectNotification = async () => {
-	// 	try {
-	// 		const res = await AlarmService.regNotificationConnect();
-	// 		console.log('connectNotification Response', res.data.response);
-	// 	} catch (e) {
-	// 		console.log(e);
-	// 	}
-	// };
-
-	// const setupSSE = () => {
-	// 	const token = getCookie('accessToken');
-	// 	const eventSource = new EventSource(
-	// 		`https://racket-puncher.store/api/notifications/connect/${token}`
-	// 	);
-	// 	console.log('eventSource', eventSource);
-
-	// 	eventSource.onopen = function (event) {
-	// 		console.log('접속연결완료!!', event);
-	// 	};
-
-	// 	eventSource.onmessage = function (event) {
-	// 		console.log('메시지 받음!!', event);
-	// 	};
-
-	// 	eventSource.onerror = function (error) {
-	// 		console.error('SSE error:', error);
-	// 		eventSource.close();
-	// 	};
-
-	// 	eventSource.addEventListener('notify', (event) => {
-	// 		console.log('서버에서 작성한명대로 메시지!!', event);
-	// 	});
-	// };
-
-	// 로그인
-	const clickLoginBtn = async (data: FormData) => {
+	// 휴대폰 번호 인증번호 받기
+	const getVerification = async () => {
 		try {
-			const res = await AuthService.login(data);
-			setCookie('accessToken', res.data.response.accessToken);
-			movePage('/main');
-			// await setupSSE();
+			const phoneNumberSchema = yup.reach(schema, 'phoneNumber') as yup.StringSchema;
+			await phoneNumberSchema.validate(getValues('phoneNumber'));
+			clearErrors('phoneNumber');
+			try {
+				const res = await AuthService.phoneSendCode({ phoneNumber: getValues('phoneNumber') });
+				setMessage('success', res.data.response.message);
+				setCertifyNumVisible(true);
+				setTimer(300);
+				setCertTimer();
+			} catch (e) {
+				if (e.response.data.code === 500) {
+					setMessage('error', e.response.data.message);
+				}
+			}
 		} catch (e) {
-			console.log(e);
-			setMessage('error', e.response.data.message);
+			setError('phoneNumber', {
+				type: 'manual',
+				message: e.message,
+			});
 		}
 	};
 
-	// 소셜로그인 --------------------------------------
-	const postSocialLogin = () => {
-		// rest-api key 적용
-		// 결과값 code 반환
-		window.location.href =
-			'https://kauth.kakao.com/oauth/authorize?client_id=0fe7dd1a1614374c27fd672849d17cdd&redirect_uri=http://localhost:8080/kakaoLogin&response_type=code';
+	// 인증번호 확인
+	const confirmCertifyBtn = async () => {
+		const params = {
+			phoneNumber: getValues('phoneNumber'),
+			authCode: getValues('certifyNumber'),
+		};
+
+		try {
+			const res = await AuthService.phoneVerifyCode(params);
+			setMessage('success', res.data.response.message);
+			setCheckPhoneCertifyComplete(true);
+			clearInterval(intervalId);
+		} catch (e) {
+			console.log(e);
+			if (e.response.data.code === 400) {
+				setMessage('error', e.response.data.message);
+			}
+		}
 	};
+
+	// 비밀번호 초기화 요청 ---------------------------------------------------------------
+	const postPwdVerifyApiData = async () => {
+		const params = {
+			email: getValues('email'),
+			phoneNumber: getValues('phoneNumber'),
+		};
+
+		try {
+			const res = await AuthService.postPwdVerify(params);
+			console.log(res);
+			setResetTokenState(res.data.response.resetToken);
+
+			movePage('/findPwd/result');
+		} catch (e) {
+			console.log(e);
+			if (e.response.data.code === 400) {
+				setMessage('error', e.response.data.message);
+			}
+		}
+	};
+
+	const clickNextBtn = () => {
+		postPwdVerifyApiData();
+	};
+
+	useEffect(() => {
+		if (router.query.email && typeof router.query.email === 'string') {
+			setEmail(router.query.email);
+			setValue('email', router.query.email);
+		}
+	}, [router.query, setValue]);
 
 	return (
 		<>
-			<LoginViewContainer>
-				<PageMainTitle>로그인</PageMainTitle>
+			<FindPwdViewContainer>
+				<PageMainTitle>비밀번호 찾기</PageMainTitle>
+
 				<InputContainer>
 					<InputBox>
-						<label htmlFor='loginEmail'>이메일</label>
-						<input id='loginEmail' {...register('email')} />
-						<InputErrorText>{errors.email?.message}</InputErrorText>
+						<label htmlFor='findPwdEmail'>이메일</label>
+
+						<input
+							id='findPwdEmail'
+							{...register('email')}
+							value={email}
+							onChange={(e) => setEmail(e.target.value)}
+						/>
+						{errors.email?.message && <InputErrorText>{errors.email.message}</InputErrorText>}
 					</InputBox>
-					<InputBox>
-						<label htmlFor='loginPwd'>비밀번호</label>
-						<input id='loginPwd' type={'password'} {...register('password')} />
-						<InputErrorText>{errors.password?.message}</InputErrorText>
-					</InputBox>
+
+					<InputButtonBox>
+						<InputBox>
+							<label htmlFor='findPwdPhoneNum'>휴대폰 번호</label>
+							<input
+								id='findPwdPhoneNum'
+								type={'text'}
+								maxLength={11}
+								{...register('phoneNumber')}
+								onChange={(e) => {
+									setValue('phoneNumber', onlyNumber(e.target.value));
+								}}
+							/>
+							{errors.phoneNumber?.message && (
+								<InputErrorText>{errors.phoneNumber.message}</InputErrorText>
+							)}
+						</InputBox>
+						<SquareButton
+							height={'50px'}
+							onClick={getVerification}
+							disabled={!watch('phoneNumber')}>
+							인증번호 전송
+						</SquareButton>
+					</InputButtonBox>
+
+					{certifyNumVisible && (
+						<InputButtonBox>
+							<InputBox certify='true'>
+								<label htmlFor='findPwdCertifyNum'>인증 번호</label>
+								<input
+									id='findIdCertifyNum'
+									type={'text'}
+									maxLength={6}
+									{...register('certifyNumber')}
+									onChange={(e) => {
+										setValue('certifyNumber', onlyNumber(e.target.value));
+									}}
+								/>
+								<span className={'limit-time'}>
+									{String(Math.floor(timer / 60)).padStart(2, '0')}:
+									{String(timer % 60).padStart(2, '0')}
+								</span>
+								{errors.certifyNumber?.message && (
+									<InputErrorText>{errors.certifyNumber.message}</InputErrorText>
+								)}
+							</InputBox>
+							<SquareButton
+								height={'50px'}
+								disabled={!watch('certifyNumber')}
+								onClick={confirmCertifyBtn}>
+								확인
+							</SquareButton>
+						</InputButtonBox>
+					)}
 				</InputContainer>
 
-				<UnderLineBox>
-					<UnderLineTexts onClick={() => movePage('/findId')}>아이디찾기</UnderLineTexts>
-					<UnderLineTexts onClick={() => movePage('/findPwd')}>비밀번호 찾기</UnderLineTexts>
-				</UnderLineBox>
-
-				<ButtonContainer>
-					<ButtonBox>
-						<RoundButton colorstyle={'is-black'} onClick={handleSubmit(clickLoginBtn)}>
-							로그인
-						</RoundButton>
-					</ButtonBox>
-					<ButtonBox>
-						<RoundButton
-							colorstyle={'is-yellow'}
-							onClick={(e) => {
-								e.preventDefault();
-								postSocialLogin();
-							}}>
-							<div className='align-box'>
-								<ImageBox width={'15px'} height={'14px'}>
-									<img src={`${prefix}/images/kakao-icon.png`} alt='kakao-icon' />
-								</ImageBox>
-								<p>카카오 로그인</p>
-							</div>
-						</RoundButton>
-						{/*
-						// 자바스크립트 SDK key 적용
-						// react-kakao-login 라이브러리 사용
-						<KakaoLogin
-							token={'20bd45f114aff9ec8fee730fe2453f5c'}
-							onSuccess={postSocialLogin}
-							onFail={console.error}
-							onLogout={console.info}
-							render={({ onClick }) => {
-								return (
-									<RoundButton
-										colorstyle={'is-yellow'}
-										onClick={(e) => {
-											e.preventDefault();
-											onClick();
-										}}>
-										<div className='align-box'>
-											<ImageBox width={'15px'} height={'14px'}>
-												<img src={`${prefix}/images/kakao-icon.png`} alt='kakao-icon' />
-											</ImageBox>
-											<p>카카오 로그인</p>
-										</div>
-									</RoundButton>
-								);
-							}}
-						/> */}
-					</ButtonBox>
-				</ButtonContainer>
-
-				<BottomUnderLineBox>
-					<p className='label-title'>아이디가 없으신가요?</p>
-					<UnderLineTexts onClick={() => movePage('/register')}>회원가입하기</UnderLineTexts>
-				</BottomUnderLineBox>
-
-				<ModalBox
-					title={'test'}
-					isOpen={isModalOpenVisible}
-					toggleModal={toggleModal}
-					onOk={modalIsOk}
-					onCancel={modalIsCancel}
-					footerButtons={[
-						<button key={uuidv4()} onClick={toggleModal}>
-							확인
-						</button>,
-					]}>
-					<p>모달 테스트</p>
-				</ModalBox>
-			</LoginViewContainer>
+				<ButtonBox>
+					<RoundButton
+						colorstyle={'is-green'}
+						onClick={handleSubmit(clickNextBtn)}
+						disabled={
+							!watch('email') ||
+							!watch('phoneNumber') ||
+							!watch('certifyNumber') ||
+							!checkPhoneCertifyComplete
+						}>
+						다음
+					</RoundButton>
+				</ButtonBox>
+			</FindPwdViewContainer>
 		</>
 	);
 }
 
-const LoginViewContainer = styled.div`
+const FindPwdViewContainer = styled.div`
 	margin-top: ${(props) => (props.theme.isResponsive ? pxToRem('50px') : rem('50px'))};
 `;
 
 const InputContainer = styled.div`
-	margin-top: ${(props) => (props.theme.isResponsive ? pxToRem('50px') : rem('50px'))};
+	margin-top: ${(props) => (props.theme.isResponsive ? pxToRem('30px') : rem('30px'))};
 `;
 
-const ButtonContainer = styled.div`
-	margin-top: ${(props) => (props.theme.isResponsive ? pxToRem('40px') : rem('40px'))};
+const InputButtonBox = styled.div`
+	display: flex;
+	justify-content: space-between;
+	/* align-items: center; */
+
+	.input__InputBox-sc-7b0p27-0 {
+		flex-basis: ${(props) => (props.theme.isResponsive ? pxToRem('380px') : rem('380px'))};
+	}
+
+	.buttons__SquareButton-sc-1doc049-1 {
+		flex-basis: ${(props) => (props.theme.isResponsive ? pxToRem('180px') : rem('180px'))};
+		margin-top: ${(props) => (props.theme.isResponsive ? pxToRem('26px') : rem('26px'))};
+		margin-left: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
+	}
 `;
 
 const ButtonBox = styled.div`
-	margin-bottom: ${(props) => (props.theme.isResponsive ? pxToRem('20px') : rem('20px'))};
-`;
-
-const UnderLineBox = styled.div`
-	display: flex;
-	gap: ${(props) => (props.theme.isResponsive ? pxToRem('15px') : rem('15px'))};
-	justify-content: flex-end;
-`;
-
-const UnderLineTexts = styled.p`
-	font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeMc) : rem(FontSizeMc))};
-	text-decoration: underline;
-	color: ${PrimaryColor};
-	cursor: pointer;
-`;
-
-const BottomUnderLineBox = styled.div`
-	display: flex;
-	gap: ${(props) => (props.theme.isResponsive ? pxToRem('10px') : rem('10px'))};
-	justify-content: center;
-
-	p.label-title {
-		font-size: ${(props) => (props.theme.isResponsive ? pxToRem(FontSizeMc) : rem(FontSizeMc))};
-		color: ${BlackColor};
-	}
+	margin-top: ${(props) => (props.theme.isResponsive ? pxToRem('30px') : rem('30px'))};
+	margin-bottom: ${(props) => (props.theme.isResponsive ? pxToRem('50px') : rem('50px'))};
 `;

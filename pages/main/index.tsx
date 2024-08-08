@@ -14,6 +14,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import ChatRoom from '../../components/contents/chat/ChatRoom';
 import MenuDrawer from '../../components/layouts/MenuDrawer';
 import ChatListModal from '../../components/contents/chat/ChatListModal';
+import useCookies from '../../utils/useCookies';
 
 const items: TabsProps['items'] = [
 	{
@@ -29,6 +30,8 @@ const items: TabsProps['items'] = [
 ];
 
 export default function MainPage() {
+	const { checkLogin } = useCookies();
+
 	return (
 		<>
 			<MainViewContainer>

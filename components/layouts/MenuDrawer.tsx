@@ -11,6 +11,7 @@ import { pxToRem } from '../../utils/formatter';
 import AuthService from '../../service/auth/service';
 import { getCookies } from 'undici-types';
 import { InputErrorColor } from '../../styles/ts/common';
+import useToast from '../../utils/useToast';
 
 interface MenuDrawerProps {
 	readonly isOpen: boolean;
@@ -19,6 +20,7 @@ interface MenuDrawerProps {
 
 export default function MenuDrawer(props: MenuDrawerProps) {
 	const { checkLogin, removeCookie } = useCookies();
+	const { setMessage } = useToast();
 	const { isOpen, toggleDrawer } = props;
 	const { reload } = useRouterHook();
 	const { getCookie } = useCookies();
@@ -29,6 +31,7 @@ export default function MenuDrawer(props: MenuDrawerProps) {
 			removeCookie('accessToken');
 			toggleDrawer(isOpen);
 			reload();
+			setMessage('success', '로그아웃 되었습니다');
 		} catch (e) {
 			console.log(e);
 		}
@@ -75,7 +78,7 @@ export default function MenuDrawer(props: MenuDrawerProps) {
 									}}
 									colorstyle={'is-green'}
 									aria-label='알림 페이지로 이동'>
-										알림 페이지
+									알림 페이지
 								</RoundButton>
 							</Link>
 						</MenuArea>

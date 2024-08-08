@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { ImageBox } from '../../../../styles/ts/components/box';
 import { prefix } from '../../../../constants/prefix';
 import { SquareButton } from '../../../../styles/ts/components/buttons';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
 	FontFamilyMedium,
 	FontSizeLg,
@@ -14,57 +14,101 @@ import { pxToRem } from '../../../../utils/formatter';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { FreeMode } from 'swiper/modules';
 
-export default function EvaluationCard() {
+export default function EvaluationCard({
+	reviewMemberList,
+	reviewMemberItem,
+	setReviewMemberList,
+}) {
 	const [goodCardData, setGoodCardData] = useState([
 		{
-			label: '친절해요1',
+			value: 'KIND',
+			label: '친절해요',
 			isActive: true,
 		},
 		{
-			label: '친절해요2',
+			value: 'PUNCTUAL',
+			label: '약속 시간을 잘 지켜요',
 			isActive: false,
 		},
 		{
-			label: '친절해요3',
+			value: 'GOOD_MANNER',
+			label: '매너가 좋아요',
 			isActive: false,
 		},
 		{
-			label: '친절해요4',
+			value: 'HELPFUL',
+			label: '경기 진행 과정에서 도움을 줬어요',
 			isActive: false,
 		},
 		{
-			label: '친절해요5',
+			value: 'PROACTIVE',
+			label: '경기에 적극적으로 임해요',
 			isActive: false,
 		},
 	]);
 
 	const [badCardData, setBadCardData] = useState([
 		{
-			label: '노쇼했어요1',
+			value: 'NO_SHOW',
+			label: '노쇼했어요',
 			isActive: true,
 		},
 		{
-			label: '노쇼했어요2',
+			value: 'FALSE_MATCHING',
+			label: '허위 매칭글이에요',
 			isActive: false,
 		},
 		{
-			label: '노쇼했어요3',
+			value: 'CYBER_BULLYING',
+			label: '채팅방에서 욕설을 했어요',
 			isActive: false,
 		},
 		{
-			label: '노쇼했어요4',
+			value: 'SPORTS_MISCONDUCT',
+			label: '경기 중에 욕설을 했어요',
 			isActive: false,
 		},
 		{
-			label: '노쇼했어요5',
+			value: 'AGGRESSIVE',
+			label: '행동이 과격해요',
+			isActive: false,
+		},
+		{
+			value: 'MAKING_UNCOMFORTABLE',
+			label: '다른 참가자를 불편하게 해요',
+			isActive: false,
+		},
+		{
+			value: 'INCONSIDERATE',
+			label: '배려심이 부족해요',
 			isActive: false,
 		},
 	]);
 
-	const onClickItem = (item: any) => {
-		item.isActive = !item.isActive;
-		console.log('item', item);
-	};
+	useEffect(() => {
+		const processGoodCardData = goodCardData
+			.filter((goodCardItem) => goodCardItem.isActive)
+			.map((goodCardProcessItem) => goodCardProcessItem.value);
+		const processBadCardData = badCardData
+			.filter((badCardDataItem) => badCardDataItem.isActive)
+			.map((badCardProcessItem) => badCardProcessItem.value);
+
+		const updateList = reviewMemberList.map((reviewMemberListItem) => {
+			if (reviewMemberListItem.id === reviewMemberItem.id) {
+				return {
+					...reviewMemberListItem,
+					positiveReviews: processGoodCardData,
+					negativeReviews: processBadCardData,
+				};
+			} else {
+				return {
+					...reviewMemberListItem,
+				};
+			}
+		});
+
+		setReviewMemberList(updateList);
+	}, [goodCardData, badCardData]);
 
 	return (
 		<>
@@ -73,11 +117,11 @@ export default function EvaluationCard() {
 					<ProfileContainer>
 						<ProfileImgBox>
 							<ImageBox width='80px' height='80px'>
-								<img src={`${prefix}/images/profile-img.png`} alt='profile-img' />
+								<img src={`${reviewMemberItem.profileImg}`} alt='profile-img' />
 							</ImageBox>
 						</ProfileImgBox>
 
-						<ProfileTextBox>TESTER-1</ProfileTextBox>
+						<ProfileTextBox>{reviewMemberItem.nickname}</ProfileTextBox>
 					</ProfileContainer>
 
 					<CardBoxes>
@@ -95,7 +139,6 @@ export default function EvaluationCard() {
 												<>
 													<SwiperSlide>
 														<SquareButton
-															width='150px'
 															height='40px'
 															colorstyle={item.isActive ? 'is-green' : 'is-whiteBlack'}
 															bordercolor={item.isActive ? 'is-green' : 'is-whiteBlack'}
@@ -137,7 +180,6 @@ export default function EvaluationCard() {
 												<>
 													<SwiperSlide>
 														<SquareButton
-															width='150px'
 															height='40px'
 															colorstyle={item.isActive ? 'is-green' : 'is-whiteBlack'}
 															bordercolor={item.isActive ? 'is-green' : 'is-whiteBlack'}
@@ -193,6 +235,14 @@ const ProfileTextBox = styled.div`
 const CardBoxes = styled.div``;
 const ButtonArea = styled.div`
 	margin-right: ${(props) => (props.theme.isResponsive ? pxToRem('9px') : rem('9px'))};
+	div.swiper {
+		div.swiper-wrapper {
+			div.swiper-slide {
+				width: auto !important;
+				margin-right: 10px;
+			}
+		}
+	}
 `;
 const Cards = styled.div`
 	&:first-child {

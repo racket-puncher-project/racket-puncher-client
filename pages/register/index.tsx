@@ -243,6 +243,7 @@ export default function register() {
 		try {
 			const res = await AuthService.phoneVerifyCode(params);
 			setMessage('success', res.data.response.message);
+			clearInterval(intervalId);
 			setCheckPhoneCertifyComplete(true);
 		} catch (e) {
 			console.log(e);
@@ -314,6 +315,7 @@ export default function register() {
 				profileImg: fileUrl.data.response,
 			});
 
+			setMessage('success', '회원가입이 완료되었습니다');
 			movePage('/login');
 		} catch (e) {
 			console.log(e);
